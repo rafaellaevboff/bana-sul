@@ -1,4 +1,4 @@
-# bana-agri-web
+# bana-sul
 
 ## Project setup
 ```

@@ -1,5 +1,5 @@
 {
-  "name": "bana-agri-web",
+  "name": "bana-sul",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,12 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "firebase": "^10.13.1",
+    "vue": "^3.5.3",
+    "vue-router": "^4.4.4",
+    "vuetify": "^3.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
