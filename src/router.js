@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { getAuth } from 'firebase/auth';
-import TelaCadastro from './pages/RegistrationScreen.vue';
-import TelaLogin from './pages/LoginScreen.vue';
+import LoginScreen from './pages/LoginScreen.vue';
+import RegistrationScreen from './pages/RegistrationScreen.vue';
+import ResetPasswordScreen from './pages/ResetPasswordScreen.vue';
 
 const routes = [
-  { path: '/', name: 'TelaLogin', component: TelaLogin },
-  {
-    path: '/cadastro', name: 'TelaCadastro', component: TelaCadastro,  meta: { requiresAuth: true }
-  }
+  { path: '/', name: 'Login', component: LoginScreen },
+  { path: '/cadastro', name: 'Cadastro', component: RegistrationScreen},
+  { path: '/resetSenha', name: 'ResetPassword', component: ResetPasswordScreen}
 ];
 
 const router = createRouter({

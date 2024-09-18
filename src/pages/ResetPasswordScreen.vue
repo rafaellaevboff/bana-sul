@@ -1,14 +1,14 @@
 <template>
   <form-screen>
-    <login-form />
+    <reset-password-form />
   </form-screen>
 </template>
 
 <script>
-import LoginForm from "@/components/LoginForm.vue";
 import FormScreen from "./FormScreen.vue";
+import ResetPasswordForm from "@/components/ResetPasswordForm.vue";
 export default {
-  components: { LoginForm, FormScreen },
+  components: { FormScreen, ResetPasswordForm },
 };
 </script>
 
