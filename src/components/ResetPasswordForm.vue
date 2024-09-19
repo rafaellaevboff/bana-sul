@@ -1,5 +1,6 @@
 <template>
   <v-card class="pa-6">
+    <v-img :src="Logo" max-height="150" class="mb-4"/>
     <v-card-title class="text-h5">Recuperar Senha</v-card-title>
     <v-card-text>
       <v-form @submit.prevent="resetPassword">
@@ -10,8 +11,8 @@
           required
         ></v-text-field>
         <v-btn type="submit" block>Redefinir senha</v-btn>
-        <v-btn @click="handleLogin" block>Entrar</v-btn>
-        <v-btn @click="handleRegistration" block>Cadastrar-se</v-btn>
+        <v-btn @click="handleLogin" class="mt-3" block>Entrar</v-btn>
+        <v-btn @click="handleRegistration" class="mt-3" block>Cadastrar-se</v-btn>
       </v-form>
     </v-card-text>
   </v-card>
@@ -19,6 +20,7 @@
 
 <script>
 import { useRouter } from "vue-router";
+import Logo from '../assets/LogoBanaSul.png';
 import { ref } from "vue";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { goToLogin, goToRegistration } from "../services/formsService";
@@ -45,7 +47,13 @@ export default {
       }
     };
 
-    return { emailReset, resetPassword, handleLogin, handleRegistration };
+    return { 
+      emailReset,
+      resetPassword,
+      handleLogin,
+      handleRegistration,
+      Logo
+    };
   },
 };
 </script>

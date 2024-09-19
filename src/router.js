@@ -3,11 +3,13 @@ import { getAuth } from 'firebase/auth';
 import LoginScreen from './pages/LoginScreen.vue';
 import RegistrationScreen from './pages/RegistrationScreen.vue';
 import ResetPasswordScreen from './pages/ResetPasswordScreen.vue';
+import HomeScreen from './pages/HomeScreen.vue';
 
 const routes = [
   { path: '/', name: 'Login', component: LoginScreen },
   { path: '/cadastro', name: 'Cadastro', component: RegistrationScreen},
-  { path: '/resetSenha', name: 'ResetPassword', component: ResetPasswordScreen}
+  { path: '/resetSenha', name: 'ResetPassword', component: ResetPasswordScreen},
+  { path: '/home', name: 'Home', component: HomeScreen , meta: { requiresAuth: true }}
 ];
 
 const router = createRouter({

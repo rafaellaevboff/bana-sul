@@ -1,5 +1,7 @@
 <template>
   <v-card class="pa-8">
+    <v-img :src="Logo" max-height="150" class="mb-4"/>
+    
     <v-card-title class="text-h5">Bem vindo(a)!</v-card-title>
     <v-card-text>
       <v-form @submit.prevent="login">
@@ -13,8 +15,8 @@
           required
         ></v-text-field>
         <span class="clickablePassword" @click="handleResetPassword">Esqueci minha senha</span>
-        <v-btn type="submit" block>Entrar</v-btn>
-        <v-btn @click="handleRegistration" block>Cadastrar-se</v-btn>
+        <v-btn class="mt-3" type="submit" block>Entrar</v-btn>
+        <v-btn class="mt-3" @click="handleRegistration" block>Cadastrar-se</v-btn>
       </v-form>
     </v-card-text>
   </v-card>
@@ -22,6 +24,7 @@
 
 <script>
 import { ref } from "vue";
+import Logo from '../assets/LogoBanaSul.png';
 import { auth } from "../services/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "vue-router";
@@ -44,9 +47,8 @@ export default {
           email.value,
           password.value
         );
-        alert("Login bem-sucedido!");
         console.log("Usuário logado:", userCredential.user);
-        router.push("/cadastro");
+        router.push("/home");
       } catch (error) {
         alert(`Erro de login: ${error.message}`);
       }
@@ -64,6 +66,7 @@ export default {
       handleResetPassword,
       login,
       togglePasswordVisibility,
+      Logo
     };
   },
 };
