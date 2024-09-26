@@ -4,12 +4,9 @@
   </form-screen>
 </template>
 
-<script>
+<script setup>
 import FormScreen from "./FormScreen.vue";
 import ResetPasswordForm from "@/components/ResetPasswordForm.vue";
-export default {
-  components: { FormScreen, ResetPasswordForm },
-};
 </script>
 
 <style></style>

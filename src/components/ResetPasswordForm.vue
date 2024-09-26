@@ -5,57 +5,44 @@
     <v-card-text>
       <v-form @submit.prevent="resetPassword">
         <v-text-field
-          v-model="emailReset"
-          label="Email"
-          type="email"
-          required
+                v-model="emailReset"
+                label="Email"
+                type="email"
+                required
         ></v-text-field>
         <v-btn type="submit" block>Redefinir senha</v-btn>
         <v-btn @click="handleLogin" class="mt-3" block>Entrar</v-btn>
-        <v-btn @click="handleRegistration" class="mt-3" block>Cadastrar-se</v-btn>
       </v-form>
     </v-card-text>
   </v-card>
 </template>
 
-<script>
-import { useRouter } from "vue-router";
+<script setup>
+import {ref} from "vue";
+import {useRouter} from "vue-router";
+import {sendPasswordResetEmail} from "firebase/auth";
+import {goToLogin} from "@/services/formsService";
+import {auth} from "@/services/firebase";
 import Logo from '../assets/LogoBanaSul.png';
-import { ref } from "vue";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { goToLogin, goToRegistration } from "../services/formsService";
-import { auth } from "../services/firebase";
 
-export default {
-  setup() {
-    const router = useRouter();
-    const emailReset = ref("");
+const router = useRouter();
+const emailReset = ref("");
 
-    const handleLogin = () => goToLogin(router);
-    const handleRegistration = () => goToRegistration(router);
+const handleLogin = () => goToLogin(router);
 
-    const resetPassword = async () => {
-      try {
+const resetPassword = async () => {
+    try {
         await sendPasswordResetEmail(
-          auth,
-          emailReset.value
+            auth,
+            emailReset.value
         );
         alert("Email enviado com sucesso!");
-        
-      } catch (error) {
-        alert("Erro ao enviar e-mail: ", error)
-      }
-    };
 
-    return { 
-      emailReset,
-      resetPassword,
-      handleLogin,
-      handleRegistration,
-      Logo
-    };
-  },
+    } catch (error) {
+        alert("Erro ao enviar e-mail: ", error)
+    }
 };
+
 </script>
 
 <style></style>

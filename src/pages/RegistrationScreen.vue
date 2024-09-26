@@ -4,13 +4,10 @@
   </form-screen>
 </template>
 
-<script>
+<script setup>
 import RegistrationForm from "@/components/RegistrationForm.vue";
 import FormScreen from "./FormScreen.vue";
 
-export default {
-  components: { RegistrationForm, FormScreen },
-};
 </script>
 
 <style scoped></style>

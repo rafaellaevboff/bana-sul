@@ -4,12 +4,9 @@
   </form-screen>
 </template>
 
-<script>
+<script setup>
 import LoginForm from "@/components/LoginForm.vue";
 import FormScreen from "./FormScreen.vue";
-export default {
-  components: { LoginForm, FormScreen },
-};
 </script>
 
 <style></style>
