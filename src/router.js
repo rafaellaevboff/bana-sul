@@ -1,37 +1,57 @@
 import {createRouter, createWebHistory} from 'vue-router';
 import {getAuth} from 'firebase/auth';
-import LoginScreen from './pages/LoginScreen.vue';
-import RegistrationScreen from './pages/RegistrationScreen.vue';
-import ResetPasswordScreen from './pages/ResetPasswordScreen.vue';
+import LoginScreen from './pages/Login/LoginScreen.vue';
+import ResetPasswordScreen from './pages/Login/ResetPasswordScreen.vue';
 import HomeScreen from './pages/HomeScreen.vue';
 import LayoutScreen from './pages/LayoutScreen.vue';
+import BananaPriceScreen from "@/pages/BananaPrice/BananaPriceScreen.vue";
+import NewHarvest from "@/pages/NewHarvest.vue";
+import NewNotebookScreen from "@/pages/Notebooks/NewNotebookScreen.vue";
+import NotebooksScreen from "@/pages/Notebooks/NotebooksScreen.vue";
+import HistoryBananaPriceScreen from "@/pages/BananaPrice/HistoryBananaPriceScreen.vue";
+import FarmerNotebook from "@/pages/Notebooks/FarmerNotebook.vue";
 
 const routes = [
     {path: '/', name: 'Login', component: LoginScreen},
     {path: '/resetSenha', name: 'ResetPassword', component: ResetPasswordScreen},
     {
-        path: '/app', // Rotas autenticadas vão usar este layout
+        path: '/app',
         component: LayoutScreen,
         children: [
             {
-                path: '/home',
+                path: 'home',
                 name: 'Home',
                 component: HomeScreen
             },
             {
-                path: '/novoAgricultor',
-                name: 'NovoAgricultor',
-                component: RegistrationScreen
+                path: 'cadernos',
+                name: 'Cadernos',
+                component: NotebooksScreen
             },
             {
-                path: '/novoValorBanana',
+                path: 'cadernoAgricultor',
+                name: 'Caderno',
+                component: FarmerNotebook
+            },
+            {
+                path: 'novoCadernoAgricultor',
+                name: 'NovoCaderno',
+                component: NewNotebookScreen
+            },
+            {
+                path: 'novoValorBanana',
                 name: 'NovoValorBanana',
-                component: RegistrationScreen
+                component: BananaPriceScreen
             },
             {
-                path: '/novaColheita',
+                path: 'historicoValoresBanana',
+                name: 'HistoricoValoresBanana',
+                component: HistoryBananaPriceScreen
+            },
+            {
+                path: 'novaColheita',
                 name: 'NovaColheita',
-                component: RegistrationScreen
+                component: NewHarvest
             },
 
         ],

@@ -1,5 +1,5 @@
-import {signInWithEmailAndPassword, signOut} from "firebase/auth";
-import {auth} from "@/services/firebase";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "firebase/auth";
+import {auth} from "@/plugins/firebase";
 
 export const logout = async (router) => {
     try {
@@ -17,5 +17,9 @@ export const login = async (router, email, password) => {
         password.value
     );
     console.log("Usuário logado:", userCredential.user);
-    await router.push("/home");
+    await router.push("/app/home");
+}
+
+export const novoUser = async (auth, email, password) => {
+    return await createUserWithEmailAndPassword(auth, email, password);
 }

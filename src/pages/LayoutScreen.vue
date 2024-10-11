@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app style="background-color: rgba(195,154,0,0.81)" dark>
+    <v-app-bar app style="background-color: rgb(251,212,0)" dark>
       <v-app-bar-nav-icon @click="drawer = !drawer"/>
       <v-toolbar-title>Bana-Sul</v-toolbar-title>
       <v-spacer/>
@@ -50,7 +50,7 @@ const toggleLista = () => {
 }
 
 const myAccount = () => {
-    router.push('/minha-conta');
+    router.push('/app/minhaConta');
 }
 
 </script>

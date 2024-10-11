@@ -1,5 +1,5 @@
 <template>
-<div></div>
+  <v-card/>
 </template>
 
 <script setup>

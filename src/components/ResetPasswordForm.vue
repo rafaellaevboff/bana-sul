@@ -22,7 +22,7 @@ import {ref} from "vue";
 import {useRouter} from "vue-router";
 import {sendPasswordResetEmail} from "firebase/auth";
 import {goToLogin} from "@/services/formsService";
-import {auth} from "@/services/firebase";
+import {auth} from "@/plugins/firebase";
 import Logo from '../assets/LogoBanaSul.png';
 
 const router = useRouter();

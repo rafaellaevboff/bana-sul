@@ -7,13 +7,13 @@ export const getUserById = async (userId) => {
     return doc.exists ? { id: doc.id, ...doc.data() } : null;
 };
 
-export const newUser = async (db, uid, name, email, phone) => {
+export const newUser = async (db, uid, name, email) => {
     try {
         await setDoc(doc(db, "usuarios", uid), {
             name: name,
             email: email,
-            phone: phone,
-            perfil: 'agricultor'
+            perfil: 'agricultor',
+            deleted: false
         });
         console.log('Dados do usuário salvos com sucesso no Firestore');
     } catch (error) {
@@ -25,7 +25,6 @@ export const updateUser = async (user) => {
     await db.collection('usuarios').doc(user.id).update({
         nome: user.nome,
         email: user.email,
-        phone: user.phone,
         perfil: user.perfil
     });
 };

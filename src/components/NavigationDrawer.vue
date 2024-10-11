@@ -1,40 +1,65 @@
 <template>
   <v-navigation-drawer app v-model="drawer" permanent>
-    <v-list>
+    <v-list density="comfortable">
 
-      <v-list-item link to="/app/dashboard">
-        <v-list-item-icon>
-          <v-icon>mdi-home</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>Página Inicial</v-list-item-content>
+      <v-list-item link to="/app/home" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-home'"/>
+        </template>
+        <v-list-item-content v-text="'Página Inicial'"/>
       </v-list-item>
 
-      <v-list-item link to="/app/novoAgricultor">
-        <v-list-item-icon>
-          <v-icon>mdi-account-plus-outline</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>Novo agricultor</v-list-item-content>
+      <v-list-subheader>CADERNOS</v-list-subheader>
+      <v-list-item link to="/app/cadernos" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-notebook'"/>
+        </template>
+        <v-list-item-content v-text="'Cadernos'"/>
       </v-list-item>
 
-      <v-list-item link to="/app/novoValorBanana">
-        <v-list-item-icon>
-          <v-icon>mdi-cash-edit</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>Novo valor Banana</v-list-item-content>
+      <v-list-item link to="/app/novoCadernoAgricultor" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-notebook-plus-outline'"/>
+        </template>
+        <v-list-item-content v-text="'Novo caderno'"/>
       </v-list-item>
 
-      <v-list-item link to="/app/novaColheita">
-        <v-list-item-icon>
-          <v-icon>mdi-human-dolly</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>Nova colheita</v-list-item-content>
+      <v-list-subheader>VALORES BANANAS</v-list-subheader>
+      <v-list-item link to="/app/novoValorBanana" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-cash-edit'"/>
+        </template>
+        <v-list-item-content v-text="'Novo valor Banana'"/>
       </v-list-item>
 
-      <v-list-item @click="logoutApp">
-        <v-list-item-icon>
-          <v-icon>mdi-logout</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>Sair</v-list-item-content>
+      <v-list-item link to="/app/historicoValoresBanana" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-history'"/>
+        </template>
+        <v-list-item-content v-text="'Histórico de valores de Banana'"/>
+      </v-list-item>
+
+      <v-list-subheader>COLHEITAS</v-list-subheader>
+      <v-list-item link to="/app/novaColheita" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-human-dolly'"/>
+        </template>
+        <v-list-item-content v-text="'Nova colheita'"/>
+      </v-list-item>
+
+      <v-list-subheader>MINHA CONTA</v-list-subheader>
+      <v-list-item link to="/app/minhaConta" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-account'"/>
+        </template>
+        <v-list-item-content v-text="'Minha conta'"/>
+      </v-list-item>
+
+      <v-list-item @click="logoutApp" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-logout'"/>
+        </template>
+        <v-list-item-content v-text="'Sair'"/>
       </v-list-item>
 
     </v-list>
