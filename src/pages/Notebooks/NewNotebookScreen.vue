@@ -24,15 +24,14 @@
               label="Senha" type="password" required
               :rules="[v => !!v || 'Senha é obrigatória', v => v.length >= 6 || 'Senha deve ter no mínimo 6 caracteres']"/>
 
-      <v-btn type="submit" :disabled="!valid">Cadastrar</v-btn>
+      <v-btn type="submit" style="background-color: #f9d200" :disabled="!valid">Cadastrar</v-btn>
     </v-form>
   </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {ref} from 'vue';
 import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
-import { getFirestore} from 'firebase/firestore';
 import {newUser} from "@/services/userService";
 import {newNotebook} from "@/services/notebookService";
 
@@ -43,7 +42,6 @@ const newNotebookFarmer = ref({
 })
 const valid = ref(false);
 const auth = getAuth();
-const db = getFirestore();
 
 const registerUser = async () => {
     try {
@@ -54,8 +52,8 @@ const registerUser = async () => {
         );
         const user = userCredential.user
 
-        await newUser(db, user.uid, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
-        await newNotebook(db, newNotebookFarmer.value.userName, user.uid)
+        await newUser(user.uid, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
+        await newNotebook(newNotebookFarmer.value.userName, user.uid)
 
         alert("Usuário registrado com sucesso!");
         console.log("Usuário registrado: ", userCredential.user);

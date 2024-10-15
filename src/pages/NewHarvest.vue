@@ -17,7 +17,7 @@
               <v-col v-for="(quantity, index) in quantities" :key="index" cols="12" md="6">
                 <p>Preço Unitário: R${{ unitPrices[quantity.key] }}</p>
                 <v-text-field :label="'Quantidade de Caixas - ' + quantity.label"
-                              type="number" :min="0" v-model="quantity.value"
+                              type="number" :min="1" v-model="quantity.value"
                               @input="calculateTotal" required/>
               </v-col>
 
@@ -30,7 +30,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-btn type="submit" color="primary" class="mt-4">
+                <v-btn type="submit" style="background-color: #f9d200" class="mt-4">
                   Adicionar Caixas
                 </v-btn>
               </v-col>
@@ -47,10 +47,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue';
-import { newHarvest } from "@/services/harvestService";
-import { getFirestore } from "firebase/firestore";
-import { getNotebooks } from "@/services/notebookService";
+import {computed, onMounted, ref} from 'vue';
+import {newHarvest} from "@/services/harvestService";
+import {getNotebooks} from "@/services/notebookService";
 import {dataAtualpricesCadastrados, getBananasPrice, getpricesDate} from "@/services/bananaPriceService";
 
 const notebooks = ref([]);
@@ -79,7 +78,6 @@ let hasCurrentPrices = ref(false);
 let loading = ref(true);
 const grandTotal = ref(null);
 const notebookSelected = ref(null);
-const db = getFirestore();
 
 const calculateTotal = () => {
     let total = 0;
@@ -101,8 +99,22 @@ const addBoxes = () => {
         return;
     }
 
-    newHarvest(db, crypto.randomUUID(), notebookSelected.value, quantities.value, totalPrice.value);
+    newHarvest(crypto.randomUUID(), notebookSelected.value, quantities.value, totalPrice.value);
+
+    notebookSelected.value = null;
+    grandTotal.value = null;
+
+    quantities.value.forEach(quantity => {
+        quantity.value = 0;
+    });
+
+    for (const key in totalPrice.value) {
+        totalPrice.value[key] = 0;
+    }
+
+    console.log("Nova colheita cadastrada com sucesso!");
 };
+
 
 const calculatedPrices = computed(() => {
     const calculations = {};
@@ -115,7 +127,7 @@ const calculatedPrices = computed(() => {
 
 const getpricesDb = async () => {
     try {
-        const pricesDate = await getBananasPrice(db);
+        const pricesDate = await getBananasPrice();
         if (!pricesDate || pricesDate.length === 0) {
             console.log("Não há dados de preços disponíveis.");
             hasCurrentPrices.value = false;
@@ -148,7 +160,7 @@ const getpricesDb = async () => {
 
 const getNotebooksDb = async () => {
     try {
-        const notebooksData = await getNotebooks(db);
+        const notebooksData = await getNotebooks();
 
         notebooks.value = notebooksData.map(notebook => ({
             id: notebook.id,

@@ -36,7 +36,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-btn type="submit" style="background-color: #ccac30" class="mt-4">
+                <v-btn type="submit" style="background-color: #f9d200" class="mt-4">
                   Cadastrar Preços
                 </v-btn>
               </v-col>
@@ -52,9 +52,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { newBananaPrice } from "@/services/bananaPriceService";
-import { getFirestore } from "firebase/firestore";
+import {ref} from 'vue';
+import {newBananaPrice} from "@/services/bananaPriceService";
 
 const startDate = ref('');
 const endDate = ref('');
@@ -65,11 +64,9 @@ const prices = ref({
     caturraSecond: 0,
 });
 const mensagem = ref('');
-const db = getFirestore();
 
 const registerPrices = async () => {
     await newBananaPrice(
-        db,
         crypto.randomUUID(),
         startDate.value,
         endDate.value,

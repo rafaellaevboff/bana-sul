@@ -1,23 +1,16 @@
 <template>
   <v-container>
     <h1 class="display-1 text-center">Histórico de preços de banana</h1>
-    <v-data-table
-            :headers="headers"
-            :items="history"
-            :items-per-page="5"
-            class="elevation-1"
-            item-key="dataInicio"
-    >
-    </v-data-table>
+    <v-data-table :headers="headers.value" :items="history" :items-per-page="5"
+            class="elevation-1" item-key="id"/>
   </v-container>
 </template>
 
 <script setup>
-import {ref, onMounted} from "vue";
-import {getFirestore} from "firebase/firestore";
+import {onMounted, ref} from "vue";
 import {getBananasPrice} from "@/services/bananaPriceService";
+import {formatDate} from "@/services/formatService";
 
-const db = getFirestore();
 const history = ref([]);
 const headers = ref([
     {text: "Data Início", value: "dataInicio"},
@@ -30,8 +23,16 @@ const headers = ref([
 
 onMounted(async () => {
     try {
-        history.value = await getBananasPrice(db);
-        console.log("Histórico: ", history.value);
+        const prices = await getBananasPrice();
+
+        history.value = prices.map(price => ({
+            dataInicio: formatDate(price.dataInicio),
+            dataFim: formatDate(price.dataFim),
+            prataPrimeira: price.prataPrimeira,
+            prataSegunda: price.prataSegunda,
+            caturraPrimeira: price.caturraPrimeira,
+            caturraSegunda: price.caturraSegunda
+        }));
     } catch (error) {
         console.error("Erro ao carregar histórico:", error);
     }

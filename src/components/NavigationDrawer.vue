@@ -47,6 +47,21 @@
         <v-list-item-content v-text="'Nova colheita'"/>
       </v-list-item>
 
+      <v-list-subheader>INSUMOS</v-list-subheader>
+      <v-list-item link to="/app/novoInsumo" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-tools'"/>
+        </template>
+        <v-list-item-content v-text="'Novo insumo'"/>
+      </v-list-item>
+
+      <v-list-item link to="/app/novaCompraInsumo" class="text-start">
+        <template v-slot:prepend>
+          <v-icon :icon="'mdi-plus'"/>
+        </template>
+        <v-list-item-content v-text="'Nova compra de insumo'"/>
+      </v-list-item>
+
       <v-list-subheader>MINHA CONTA</v-list-subheader>
       <v-list-item link to="/app/minhaConta" class="text-start">
         <template v-slot:prepend>
