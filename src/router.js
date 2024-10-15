@@ -7,9 +7,12 @@ import LayoutScreen from './pages/LayoutScreen.vue';
 import BananaPriceScreen from "@/pages/BananaPrice/BananaPriceScreen.vue";
 import NewHarvest from "@/pages/NewHarvest.vue";
 import NewNotebookScreen from "@/pages/Notebooks/NewNotebookScreen.vue";
-import NotebooksScreen from "@/pages/Notebooks/NotebooksScreen.vue";
+import ListNotebooksScreen from "@/pages/Notebooks/ListNotebooksScreen.vue";
 import HistoryBananaPriceScreen from "@/pages/BananaPrice/HistoryBananaPriceScreen.vue";
 import FarmerNotebook from "@/pages/Notebooks/FarmerNotebook.vue";
+import MyAccountScreen from "@/pages/MyAccountScreen.vue";
+import NewAgriculturalInputs from "@/pages/AgriculturalInputs/NewAgriculturalInputs.vue";
+import PurchaseAgriculturalInputsScreen from "@/pages/AgriculturalInputs/PurchaseAgriculturalInputsScreen.vue";
 
 const routes = [
     {path: '/', name: 'Login', component: LoginScreen},
@@ -24,14 +27,20 @@ const routes = [
                 component: HomeScreen
             },
             {
-                path: 'cadernos',
-                name: 'Cadernos',
-                component: NotebooksScreen
+                path: 'minhaConta',
+                name: 'MinhaConta',
+                component: MyAccountScreen
             },
             {
-                path: 'cadernoAgricultor',
+                path: 'cadernos',
+                name: 'Cadernos',
+                component: ListNotebooksScreen
+            },
+            {
+                path: `cadernoAgricultor/:id`,
                 name: 'Caderno',
-                component: FarmerNotebook
+                component: FarmerNotebook,
+                props: true,
             },
             {
                 path: 'novoCadernoAgricultor',
@@ -53,7 +62,16 @@ const routes = [
                 name: 'NovaColheita',
                 component: NewHarvest
             },
-
+            {
+                path: 'novoInsumo',
+                name: 'NovoInsumo',
+                component: NewAgriculturalInputs
+            },
+            {
+                path: 'novaCompraInsumo',
+                name: 'NovaCompraInsumo',
+                component: PurchaseAgriculturalInputsScreen
+            },
         ],
         meta: {requiresAuth: true},
     },

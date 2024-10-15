@@ -15,9 +15,7 @@ onAuthStateChanged(auth, (user) => {
     app.mount('#app');
   }
 
-  if (user) {
-    console.log('Usuário logado:', user);
-  } else {
+  if (!user) {
     console.log('Nenhum usuário logado');
   }
 }, (error) => {

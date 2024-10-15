@@ -1,6 +1,7 @@
 import {collection, doc, getDocs, setDoc} from "firebase/firestore";
+import { db } from '@/plugins/firebase';
 
-export const newBananaPrice = async (db, uid, dataInicio, dataFim, prataPrimeira, prataSegunda, caturraPrimeira, caturraSegunda) => {
+export const newBananaPrice = async (uid, dataInicio, dataFim, prataPrimeira, prataSegunda, caturraPrimeira, caturraSegunda) => {
     try {
         await setDoc(doc(db, "precosBanana", uid), {
             dataInicio: dataInicio,
@@ -10,13 +11,13 @@ export const newBananaPrice = async (db, uid, dataInicio, dataFim, prataPrimeira
             caturraPrimeira: caturraPrimeira,
             caturraSegunda: caturraSegunda
         });
-        console.log('Dados do usuário salvos com sucesso no Firestore');
+        console.log('Preços de bananas salvos com sucesso no Firestore');
     } catch (error) {
         console.error("Erro ao salvar dados do usuário no Firestore:", error.message);
     }
 };
 
-export const getBananasPrice = async (db) => {
+export const getBananasPrice = async () => {
     const querySnapshot = await getDocs(collection(db, 'precosBanana'));
     const listPrices = [];
 

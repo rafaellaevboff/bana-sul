@@ -1,13 +1,7 @@
-import {doc, getFirestore, setDoc} from "firebase/firestore";
+import {doc, setDoc} from "firebase/firestore";
+import { db } from '@/plugins/firebase';
 
-const db = getFirestore();
-
-export const getUserById = async (userId) => {
-    const doc = await db.collection('usuarios').doc(userId).get();
-    return doc.exists ? { id: doc.id, ...doc.data() } : null;
-};
-
-export const newUser = async (db, uid, name, email) => {
+export const newUser = async (uid, name, email) => {
     try {
         await setDoc(doc(db, "usuarios", uid), {
             name: name,
@@ -21,9 +15,14 @@ export const newUser = async (db, uid, name, email) => {
     }
 };
 
+export const getUserById = async (userId) => {
+    const doc = await db.collection('usuarios').doc(userId).get();
+    return doc.exists ? { id: doc.id, ...doc.data() } : null;
+};
+
 export const updateUser = async (user) => {
     await db.collection('usuarios').doc(user.id).update({
-        nome: user.nome,
+        name: user.name,
         email: user.email,
         perfil: user.perfil
     });
