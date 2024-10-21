@@ -1,11 +1,11 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
 import vuetify from './plugins/vuetify';
-import { auth } from './plugins/firebase'
+import { auth } from './plugins/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import router from './router'
+import router from './router';
 
-let app
+let app;
 
 onAuthStateChanged(auth, (user) => {
   if (!app) {

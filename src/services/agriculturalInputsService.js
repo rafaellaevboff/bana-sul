@@ -25,12 +25,13 @@ export const getAgriculturalInputs = async () => {
     return listPrices
 };
 
-export const newPurchaseAgriculturalInput = async (uid, name, notebook, quantity) => {
+export const newPurchaseAgriculturalInput = async (uid, agriculturalInput, notebook, quantity, total) => {
     try {
         await setDoc(doc(db, "compraInsumos", uid), {
-            name: name,
+            insumo: agriculturalInput,
             notebook: notebook,
-            quantity: quantity
+            quantity: quantity,
+            valorTotal: total
         });
         console.log('Nova compra cadastrada com sucesso no Firestore');
     } catch (error) {

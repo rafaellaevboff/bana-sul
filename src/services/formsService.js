@@ -3,5 +3,5 @@ export const goToLogin = (router) => {
 };
 
 export const goToResetPassword = (router) => {
-  router.push("/app/resetSenha");
+  router.push("/resetSenha");
 };

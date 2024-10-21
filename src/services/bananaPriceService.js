@@ -1,4 +1,4 @@
-import {collection, doc, getDocs, setDoc} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDocs, setDoc} from "firebase/firestore";
 import { db } from '@/plugins/firebase';
 
 export const newBananaPrice = async (uid, dataInicio, dataFim, prataPrimeira, prataSegunda, caturraPrimeira, caturraSegunda) => {
@@ -42,4 +42,8 @@ export const dataAtualpricesCadastrados = async (pricesDate) => {
         const endDate = new Date(item.dataFim);
         return Date.now() >= startDate && Date.now() <= endDate;
     });
+};
+
+export const deleteBananasPrice = async (id) => {
+    await deleteDoc(doc(db, "precosBanana", id))
 };

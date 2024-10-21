@@ -1,8 +1,7 @@
 <template>
   <v-app>
-    <v-app-bar app style="background-color: rgb(251,212,0)" dark>
+    <v-app-bar app class="bg-primary" dark>
       <v-app-bar-nav-icon @click="drawer = !drawer"/>
-      <v-toolbar-title>Bana-Sul</v-toolbar-title>
       <v-spacer/>
 
       <v-btn icon @click="toggleLista">

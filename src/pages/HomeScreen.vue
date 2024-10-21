@@ -2,8 +2,7 @@
   <v-container>
     <v-row class="mb-4">
       <v-col>
-        <h1>Bem-vindo!</h1>
-        <v-divider></v-divider>
+        <h1 v-text="`Bem vindo!`"/>
       </v-col>
     </v-row>
 

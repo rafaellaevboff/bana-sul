@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12" md="8">
-        <h1 class="display-1 text-center">Novo registro de colheita</h1>
+        <h1 class="display-1 text-center">Nova colheita</h1>
 
         <v-progress-circular v-if="loading" indeterminate color="primary" class="my-4"/>
 
@@ -11,14 +11,15 @@
             <v-row>
               <v-col cols="12">
                 <v-select label="Selecione o Caderno" :items="notebooks" v-model="notebookSelected"
-                        item-title="name" item-value="id" required/>
+                        item-title="name" item-value="id" required rounded variant="outlined"/>
               </v-col>
 
+              <v-col cols="12" md="12" class="font-weight-bold"><p>Quantidade de caixas</p></v-col>
+
               <v-col v-for="(quantity, index) in quantities" :key="index" cols="12" md="6">
-                <p>Preço Unitário: R${{ unitPrices[quantity.key] }}</p>
                 <v-text-field :label="'Quantidade de Caixas - ' + quantity.label"
                               type="number" :min="1" v-model="quantity.value"
-                              @input="calculateTotal" required/>
+                              @input="calculateTotal" required rounded variant="outlined" density="compact"/>
               </v-col>
 
               <v-col v-for="(total, key) in calculatedPrices" :key="key" cols="12" md="6">
@@ -30,7 +31,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-btn type="submit" style="background-color: #f9d200" class="mt-4">
+                <v-btn type="submit" class="mt-4 bg-primary">
                   Adicionar Caixas
                 </v-btn>
               </v-col>
@@ -43,6 +44,8 @@
         </div>
       </v-col>
     </v-row>
+
+    <feedback-message v-model="snackbar" :message="message.value" :color="color.value"/>
   </v-container>
 </template>
 
@@ -51,6 +54,7 @@ import {computed, onMounted, ref} from 'vue';
 import {newHarvest} from "@/services/harvestService";
 import {getNotebooks} from "@/services/notebookService";
 import {dataAtualpricesCadastrados, getBananasPrice, getpricesDate} from "@/services/bananaPriceService";
+import FeedbackMessage from "@/components/FeedbackMessage.vue";
 
 const notebooks = ref([]);
 const quantities = ref([
@@ -68,16 +72,20 @@ const unitPrices = ref({
 });
 
 const totalPrice = ref({
-    silverFirst: 0,
-    silverSecond: 0,
-    caturraFirst: 0,
-    caturraSecond: 0,
+    prataPrimeira: 0,
+    prataSegunda: 0,
+    caturraPrimeira: 0,
+    caturraSegunda: 0,
 });
 
 let hasCurrentPrices = ref(false);
 let loading = ref(true);
 const grandTotal = ref(null);
 const notebookSelected = ref(null);
+
+const snackbar = ref(false);
+const color = ref('');
+const message = ref('');
 
 const calculateTotal = () => {
     let total = 0;
@@ -95,7 +103,9 @@ const calculateTotal = () => {
 
 const addBoxes = () => {
     if (!notebookSelected.value || !quantities.value || !unitPrices.value) {
-        console.error("Todos os campos devem estar preenchidos.");
+        message.value = `Todos os campos devem estar preenchidos.`
+        color.value = 'red'
+        snackbar.value = true;
         return;
     }
 
@@ -112,7 +122,9 @@ const addBoxes = () => {
         totalPrice.value[key] = 0;
     }
 
-    console.log("Nova colheita cadastrada com sucesso!");
+    message.value = 'Nova colheita cadastrada com sucesso!'
+    color.value = 'green'
+    snackbar.value = true;
 };
 
 
@@ -129,7 +141,10 @@ const getpricesDb = async () => {
     try {
         const pricesDate = await getBananasPrice();
         if (!pricesDate || pricesDate.length === 0) {
-            console.log("Não há dados de preços disponíveis.");
+            message.value = `Não há dados de preços disponíveis.`
+            color.value = 'red'
+            snackbar.value = true;
+
             hasCurrentPrices.value = false;
             loading.value = false;
             return;
@@ -144,14 +159,22 @@ const getpricesDb = async () => {
                 unitPrices.value = updatedPrices;
                 hasCurrentPrices.value = true;
             } else {
-                console.error("As propriedades dataInicio ou dataFim estão faltando nos preços atualizados.");
+                message.value = `As propriedades dataInicio ou dataFim estão faltando nos preços atualizados.`
+                color.value = 'red'
+                snackbar.value = true;
+
                 hasCurrentPrices.value = false;
             }
         } else {
-            console.log("Não há preços de bananas cadastrados para a data atual");
+            message.value = `Não há preços de bananas cadastrados para a data atual`
+            color.value = 'red'
+            snackbar.value = true;
             hasCurrentPrices.value = false;
         }
     } catch (error) {
+        message.value = `Erro ao buscar preços das bananas: ${error}`
+        color.value = 'red'
+        snackbar.value = true;
         console.error('Erro ao buscar preços das bananas:', error);
     } finally {
         loading.value = false;
@@ -167,6 +190,9 @@ const getNotebooksDb = async () => {
             name: notebook.name
         }));
     } catch (error) {
+        message.value = `Erro ao buscar cadernos: ${error}`
+        color.value = 'red'
+        snackbar.value = true;
         console.error('Erro ao buscar cadernos:', error);
     }
 };

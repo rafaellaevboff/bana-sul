@@ -1,40 +1,38 @@
 <template>
-  <v-container>
-    <h1 class="display-1 text-center">Cadastro de Insumos no Caderno</h1>
+  <v-container fluid>
+    <v-row justify="center" align="center">
+      <v-col cols="12" sm="10" md="8" lg="6">
+        <h1 class="display-1 text-center">Compra de Insumos</h1>
 
-    <v-form v-if="!loading" v-model="valid" @submit.prevent="addPurchaseAgriculturalInput">
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-select label="Selecione o Caderno" :items="notebooks" v-model="notebookSelected"
-                      item-title="name" item-value="id" required/>
-          </v-col>
+        <v-form v-if="!loading" v-model="valid" @submit.prevent="addPurchaseAgriculturalInput">
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <v-select label="Selecione o Caderno" :items="notebooks" v-model="notebookSelected"
+                          item-title="name" item-value="id" required rounded variant="outlined"/>
+              </v-col>
 
-          <v-col>
-            <v-col cols="12">
-              <v-select label="Selecione o Insumo" :items="agriculturalInputs" v-model="agriculturalInputSelected"
-                        item-title="name" item-value="id" required/>
-            </v-col>
-          </v-col>
+              <v-col cols="12">
+                <v-select label="Selecione o Insumo" :items="agriculturalInputs" v-model="agriculturalInputSelected"
+                          item-title="name" item-value="id" required rounded variant="outlined"/>
+              </v-col>
 
-          <v-col cols="12">
-            <v-text-field :label="'Quantidade'" type="number" :min="1" v-model="quantity" required/>
-          </v-col>
+              <v-col cols="12">
+                <v-text-field :label="'Quantidade'" type="number" :min="1" v-model="quantity" required
+                              rounded variant="outlined" density="compact"/>
+              </v-col>
 
-          <v-col cols="12">
-            <v-btn type="submit" style="background-color: #f9d200" class="mt-4" :disabled="!valid">
-              Adicionar Compra
-            </v-btn>
-          </v-col>
-        </v-row>
-
-        <v-snackbar v-model="snackbar" color="success">
-          Compra cadastrada com sucesso!
-        </v-snackbar>
-
-      </v-container>
-    </v-form>
-
+              <v-col cols="12">
+                <v-btn type="submit" class="mt-4 bg-primary" :disabled="!valid"  :style="{ width: '30%' }">
+                  Adicionar
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </v-col>
+    </v-row>
+    <feedback-message v-model="snackbar" :message="'Compra cadastrada com sucesso!'" :color="'green'"/>
   </v-container>
 </template>
 
@@ -42,6 +40,7 @@
 import {onMounted, ref} from 'vue';
 import {getNotebooks} from "@/services/notebookService";
 import {getAgriculturalInputs, newPurchaseAgriculturalInput} from "@/services/agriculturalInputsService";
+import FeedbackMessage from "@/components/FeedbackMessage.vue";
 
 const notebooks = ref([]);
 const notebookSelected = ref(null)
@@ -51,15 +50,20 @@ const agriculturalInputSelected = ref(null)
 
 const quantity = ref(1)
 const valid = ref(false);
-const snackbar = ref(false);
 let loading = ref(true);
 
+const snackbar = ref(false);
+const color = ref('');
+const message = ref('');
 
 onMounted(async () => {
     try {
         await getNotebooksDb()
         await getAgriculturalInputsDb()
     } catch (error) {
+        message.value = `Erro ao buscar cadernos e insumos:", ${error}`
+        color.value = 'green'
+        snackbar.value = true;
         console.error("Erro ao buscar cadernos e insumos:", error);
     }
 });
@@ -74,9 +78,9 @@ const getNotebooksDb = async () => {
             name: notebook.name
         }));
     } catch (error) {
-        console.error('Erro ao buscar cadernos:', error);
-    } finally {
-        loading.value = false;
+        message.value = `Erro ao buscar cadernos: ${error}`
+        color.value = 'red'
+        snackbar.value = true;
     }
 };
 
@@ -90,17 +94,22 @@ const getAgriculturalInputsDb = async () => {
             valor: input.valor
         }));
     } catch (error) {
-        console.error('Erro ao buscar cadernos:', error);
+        message.value = `Erro ao buscar insumos: ${error}`
+        color.value = 'red'
+        snackbar.value = true;
     }
 };
 
 const addPurchaseAgriculturalInput = () => {
     if (!notebookSelected.value || !agriculturalInputSelected.value || !quantity.value) {
-        console.error("Todos os campos devem estar preenchidos.");
+        message.value = 'Todos os campos devem estar preenchidos.'
+        color.value = 'red'
+        snackbar.value = true;
+
         return;
     }
 
-    newPurchaseAgriculturalInput(crypto.randomUUID(), notebookSelected.value, agriculturalInputSelected.value, quantity.value);
+    newPurchaseAgriculturalInput(crypto.randomUUID(), notebookSelected.value, agriculturalInputSelected.value, quantity.value, notebookSelected.value.valor * quantity.value);
     snackbar.value = true;
 };
 

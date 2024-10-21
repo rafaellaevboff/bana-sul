@@ -4,12 +4,7 @@
     <v-card-title class="text-h5">Recuperar Senha</v-card-title>
     <v-card-text>
       <v-form @submit.prevent="resetPassword">
-        <v-text-field
-                v-model="emailReset"
-                label="Email"
-                type="email"
-                required
-        ></v-text-field>
+        <v-text-field v-model="emailReset" label="Email" type="email" required rounded variant="outlined" density="compact"/>
         <v-btn type="submit" block>Redefinir senha</v-btn>
         <v-btn @click="handleLogin" class="mt-3" block>Entrar</v-btn>
       </v-form>

@@ -5,15 +5,10 @@
     <v-card-title class="text-h5">Bem vindo(a)!</v-card-title>
     <v-card-text>
       <v-form @submit.prevent="loginApp">
-        <v-text-field v-model="email" label="Email" type="email" required></v-text-field>
-        <v-text-field
-                v-model="password"
-                label="Senha"
-                :type="passwordVisible ? 'text' : 'password'"
-                :append-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                @click:append="togglePasswordVisibility"
-                required
-        />
+        <v-text-field v-model="email" label="Email" type="email" required rounded variant="outlined" density="compact"/>
+        <v-text-field v-model="password" label="Senha" :type="passwordVisible ? 'text' : 'password'" required
+                :append-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'" @click:append="togglePasswordVisibility"
+                rounded variant="outlined" density="compact"/>
         <span class="clickablePassword" @click="handleResetPassword">Esqueci minha senha</span>
         <v-btn class="mt-3" type="submit" block>Entrar</v-btn>
       </v-form>

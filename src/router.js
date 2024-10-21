@@ -16,7 +16,7 @@ import PurchaseAgriculturalInputsScreen from "@/pages/AgriculturalInputs/Purchas
 
 const routes = [
     {path: '/', name: 'Login', component: LoginScreen},
-    {path: '/resetSenha', name: 'ResetPassword', component: ResetPasswordScreen},
+    {path: '/resetSenha', name: 'ResetPasswordScreen', component: ResetPasswordScreen},
     {
         path: '/app',
         component: LayoutScreen,

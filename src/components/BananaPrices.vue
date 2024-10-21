@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="bg-primary">
     <template v-if="loading">
       <v-progress-circular indeterminate color="primary" class="mx-auto"/>
     </template>
@@ -7,56 +7,49 @@
       <v-card-title
               v-text="`Valores semanal das Bananas - ${formatDate(prices.dataInicio)} à ${formatDate(prices.dataFim)}`"/>
       <v-card-text>
-        <v-list>
-          <v-list-item-group>
-            <v-list-item>
-              <v-row>
-                <v-col cols="3">
-                  <v-list-item-content>
-                    <v-list-item-title>{{ "Prata 1ª" }}</v-list-item-title>
-                    <v-list-item-subtitle>Valor: R$ {{ prices.prataPrimeira }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-col>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-list-item-content>
+              <v-list-item-title>{{ "Prata 1ª" }}</v-list-item-title>
+              <v-list-item-subtitle>Valor: R$ {{ prices.prataPrimeira }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-col>
 
-                <v-col cols="3">
-                  <v-list-item-content>
-                    <v-list-item-title>{{ "Prata 2ª" }}</v-list-item-title>
-                    <v-list-item-subtitle>Valor: R$ {{ prices.prataSegunda }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-col>
+          <v-col cols="12" md="6">
+            <v-list-item-content>
+              <v-list-item-title>{{ "Prata 2ª" }}</v-list-item-title>
+              <v-list-item-subtitle>Valor: R$ {{ prices.prataSegunda }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-col>
 
-                <v-col cols="3">
-                  <v-list-item-content>
-                    <v-list-item-title>{{ "Caturra 1ª" }}</v-list-item-title>
-                    <v-list-item-subtitle>Valor: R$ {{ prices.caturraPrimeira }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-col>
+          <v-col cols="12" md="6">
+            <v-list-item-content>
+              <v-list-item-title>{{ "Caturra 1ª" }}</v-list-item-title>
+              <v-list-item-subtitle>Valor: R$ {{ prices.caturraPrimeira }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-col>
 
-                <v-col cols="3">
-                  <v-list-item-content>
-                    <v-list-item-title>{{ "Caturra 2ª" }}</v-list-item-title>
-                    <v-list-item-subtitle>Valor: R$ {{ prices.caturraSegunda }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-col>
-              </v-row>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-    </v-card-text>
+          <v-col cols="12" md="6">
+            <v-list-item-content>
+              <v-list-item-title>{{ "Caturra 2ª" }}</v-list-item-title>
+              <v-list-item-subtitle>Valor: R$ {{ prices.caturraSegunda }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-col>
+        </v-row>
+      </v-card-text>
     </template>
     <template v-else>
-      <v-alert type="info" dismissible>Não há valores cadastrados para esta semana. Por favor, cadastre novos valores.
+      <v-alert type="info" dismissible>
+        Não há valores cadastrados para esta semana. Por favor, cadastre novos valores.
       </v-alert>
     </template>
-
-</v-card>
+  </v-card>
 </template>
 
 <script setup>
-
-import {formatDate} from "@/services/formatService";
-import {onMounted, ref} from "vue";
-import {dataAtualpricesCadastrados, getBananasPrice, getpricesDate} from "@/services/bananaPriceService";
+import { formatDate } from "@/services/formatService";
+import { onMounted, ref } from "vue";
+import { dataAtualpricesCadastrados, getBananasPrice, getpricesDate } from "@/services/bananaPriceService";
 
 const prices = ref({});
 const loading = ref(true);
@@ -101,5 +94,4 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-
 </style>

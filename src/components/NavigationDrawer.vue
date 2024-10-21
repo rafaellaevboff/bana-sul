@@ -29,14 +29,14 @@
         <template v-slot:prepend>
           <v-icon :icon="'mdi-cash-edit'"/>
         </template>
-        <v-list-item-content v-text="'Novo valor Banana'"/>
+        <v-list-item-content v-text="'Novo preço Banana'"/>
       </v-list-item>
 
       <v-list-item link to="/app/historicoValoresBanana" class="text-start">
         <template v-slot:prepend>
           <v-icon :icon="'mdi-history'"/>
         </template>
-        <v-list-item-content v-text="'Histórico de valores de Banana'"/>
+        <v-list-item-content v-text="'Histórico de preços de Banana'"/>
       </v-list-item>
 
       <v-list-subheader>COLHEITAS</v-list-subheader>

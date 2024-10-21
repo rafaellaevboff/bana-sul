@@ -1,4 +1,4 @@
-import {doc, setDoc, collection, getDoc, getDocs, updateDoc} from "firebase/firestore";
+import {doc, setDoc, collection, getDoc, getDocs, updateDoc, deleteDoc} from "firebase/firestore";
 import { db } from '@/plugins/firebase';
 
 export const findNotebookById = async (id) => {
@@ -36,13 +36,13 @@ export const getNotebooks = async () => {
 };
 
 export const deleteNotebook = async (idNotebook) => {
-    await db.collection('notebook').doc(idNotebook).delete();
+    await deleteDoc(doc(db, "cadernos", idNotebook))
 };
 
-export const updateNotebook = async (idNotebook, nameNotebook) => {
-    const docRef = doc(db, 'cadernos', idNotebook);
+export const updateNotebook = async (notebook) => {
+    const docRef = doc(db, 'cadernos', notebook.id);
     await updateDoc(docRef, {
-        nome: nameNotebook
+        name: notebook.name
     });
 };
 
