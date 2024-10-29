@@ -1,9 +1,10 @@
-import {doc, setDoc} from "firebase/firestore";
+import {doc, getDoc, setDoc} from "firebase/firestore";
 import { db } from '@/plugins/firebase';
 
 export const newUser = async (uid, name, email) => {
     try {
-        await setDoc(doc(db, "usuarios", uid), {
+        await setDoc(doc(db, "usuarios", crypto.randomUUID()), {
+            login: uid,
             name: name,
             email: email,
             perfil: 'agricultor',
@@ -15,9 +16,15 @@ export const newUser = async (uid, name, email) => {
     }
 };
 
-export const getUserById = async (userId) => {
-    const doc = await db.collection('usuarios').doc(userId).get();
-    return doc.exists ? { id: doc.id, ...doc.data() } : null;
+export const getUserById = async (id) => {
+    const docRef = doc(db, "usuarios", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        return docSnap.data()
+    } else {
+        console.log("Nenhum documento encontrado!");
+    }
 };
 
 export const updateUser = async (user) => {

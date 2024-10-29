@@ -22,6 +22,17 @@
                               rounded variant="outlined" density="compact"/>
               </v-col>
 
+              <v-row>
+
+                <v-col cols="6">
+                  <v-checkbox :label="'Descontado no Caderno'" v-model="descontadoCaderno"/>
+                </v-col>
+
+                <v-col cols="6" v-if="descontadoCaderno === false">
+                  <v-checkbox :label="'Pago em dinheiro'" v-model="pago" required/>
+                </v-col>
+              </v-row>
+
               <v-col cols="12">
                 <v-btn type="submit" class="mt-4 bg-primary" :disabled="!valid"  :style="{ width: '30%' }">
                   Adicionar
@@ -49,6 +60,8 @@ const agriculturalInputs = ref([]);
 const agriculturalInputSelected = ref(null)
 
 const quantity = ref(1)
+const descontadoCaderno = ref(false)
+let pago = ref(false)
 const valid = ref(false);
 let loading = ref(true);
 
@@ -91,7 +104,9 @@ const getAgriculturalInputsDb = async () => {
         agriculturalInputs.value = inputsData.map(input => ({
             id: input.id,
             name: input.name,
-            valor: input.valor
+            valor: input.valor,
+            descontadoCaderno: input.descontadoCaderno,
+            pago: input.pago
         }));
     } catch (error) {
         message.value = `Erro ao buscar insumos: ${error}`
@@ -109,7 +124,10 @@ const addPurchaseAgriculturalInput = () => {
         return;
     }
 
-    newPurchaseAgriculturalInput(crypto.randomUUID(), notebookSelected.value, agriculturalInputSelected.value, quantity.value, notebookSelected.value.valor * quantity.value);
+    if(descontadoCaderno.value === true) pago.value = false
+
+    newPurchaseAgriculturalInput(crypto.randomUUID(), notebookSelected.value, agriculturalInputSelected.value, quantity.value,
+        notebookSelected.value.valor * quantity.value, descontadoCaderno.value, pago.value);
     snackbar.value = true;
 };
 

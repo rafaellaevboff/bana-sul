@@ -1,12 +1,12 @@
-import {doc, setDoc, collection, getDoc, getDocs, updateDoc, deleteDoc} from "firebase/firestore";
-import { db } from '@/plugins/firebase';
+import {collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where} from "firebase/firestore";
+import {db} from '@/plugins/firebase';
 
 export const findNotebookById = async (id) => {
     const docRef = doc(db, "cadernos", id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        console.log("Dados do documento:", docSnap.data());
+        return docSnap.data()
     } else {
         console.log("Nenhum documento encontrado!");
     }
@@ -16,7 +16,7 @@ export const newNotebook = async (name, usuarioUid) => {
     try {
         await setDoc(doc(db, "cadernos", crypto.randomUUID()), {
             name: name,
-            usuario: doc(db, 'usuarios', usuarioUid)
+            usuario: usuarioUid
         });
         console.log('Dados do usuário salvos com sucesso no Firestore');
     } catch (error) {
@@ -46,7 +46,16 @@ export const updateNotebook = async (notebook) => {
     });
 };
 
-export const getNotebookById = async (idNotebook) => {
-    const doc = await db.collection('cadernos').doc(idNotebook).get();
-    return doc.exists ? { id: doc.id, ...doc.data() } : null;
+export const getNotebookByUser = async (id) => {
+    const cadernosRef = collection(db, 'cadernos');
+    const q = query(cadernosRef, where("usuario", "==", id));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        return {id: doc.id, ...doc.data()}
+    } else {
+        console.log("Nenhum caderno encontrado para o usuário.");
+        return null;
+    }
 };

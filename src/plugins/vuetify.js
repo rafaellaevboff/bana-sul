@@ -14,9 +14,9 @@ const vuetify = createVuetify({
             myCustomTheme: {
                 dark: false, // ou true, se preferir o tema escuro
                 colors: {
-                    primary: '#f9d200',  // cor principal
-                    secondary: '#212121', // cor secundária
-                    accent: '#82B1FF',    // cor de destaque
+                    primary: '#f9d200',
+                    secondary: '#212121',
+                    accent: '#82B1FF',
                     error: '#FF5252',
                     info: '#2196F3',
                     success: '#4CAF50',

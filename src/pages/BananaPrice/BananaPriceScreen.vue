@@ -89,7 +89,6 @@ const registerPrices = async () => {
 
 
     if(hasConflict){
-        console.log("TEM CONFLITO")
         message.value = `Já existem valores de banana cadastrados na data selecionada.`;
         color.value = 'red';
         snackbar.value = true;

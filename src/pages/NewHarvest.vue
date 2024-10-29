@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="isAdmin">
     <v-row justify="center">
       <v-col cols="12" md="8">
         <h1 class="display-1 text-center">Nova colheita</h1>
@@ -40,12 +40,14 @@
         </v-form>
 
         <div v-else-if="!loading && !hasCurrentPrices" class="alert alert-warning">
-          <strong>Atenção!</strong> Por favor, cadastre os valores das bananas dessa semana.
+          <v-alert type="warning" dismissible>
+            Não há valores cadastrados para esta semana. Por favor, cadastre novos valores.
+          </v-alert>
         </div>
       </v-col>
     </v-row>
 
-    <feedback-message v-model="snackbar" :message="message.value" :color="color.value"/>
+    <feedback-message v-model="snackbar" :message="message" :color="color"/>
   </v-container>
 </template>
 
@@ -55,6 +57,7 @@ import {newHarvest} from "@/services/harvestService";
 import {getNotebooks} from "@/services/notebookService";
 import {dataAtualpricesCadastrados, getBananasPrice, getpricesDate} from "@/services/bananaPriceService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
+import store from "@/store";
 
 const notebooks = ref([]);
 const quantities = ref([
@@ -86,6 +89,8 @@ const notebookSelected = ref(null);
 const snackbar = ref(false);
 const color = ref('');
 const message = ref('');
+
+const isAdmin = computed(() => store.getters['auth/isAdmin']);
 
 const calculateTotal = () => {
     let total = 0;
@@ -166,9 +171,6 @@ const getpricesDb = async () => {
                 hasCurrentPrices.value = false;
             }
         } else {
-            message.value = `Não há preços de bananas cadastrados para a data atual`
-            color.value = 'red'
-            snackbar.value = true;
             hasCurrentPrices.value = false;
         }
     } catch (error) {

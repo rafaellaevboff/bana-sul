@@ -20,7 +20,7 @@
       </v-list>
     </v-slide-y-transition>
 
-    <NavigationDrawer v-model="drawer"/>
+    <navigation-drawer v-model="drawer"/>
 
     <v-main>
       <v-container fluid>

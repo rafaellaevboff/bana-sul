@@ -35,10 +35,11 @@
 
 <script setup>
 import {ref} from 'vue';
-import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
+import {getAuth} from 'firebase/auth';
 import {newUser} from "@/services/userService";
 import {newNotebook} from "@/services/notebookService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
+import {newUserLogin} from "@/services/loginService";
 
 const newNotebookFarmer = ref({
     userName: '',
@@ -59,7 +60,7 @@ const registerUser = async () => {
             return;
         }
 
-        const userCredential = await createUserWithEmailAndPassword(
+        const userCredential = await newUserLogin(
             auth,
             newNotebookFarmer.value.email,
             newNotebookFarmer.value.password

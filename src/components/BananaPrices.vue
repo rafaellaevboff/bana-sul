@@ -39,7 +39,7 @@
       </v-card-text>
     </template>
     <template v-else>
-      <v-alert type="info" dismissible>
+      <v-alert type="warning" dismissible>
         Não há valores cadastrados para esta semana. Por favor, cadastre novos valores.
       </v-alert>
     </template>

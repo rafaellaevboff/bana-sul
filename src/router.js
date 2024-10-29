@@ -13,6 +13,9 @@ import FarmerNotebook from "@/pages/Notebooks/FarmerNotebook.vue";
 import MyAccountScreen from "@/pages/MyAccountScreen.vue";
 import NewAgriculturalInputs from "@/pages/AgriculturalInputs/NewAgriculturalInputs.vue";
 import PurchaseAgriculturalInputsScreen from "@/pages/AgriculturalInputs/PurchaseAgriculturalInputsScreen.vue";
+import {doc, getDoc, getFirestore} from "firebase/firestore";
+import store from "@/store";
+import NotFoundScreen from "@/pages/NotFoundScreen.vue";
 
 const routes = [
     {path: '/', name: 'Login', component: LoginScreen},
@@ -24,57 +27,67 @@ const routes = [
             {
                 path: 'home',
                 name: 'Home',
-                component: HomeScreen
+                component: HomeScreen,
+                meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
                 path: 'minhaConta',
                 name: 'MinhaConta',
-                component: MyAccountScreen
+                component: MyAccountScreen,
+                meta: {requiresAuth: true}
             },
             {
                 path: 'cadernos',
                 name: 'Cadernos',
-                component: ListNotebooksScreen
+                component: ListNotebooksScreen,
+                meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
-                path: `cadernoAgricultor/:id`,
+                path: 'cadernoAgricultor/:id',
                 name: 'Caderno',
                 component: FarmerNotebook,
                 props: true,
+                meta: {requiresAuth: true}
             },
             {
                 path: 'novoCadernoAgricultor',
                 name: 'NovoCaderno',
-                component: NewNotebookScreen
+                component: NewNotebookScreen,
+                meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
                 path: 'novoValorBanana',
                 name: 'NovoValorBanana',
-                component: BananaPriceScreen
+                component: BananaPriceScreen,
+                meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
                 path: 'historicoValoresBanana',
                 name: 'HistoricoValoresBanana',
-                component: HistoryBananaPriceScreen
+                component: HistoryBananaPriceScreen,
+                meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
                 path: 'novaColheita',
                 name: 'NovaColheita',
-                component: NewHarvest
+                component: NewHarvest,
+                meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
                 path: 'novoInsumo',
                 name: 'NovoInsumo',
-                component: NewAgriculturalInputs
+                component: NewAgriculturalInputs,
+                meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
                 path: 'novaCompraInsumo',
                 name: 'NovaCompraInsumo',
-                component: PurchaseAgriculturalInputsScreen
+                component: PurchaseAgriculturalInputsScreen,
+                meta: {requiresAuth: true, requiresAdmin:true}
             },
         ],
-        meta: {requiresAuth: true},
     },
+    {path: '/not-found', name: 'NotFound', component: NotFoundScreen}
 ];
 
 const router = createRouter({
@@ -82,16 +95,46 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const auth = getAuth();
     const user = auth.currentUser;
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
+    const db = getFirestore();
 
     if (requiresAuth && !user) {
-        next({name: 'Login'});
-    } else {
-        next();
+        return next({ name: 'Login' });
     }
+
+    if (user) {
+        await store.dispatch('auth/checkAuthStatus');
+        const isAuthenticated = store.getters['auth/isAuthenticated'];
+        const isAdmin = store.getters['auth/isAdmin'];
+
+        if (!isAuthenticated) return next({ name: 'Login' });
+
+        if (requiresAdmin && !isAdmin) {
+            return next({ name: 'NotFound' });
+        }
+
+        if (!isAdmin) {
+            const notebookDoc = await getDoc(doc(db, 'cadernos.usuario', user.uid));
+
+
+            if (notebookDoc.exists()) {
+                const notebookData = notebookDoc.data();
+                const notebookId = notebookDoc.id;
+
+                if (notebookId === notebookData.notebookId) {
+                    return next({ name: 'Caderno', params: { id: notebookId } });
+                } else {
+                    return next({ name: 'Login' });
+                }
+            }
+        }
+    }
+    next();
 });
+
 
 export default router;
