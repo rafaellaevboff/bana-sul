@@ -78,12 +78,14 @@
           <v-list-item-content v-text="'Nova compra de insumo'"/>
         </v-list-item>
       </div>
-      <v-list-item link to="/app/minhasCompras" class="text-start">
-        <template v-slot:prepend>
-          <v-icon :icon="'mdi-tools'"/>
-        </template>
-        <v-list-item-content v-text="'Minhas compras'"/>
-      </v-list-item>
+      <div v-if="!isAdmin">
+        <v-list-item link to="/app/minhasCompras" class="text-start">
+          <template v-slot:prepend>
+            <v-icon :icon="'mdi-tools'"/>
+          </template>
+          <v-list-item-content v-text="'Minhas compras'"/>
+        </v-list-item>
+      </div>
 
       <v-list-subheader>MINHA CONTA</v-list-subheader>
       <v-list-item link to="/app/minhaConta" class="text-start">

@@ -16,6 +16,7 @@ import PurchaseAgriculturalInputsScreen from "@/pages/AgriculturalInputs/Purchas
 import {doc, getDoc, getFirestore} from "firebase/firestore";
 import store from "@/store";
 import NotFoundScreen from "@/pages/NotFoundScreen.vue";
+import MyPurchasesScreen from "@/pages/AgriculturalInputs/MyPurchasesScreen.vue";
 
 const routes = [
     {path: '/', name: 'Login', component: LoginScreen},
@@ -84,6 +85,12 @@ const routes = [
                 name: 'NovaCompraInsumo',
                 component: PurchaseAgriculturalInputsScreen,
                 meta: {requiresAuth: true, requiresAdmin:true}
+            },
+            {
+                path: 'minhasCompras',
+                name: 'MinhasCompras',
+                component: MyPurchasesScreen,
+                meta: {requiresAuth: true}
             },
         ],
     },

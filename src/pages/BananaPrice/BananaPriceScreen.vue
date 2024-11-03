@@ -84,6 +84,7 @@ const registerPrices = async () => {
         const dataInicio = new Date(history.dataInicio);
         const dataFim = new Date(history.dataFim);
 
+        console.log("History: ", history)
         return (new Date(startDate.value) <= dataFim && new Date(endDate.value) >= dataInicio);
     });
 
@@ -106,7 +107,7 @@ const registerPrices = async () => {
             prices.value.caturraSecond
         );
 
-        message.value = `'Preços cadastrados com sucesso!'`
+        message.value = `Preços cadastrados com sucesso!`
         color.value = 'green'
         snackbar.value = true;
 
