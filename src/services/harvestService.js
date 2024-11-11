@@ -6,7 +6,8 @@ export const newHarvest = async (uid, cadernoSelecionado, quantidade, precoTotal
         await setDoc(doc(db, "colheita", uid), {
             cadernoSelecionado: cadernoSelecionado,
             quantidade: quantidade,
-            precoTotal: precoTotal
+            precoTotal: precoTotal,
+            dataCadastro: new Date()
         });
         console.log('Dados da colheita salvos com sucesso no Firestore');
     } catch (error) {

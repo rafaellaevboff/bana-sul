@@ -17,10 +17,10 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {deleteBananasPrice, getBananasPrice} from "@/services/bananaPriceService";
 import {formatDate} from "@/services/formatService";
 import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
+import {deleteItem, getItens} from "@/services/essentialFunctions";
 
 const history = ref([]);
 const headers = ref([
@@ -46,7 +46,7 @@ onMounted(async () => {
 
 const loadNotebooks = async () => {
     try {
-        const prices = await getBananasPrice();
+        const prices = await getItens('precosBanana');
         history.value = prices.map(price => ({
             dataInicio: formatDate(price.dataInicio),
             dataFim: formatDate(price.dataFim),
@@ -74,7 +74,7 @@ const openDelete = (item) => {
 
 const handleDeleteNotebook = () => {
     try {
-        deleteBananasPrice(selectedPrice.value.id);
+        deleteItem("precosBanana", selectedPrice.value.id);
         showMessage('Dado excluído com sucesso.', 'green');
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');

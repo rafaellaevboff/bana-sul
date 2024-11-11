@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title class="headline">Confirmação de Exclusão</v-card-title>
       <v-card-text>
-        <p>Você tem certeza que deseja excluir o item {{ item?.name ? item?.name : `${item?.dataInicio} - ${item?.dataFim}` }}?</p>
+        <p>Você tem certeza que deseja excluir o item {{ item?.nome ? item?.nome : `${item?.dataInicio} - ${item?.dataFim}` }}?</p>
       </v-card-text>
       <v-card-actions>
         <v-spacer />

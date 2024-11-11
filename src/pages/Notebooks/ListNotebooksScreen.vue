@@ -32,10 +32,11 @@
 
 <script setup>
 import {computed, onMounted, ref} from "vue";
-import {deleteNotebook, getNotebooks, updateNotebook} from "@/services/notebookService";
 import DialogDelete from "@/components/DialogDelete.vue";
 import DialogUpdateNotebook from "@/components/DialogUpdateNotebook.vue";
 import router from "@/router";
+import {deleteItem, getItens} from "@/services/essentialFunctions";
+import {updateNotebook} from "@/services/notebookService";
 
 const cards = ref([]);
 const search = ref("");
@@ -62,7 +63,7 @@ const filteredCards = computed(() => {
 });
 
 const loadNotebooks = async () => {
-    cards.value = await getNotebooks();
+    cards.value = await getItens('cadernos');
 }
 
 const openNotebook = ( (item) => {
@@ -93,7 +94,7 @@ const openDelete = (async (item) => {
 
 const handleDeleteNotebook = ( () => {
     try {
-        deleteNotebook(selectedNotebook.value.id);
+        deleteItem("cadernos", selectedNotebook.value.id);
         showMessage('Caderno selecionado foi excluído com sucesso.','green');
     } catch (error) {
         showMessage(`Erro ao excluir o caderno: ${error}`,'green');

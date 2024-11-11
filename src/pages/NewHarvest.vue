@@ -54,10 +54,10 @@
 <script setup>
 import {computed, onMounted, ref} from 'vue';
 import {newHarvest} from "@/services/harvestService";
-import {getNotebooks} from "@/services/notebookService";
-import {dataAtualpricesCadastrados, getBananasPrice, getpricesDate} from "@/services/bananaPriceService";
+import {dataAtualpricesCadastrados, getpricesDate} from "@/services/bananaPriceService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import store from "@/store";
+import {getItens} from "@/services/essentialFunctions";
 
 const notebooks = ref([]);
 const quantities = ref([
@@ -144,7 +144,7 @@ const calculatedPrices = computed(() => {
 
 const getpricesDb = async () => {
     try {
-        const pricesDate = await getBananasPrice();
+        const pricesDate = await getItens('precosBanana');
         if (!pricesDate || pricesDate.length === 0) {
             message.value = `Não há dados de preços disponíveis.`
             color.value = 'red'
@@ -185,7 +185,7 @@ const getpricesDb = async () => {
 
 const getNotebooksDb = async () => {
     try {
-        const notebooksData = await getNotebooks();
+        const notebooksData = await getItens('cadernos');
 
         notebooks.value = notebooksData.map(notebook => ({
             id: notebook.id,

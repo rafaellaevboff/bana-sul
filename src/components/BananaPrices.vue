@@ -47,16 +47,17 @@
 </template>
 
 <script setup>
-import { formatDate } from "@/services/formatService";
-import { onMounted, ref } from "vue";
-import { dataAtualpricesCadastrados, getBananasPrice, getpricesDate } from "@/services/bananaPriceService";
+import {formatDate} from "@/services/formatService";
+import {onMounted, ref} from "vue";
+import {dataAtualpricesCadastrados, getpricesDate} from "@/services/bananaPriceService";
+import {getItens} from "@/services/essentialFunctions";
 
 const prices = ref({});
 const loading = ref(true);
 
 const getpricesDb = async () => {
     try {
-        const pricesDate = await getBananasPrice();
+        const pricesDate = await getItens('precosBanana');
         if (!pricesDate || pricesDate.length === 0) {
             console.log("Não há dados de preços disponíveis.");
             loading.value = false;

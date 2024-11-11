@@ -53,8 +53,9 @@
 
 <script setup>
 import {onMounted, ref} from 'vue';
-import {getBananasPrice, newBananaPrice} from "@/services/bananaPriceService";
+import {newBananaPrice} from "@/services/bananaPriceService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
+import {getItens} from "@/services/essentialFunctions";
 
 const startDate = ref('');
 const endDate = ref('');
@@ -127,7 +128,7 @@ const registerPrices = async () => {
 };
 
 const getPrices = async () => {
-    pricesHistory.value = await getBananasPrice();
+    pricesHistory.value = await getItens('precosBanana');
 }
 
 const showMessage = (msg, colorFeedback) => {

@@ -10,13 +10,15 @@ import NewNotebookScreen from "@/pages/Notebooks/NewNotebookScreen.vue";
 import ListNotebooksScreen from "@/pages/Notebooks/ListNotebooksScreen.vue";
 import HistoryBananaPriceScreen from "@/pages/BananaPrice/HistoryBananaPriceScreen.vue";
 import FarmerNotebook from "@/pages/Notebooks/FarmerNotebook.vue";
-import MyAccountScreen from "@/pages/MyAccountScreen.vue";
 import NewAgriculturalInputs from "@/pages/AgriculturalInputs/NewAgriculturalInputs.vue";
 import PurchaseAgriculturalInputsScreen from "@/pages/AgriculturalInputs/PurchaseAgriculturalInputsScreen.vue";
 import {doc, getDoc, getFirestore} from "firebase/firestore";
 import store from "@/store";
 import NotFoundScreen from "@/pages/NotFoundScreen.vue";
 import MyPurchasesScreen from "@/pages/AgriculturalInputs/MyPurchasesScreen.vue";
+import AgriculturalInputs from "@/pages/AgriculturalInputs/AgriculturalInputs.vue";
+import NewPayment from "@/components/NewPayment.vue";
+import ListUsers from "@/pages/ListUsers.vue";
 
 const routes = [
     {path: '/', name: 'Login', component: LoginScreen},
@@ -32,9 +34,9 @@ const routes = [
                 meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
-                path: 'minhaConta',
-                name: 'MinhaConta',
-                component: MyAccountScreen,
+                path: 'listaUsuarios',
+                name: 'Lista Usuarios',
+                component: ListUsers,
                 meta: {requiresAuth: true}
             },
             {
@@ -75,9 +77,21 @@ const routes = [
                 meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
+                path: 'novoPagamento',
+                name: 'NovoPagamento',
+                component: NewPayment,
+                meta: {requiresAuth: true, requiresAdmin:true}
+            },
+            {
                 path: 'novoInsumo',
                 name: 'NovoInsumo',
                 component: NewAgriculturalInputs,
+                meta: {requiresAuth: true, requiresAdmin:true}
+            },
+            {
+                path: 'listaInsumos',
+                name: 'ListaInsumos',
+                component: AgriculturalInputs,
                 meta: {requiresAuth: true, requiresAdmin:true}
             },
             {

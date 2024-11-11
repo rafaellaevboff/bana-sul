@@ -1,12 +1,14 @@
-import {collection, doc, getDocs, setDoc} from "firebase/firestore";
-import { db } from '@/plugins/firebase';
+import {collection, doc, getDocs, query, setDoc, where} from "firebase/firestore";
+import {db} from '@/plugins/firebase';
+import {getItemById} from "@/services/essentialFunctions";
 
 export const newAgriculturalInput = async (uid, name, description, value) => {
     try {
         await setDoc(doc(db, "insumos", uid), {
-            name: name,
+            nome: name,
             descricao: description,
-            valor: value
+            valor: value,
+            dataCadastro: new Date()
         });
         console.log('Novo insumo cadastrado com sucesso no Firestore');
     } catch (error) {
@@ -25,15 +27,16 @@ export const getAgriculturalInputs = async () => {
     return listPrices
 };
 
-export const newPurchaseAgriculturalInput = async (uid, agriculturalInput, notebook, quantity, total,  descontadoCaderno, pago) => {
+export const newPurchaseAgriculturalInput = async (uid, agriculturalInput, notebook, quantity, total, descontadoCaderno, pago) => {
     try {
         await setDoc(doc(db, "compraInsumos", uid), {
             insumo: agriculturalInput,
-            notebook: notebook,
-            quantity: quantity,
+            caderno: notebook,
+            quantidade: quantity,
             valorTotal: total,
             descontadoCaderno: descontadoCaderno,
-            pago: pago
+            pago: pago,
+            dataCadastro: Date.now()
         });
         console.log('Nova compra cadastrada com sucesso no Firestore');
     } catch (error) {
@@ -42,17 +45,29 @@ export const newPurchaseAgriculturalInput = async (uid, agriculturalInput, noteb
 };
 
 
-export const getAgriculturalInputsByNotebook = async (notebookId) => {
-    const querySnapshot = await getDocs(collection(db, 'insumos'));
-    const listPrices = [];
+export const getPurchaseAgriculturalInputsByNotebook = async (notebookId) => {
+    const idValue = notebookId.value || notebookId;
+    const q = query(collection(db, 'compraInsumos'), where("caderno", "==", idValue));
+    const querySnapshot = await getDocs(q);
 
-    querySnapshot.forEach((doc) => {
-        const data = doc.data();
+    return await Promise.all(
+        querySnapshot.docs.map(async (docSnap) => {
+            const data = docSnap.data();
+            const insumoData = await getItemById("insumos", data.insumo);
 
-        if (data.notebookId === notebookId) {
-            listPrices.push({ id: doc.id, ...data });
-        }
-    });
+            return {
+                id: docSnap.id,
+                ...data,
+                insumoNome: insumoData.name || 'Nome não encontrado'
+            };
+        })
+    );
+};
 
-    return listPrices;
+export const statusPurchaseInput = async (purchase) => {
+    console.log("ENTROU AQ EM STATUS")
+    console.log(purchase)
+    if(purchase.descontadoCaderno) return "Descontado no caderno"
+    else if(purchase.pago) return "Pago"
+    else return "Pagamento pendente"
 }

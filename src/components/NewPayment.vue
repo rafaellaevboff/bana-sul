@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row justify="center" align="center">
       <v-col cols="12" sm="10" md="8" lg="6">
-        <h1 class="display-1 text-center">Compra de Insumos</h1>
+        <h1 class="display-1 text-center">Pagamento</h1>
 
         <v-form v-if="!loading" v-model="valid" @submit.prevent="addPurchaseAgriculturalInput">
           <v-container>
@@ -13,12 +13,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-select label="Selecione o Insumo" :items="agriculturalInputs" v-model="agriculturalInputSelected"
-                          item-title="nome" item-value="id" required rounded variant="outlined"/>
-              </v-col>
-
-              <v-col cols="12">
-                <v-text-field :label="'Quantidade'" type="number" :min="1" v-model="quantity" required
+                <v-text-field :label="'Valor pago'" type="number" v-model="valor" required
                               rounded variant="outlined" density="compact"/>
               </v-col>
 
@@ -134,7 +129,7 @@ const addPurchaseAgriculturalInput = async () => {
 };
 
 const calculaValorTotal = async () => {
-    const priceAgriculturalInputs = await getItemById('insumos', agriculturalInputSelected.value)
+    const priceAgriculturalInputs = await getItemById("insumos", agriculturalInputSelected.value)
     console.log("priceAgriculturalInputs>: ", priceAgriculturalInputs)
     return priceAgriculturalInputs.valor * quantity.value
 }

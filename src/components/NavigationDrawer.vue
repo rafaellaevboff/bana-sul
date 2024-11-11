@@ -62,6 +62,16 @@
         </v-list-item>
       </div>
 
+      <div v-if="isAdmin">
+        <v-list-subheader>PAGAMENTOS</v-list-subheader>
+        <v-list-item link to="/app/novoPagamento" class="text-start">
+          <template v-slot:prepend>
+            <v-icon :icon="'mdi-cash-multiple'"/>
+          </template>
+          <v-list-item-content v-text="'Novo pagamento'"/>
+        </v-list-item>
+      </div>
+
       <v-list-subheader>INSUMOS</v-list-subheader>
       <div v-if="isAdmin">
         <v-list-item link to="/app/novoInsumo" class="text-start">
@@ -69,6 +79,13 @@
             <v-icon :icon="'mdi-tools'"/>
           </template>
           <v-list-item-content v-text="'Novo insumo'"/>
+        </v-list-item>
+
+        <v-list-item link to="/app/listaInsumos" class="text-start">
+          <template v-slot:prepend>
+            <v-icon :icon="'mdi-list-box-outline'"/>
+          </template>
+          <v-list-item-content v-text="'Insumos'"/>
         </v-list-item>
 
         <v-list-item link to="/app/novaCompraInsumo" class="text-start">
@@ -81,21 +98,24 @@
       <div v-if="!isAdmin">
         <v-list-item link to="/app/minhasCompras" class="text-start">
           <template v-slot:prepend>
-            <v-icon :icon="'mdi-tools'"/>
+            <v-icon :icon="'mdi-basket'"/>
           </template>
           <v-list-item-content v-text="'Minhas compras'"/>
         </v-list-item>
       </div>
 
-      <v-list-subheader>MINHA CONTA</v-list-subheader>
-      <v-list-item link to="/app/minhaConta" class="text-start">
-        <template v-slot:prepend>
-          <v-icon :icon="'mdi-account'"/>
-        </template>
-        <v-list-item-content v-text="'Minha conta'"/>
-      </v-list-item>
+      <div v-if="isAdmin">
+        <v-list-subheader>USUÁRIOS</v-list-subheader>
+        <v-list-item link to="/app/listaUsuarios" class="text-start">
+          <template v-slot:prepend>
+            <v-icon :icon="'mdi-account-group'"/>
+          </template>
+          <v-list-item-content v-text="'Usuários cadastrados'"/>
+        </v-list-item>
+      </div>
 
       <v-list-item @click="logoutApp" class="text-start">
+        <v-list-subheader>AÇÕES</v-list-subheader>
         <template v-slot:prepend>
           <v-icon :icon="'mdi-logout'"/>
         </template>

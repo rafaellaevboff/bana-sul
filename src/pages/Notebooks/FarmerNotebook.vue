@@ -4,11 +4,11 @@
 
 <script setup>
 import {onMounted} from "vue";
-import {findNotebookById} from "@/services/notebookService";
+import {getItemById} from "@/services/essentialFunctions";
 
 const props = defineProps(['id']);
 onMounted(async () => {
-    await findNotebookById(props.id)
+    await getItemById("cadernos", props.id)
 });
 </script>
 
