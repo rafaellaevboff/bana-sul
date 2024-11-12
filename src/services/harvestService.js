@@ -1,9 +1,9 @@
 import {doc, getFirestore, setDoc} from "firebase/firestore";
 const db = getFirestore();
 
-export const newHarvest = async (uid, cadernoSelecionado, quantidade, precoTotal) => {
+export const newHarvest = async (cadernoSelecionado, quantidade, precoTotal) => {
     try {
-        await setDoc(doc(db, "colheita", uid), {
+        await setDoc(doc(db, "colheita", crypto.randomUUID()), {
             cadernoSelecionado: cadernoSelecionado,
             quantidade: quantidade,
             precoTotal: precoTotal,

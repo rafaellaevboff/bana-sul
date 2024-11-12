@@ -4,7 +4,7 @@ import {db} from '@/plugins/firebase';
 export const newNotebook = async (name, usuarioUid) => {
     try {
         await setDoc(doc(db, "cadernos", crypto.randomUUID()), {
-            name: name,
+            nome: name,
             usuario: usuarioUid,
             dataCadastro: new Date()
         });
@@ -17,7 +17,7 @@ export const newNotebook = async (name, usuarioUid) => {
 export const updateNotebook = async (notebook) => {
     const docRef = doc(db, 'cadernos', notebook.id);
     await updateDoc(docRef, {
-        name: notebook.name
+        nome: notebook.nome
     });
 };
 

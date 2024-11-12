@@ -56,6 +56,9 @@ import {onMounted, ref} from 'vue';
 import {newBananaPrice} from "@/services/bananaPriceService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {getItens} from "@/services/essentialFunctions";
+import {useShowMessage} from "@/composables/useShowMessage";
+
+const { snackbar, color, message, showMessage } = useShowMessage();
 
 const startDate = ref('');
 const endDate = ref('');
@@ -67,16 +70,12 @@ const prices = ref({
     caturraSecond: 0,
 });
 
-const snackbar = ref(false);
-const color = ref('');
-const message = ref('');
-
 onMounted(async () => {
     await getPrices();
 });
 
 const registerPrices = async () => {
-    if (!startDate.value || !endDate.value || !prices.value.silverFirst || !prices.value.silverSecond || !prices.value.caturraFirst || !prices.value.caturraSecond) {
+    if (!startDate.value && !endDate.value && !prices.value.silverFirst && !prices.value.silverSecond && !prices.value.caturraFirst && !prices.value.caturraSecond) {
         showMessage(`Todos os campos devem estar preenchidos.`, 'red')
         return;
     }
@@ -85,21 +84,17 @@ const registerPrices = async () => {
         const dataInicio = new Date(history.dataInicio);
         const dataFim = new Date(history.dataFim);
 
-        console.log("History: ", history)
         return (new Date(startDate.value) <= dataFim && new Date(endDate.value) >= dataInicio);
     });
 
 
     if(hasConflict){
-        message.value = `Já existem valores de banana cadastrados na data selecionada.`;
-        color.value = 'red';
-        snackbar.value = true;
+        showMessage(`Já existem valores de banana cadastrados na data selecionada.`, 'red')
         return;
     }
 
     try{
         await newBananaPrice(
-            crypto.randomUUID(),
             startDate.value,
             endDate.value,
             prices.value.silverFirst,
@@ -130,13 +125,6 @@ const registerPrices = async () => {
 const getPrices = async () => {
     pricesHistory.value = await getItens('precosBanana');
 }
-
-const showMessage = (msg, colorFeedback) => {
-    message.value = msg;
-    color.value = colorFeedback;
-    snackbar.value = true;
-};
-
 </script>
 
 <style scoped>

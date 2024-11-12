@@ -2,9 +2,9 @@ import {collection, doc, getDocs, query, setDoc, where} from "firebase/firestore
 import {db} from '@/plugins/firebase';
 import {getItemById} from "@/services/essentialFunctions";
 
-export const newAgriculturalInput = async (uid, name, description, value) => {
+export const newAgriculturalInput = async (name, description, value) => {
     try {
-        await setDoc(doc(db, "insumos", uid), {
+        await setDoc(doc(db, "insumos", crypto.randomUUID()), {
             nome: name,
             descricao: description,
             valor: value,
@@ -27,9 +27,9 @@ export const getAgriculturalInputs = async () => {
     return listPrices
 };
 
-export const newPurchaseAgriculturalInput = async (uid, agriculturalInput, notebook, quantity, total, descontadoCaderno, pago) => {
+export const newPurchaseAgriculturalInput = async (agriculturalInput, notebook, quantity, total, descontadoCaderno, pago) => {
     try {
-        await setDoc(doc(db, "compraInsumos", uid), {
+        await setDoc(doc(db, "compraInsumos", crypto.randomUUID()), {
             insumo: agriculturalInput,
             caderno: notebook,
             quantidade: quantity,

@@ -5,15 +5,12 @@
       <v-spacer/>
 
       <v-btn icon @click="toggleLista">
-        <v-icon>mdi-account-circle</v-icon>
+        <v-icon>mdi-exit-to-app</v-icon>
       </v-btn>
     </v-app-bar>
 
     <v-slide-y-transition>
       <v-list v-if="visibleList" class="mt-2 list-options">
-        <v-list-item @click="myAccount">
-          <v-list-item-title>Minha Conta</v-list-item-title>
-        </v-list-item>
         <v-list-item @click="logoutApp">
           <v-list-item-title>Sair</v-list-item-title>
         </v-list-item>
@@ -46,10 +43,6 @@ const logoutApp = () => {
 
 const toggleLista = () => {
     visibleList.value = !visibleList.value
-}
-
-const myAccount = () => {
-    router.push('/app/minhaConta');
 }
 
 </script>

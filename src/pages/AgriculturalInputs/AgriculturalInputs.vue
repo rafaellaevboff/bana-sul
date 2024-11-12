@@ -20,6 +20,9 @@ import {onMounted, ref} from "vue";
 import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
+import {useShowMessage} from "@/composables/useShowMessage";
+
+const { snackbar, color, message, showMessage } = useShowMessage();
 
 const history = ref([]);
 const headers = ref([
@@ -31,10 +34,6 @@ const headers = ref([
 
 let openDialogDelete = ref(false);
 let selectedInput = ref(null);
-
-const snackbar = ref(false);
-const color = ref('');
-const message = ref('');
 
 onMounted(async () => {
     await loadInputs();
@@ -72,12 +71,6 @@ const handleDeleteInput = () => {
     } finally {
         loadInputs();
     }
-};
-
-const showMessage = (msg, colorFeedback) => {
-    message.value = msg;
-    color.value = colorFeedback;
-    snackbar.value = true;
 };
 </script>
 

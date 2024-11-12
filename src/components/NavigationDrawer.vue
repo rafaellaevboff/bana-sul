@@ -66,9 +66,15 @@
         <v-list-subheader>PAGAMENTOS</v-list-subheader>
         <v-list-item link to="/app/novoPagamento" class="text-start">
           <template v-slot:prepend>
-            <v-icon :icon="'mdi-cash-multiple'"/>
+            <v-icon :icon="'mdi-cash-plus'"/>
           </template>
           <v-list-item-content v-text="'Novo pagamento'"/>
+        </v-list-item>
+        <v-list-item link to="/app/listaPagamentos" class="text-start">
+          <template v-slot:prepend>
+            <v-icon :icon="'mdi-cash-multiple'"/>
+          </template>
+          <v-list-item-content v-text="'Lista de pagamentos'"/>
         </v-list-item>
       </div>
 
@@ -114,8 +120,8 @@
         </v-list-item>
       </div>
 
+      <v-list-subheader>AÇÕES</v-list-subheader>
       <v-list-item @click="logoutApp" class="text-start">
-        <v-list-subheader>AÇÕES</v-list-subheader>
         <template v-slot:prepend>
           <v-icon :icon="'mdi-logout'"/>
         </template>

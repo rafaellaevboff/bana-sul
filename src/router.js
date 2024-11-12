@@ -17,8 +17,9 @@ import store from "@/store";
 import NotFoundScreen from "@/pages/NotFoundScreen.vue";
 import MyPurchasesScreen from "@/pages/AgriculturalInputs/MyPurchasesScreen.vue";
 import AgriculturalInputs from "@/pages/AgriculturalInputs/AgriculturalInputs.vue";
-import NewPayment from "@/components/NewPayment.vue";
+import NewPayment from "@/pages/payment/NewPayment.vue";
 import ListUsers from "@/pages/ListUsers.vue";
+import ListPayments from "@/pages/payment/ListPayments.vue";
 
 const routes = [
     {path: '/', name: 'Login', component: LoginScreen},
@@ -80,6 +81,12 @@ const routes = [
                 path: 'novoPagamento',
                 name: 'NovoPagamento',
                 component: NewPayment,
+                meta: {requiresAuth: true, requiresAdmin:true}
+            },
+            {
+                path: 'listaPagamentos',
+                name: 'ListaPagamentoS',
+                component: ListPayments,
                 meta: {requiresAuth: true, requiresAdmin:true}
             },
             {

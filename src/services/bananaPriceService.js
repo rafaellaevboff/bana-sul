@@ -1,9 +1,9 @@
 import {doc, setDoc} from "firebase/firestore";
 import {db} from '@/plugins/firebase';
 
-export const newBananaPrice = async (uid, dataInicio, dataFim, prataPrimeira, prataSegunda, caturraPrimeira, caturraSegunda) => {
+export const newBananaPrice = async (dataInicio, dataFim, prataPrimeira, prataSegunda, caturraPrimeira, caturraSegunda) => {
     try {
-        await setDoc(doc(db, "precosBanana", uid), {
+        await setDoc(doc(db, "precosBanana", crypto.randomUUID()), {
             dataInicio: dataInicio,
             dataFim: dataFim,
             prataPrimeira: prataPrimeira,

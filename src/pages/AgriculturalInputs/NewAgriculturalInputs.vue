@@ -4,7 +4,7 @@
       <v-col cols="12" sm="10" md="8" lg="6">
         <h1 class="display-1 text-center">Cadastro de Insumo</h1>
 
-        <v-form ref="form" v-model="valid" @submit.prevent="submit">
+        <v-form ref="form" @submit.prevent="submit">
           <v-text-field v-model="insumo.nome" label="Nome do Insumo" :rules="[rules.required]" outlined required
                         rounded variant="outlined" density="compact"/>
 
@@ -14,10 +14,10 @@
           <v-text-field v-model="insumo.valor" label="Valor" :rules="[rules.required, rules.isNumber]" outlined required
                         rounded variant="outlined" density="compact"/>
 
-          <v-btn type="submit" :style="{ width: '30%' }" :disabled="!valid" class="bg-primary" rounded>Cadastrar</v-btn>
+          <v-btn type="submit" :style="{ width: '30%' }" class="bg-primary" rounded>Cadastrar</v-btn>
         </v-form>
 
-        <feedback-message v-model="snackbar" :message="message.value" :color="color.value"/>
+        <feedback-message v-model="snackbar" :message="message" :color="color"/>
       </v-col>
     </v-row>
   </v-container>
@@ -27,38 +27,33 @@
 import {ref} from 'vue';
 import {newAgriculturalInput} from "@/services/agriculturalInputsService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
+import {useShowMessage} from "@/composables/useShowMessage";
+
+const { snackbar, color, message, showMessage } = useShowMessage();
 
 const insumo = ref({
     nome: '',
     descricao: '',
     valor: ''
 });
-const valid = ref(false);
 const rules = {
     required: value => !!value || 'Campo obrigatório',
     isNumber: value => !isNaN(value) || 'Deve ser um número válido'
 };
 
-const snackbar = ref(false);
-const color = ref('');
-const message = ref('');
-
 const submit = () => {
     try {
-        if (valid.value) {
-            console.log("Insumo cadastrado: ", insumo.value);
-            newAgriculturalInput(crypto.randomUUID(), insumo.value.nome, insumo.value.descricao, insumo.value.valor)
-
-            message.value = 'Insumo cadastrado com sucesso!'
-            color.value = 'green'
-            snackbar.value = true;
-
-            insumo.value = {nome: '', descricao: '', valor: ''};
+        if (!insumo.value.nome && !insumo.value.descricao && !insumo.value.valor) {
+            showMessage('Todos os campos devem estar preenchidos.','red')
+            return;
         }
+
+        newAgriculturalInput(insumo.value.nome, insumo.value.descricao, insumo.value.valor)
+
+        showMessage('Insumo cadastrado com sucesso!', 'green')
+        insumo.value = {nome: '', descricao: '', valor: ''};
     } catch (error) {
-        message.value = error
-        color.value = 'red'
-        snackbar.value = true;
+        showMessage(error, 'red')
     }
 };
 </script>

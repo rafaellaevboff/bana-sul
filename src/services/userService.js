@@ -1,12 +1,12 @@
-import {doc, getDocs, getFirestore, setDoc} from "firebase/firestore";
+import {doc, getDocs, getFirestore, setDoc, updateDoc} from "firebase/firestore";
 import {db} from '@/plugins/firebase';
-import {getAuth} from "firebase/auth";
+import {getAuth, updateEmail} from "firebase/auth";
 
 export const newUser = async (uid, name, email) => {
     try {
         await setDoc(doc(db, "usuarios", crypto.randomUUID()), {
             login: uid,
-            name: name,
+            nome: name,
             email: email,
             perfil: 'agricultor',
             dataCadastro: new Date()
@@ -26,46 +26,36 @@ export const updateUser = async (user) => {
 };
 
 export const getUsersAndEmailLogin = async (collection) => {
-    const auth = getAuth();
     const db = getFirestore();
-
-    const usuariosComEmail = [];
 
     try {
         const usuariosSnapshot = await getDocs(collection(db, "usuarios"));
-        const usuariosData = usuariosSnapshot.docs.map((doc) => ({
+        return usuariosSnapshot.docs.map((doc) => ({
             uid: doc.id,
             ...doc.data(),
         }));
-
-        const users = await listAllUsers(auth);
-
-        usuariosData.forEach((usuario) => {
-            const authUser = users.find((user) => user.uid === usuario.uid);
-            if (authUser) {
-                usuariosComEmail.push({
-                    nome: usuario.nome,
-                    email: authUser.email,
-                });
-            }
-        });
-
-        return usuariosComEmail;
     } catch (error) {
         console.error("Erro ao buscar usuários:", error);
         throw error;
     }
 }
 
-async function listAllUsers(auth) {
-    const userList = [];
-    let nextPageToken;
+export const updateUserEmail = async (uid, newEmail) => {
+    const auth = getAuth();
+    const db = getFirestore();
 
-    do {
-        const result = await auth.listUsers(1000, nextPageToken);
-        userList.push(...result.users);
-        nextPageToken = result.pageToken;
-    } while (nextPageToken);
+    try {
+        const user = auth.currentUser;
+        if (user && user.uid === uid) {
+            await updateEmail(user, newEmail);
+        }
 
-    return userList;
-}
+        const userDocRef = doc(db, "usuarios", uid);
+        await updateDoc(userDocRef, {email: newEmail});
+
+        console.log("Email atualizado com sucesso!");
+    } catch (error) {
+        console.error("Erro ao atualizar o email:", error);
+        throw error;
+    }
+};

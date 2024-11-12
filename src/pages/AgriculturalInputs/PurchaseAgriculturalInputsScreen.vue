@@ -4,7 +4,7 @@
       <v-col cols="12" sm="10" md="8" lg="6">
         <h1 class="display-1 text-center">Compra de Insumos</h1>
 
-        <v-form v-if="!loading" v-model="valid" @submit.prevent="addPurchaseAgriculturalInput">
+        <v-form v-if="!loading" @submit.prevent="addPurchaseAgriculturalInput">
           <v-container>
             <v-row>
               <v-col cols="12">
@@ -29,12 +29,12 @@
                 </v-col>
 
                 <v-col cols="6" v-if="descontadoCaderno === false">
-                  <v-checkbox :label="'Pago em dinheiro'" v-model="pago" required/>
+                  <v-checkbox :label="'Pago em dinheiro'" v-model="pago"/>
                 </v-col>
               </v-row>
 
               <v-col cols="12">
-                <v-btn type="submit" class="mt-4 bg-primary" :disabled="!valid"  :style="{ width: '30%' }">
+                <v-btn type="submit" class="mt-4 bg-primary" rounded :style="{ width: '30%' }">
                   Adicionar
                 </v-btn>
               </v-col>
@@ -43,7 +43,7 @@
         </v-form>
       </v-col>
     </v-row>
-    <feedback-message v-model="snackbar" :message="'Compra cadastrada com sucesso!'" :color="'green'"/>
+    <feedback-message v-model="snackbar" :message="message" :color="color"/>
   </v-container>
 </template>
 
@@ -52,6 +52,9 @@ import {onMounted, ref} from 'vue';
 import {getAgriculturalInputs, newPurchaseAgriculturalInput} from "@/services/agriculturalInputsService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {getItemById, getItens} from "@/services/essentialFunctions";
+import {useShowMessage} from "@/composables/useShowMessage";
+
+const { snackbar, color, message, showMessage } = useShowMessage();
 
 const notebooks = ref([]);
 const notebookSelected = ref(null)
@@ -62,21 +65,14 @@ const agriculturalInputSelected = ref(null)
 const quantity = ref(1)
 const descontadoCaderno = ref(false)
 let pago = ref(false)
-const valid = ref(false);
 let loading = ref(true);
-
-const snackbar = ref(false);
-const color = ref('');
-const message = ref('');
 
 onMounted(async () => {
     try {
         await getNotebooksDb()
         await getAgriculturalInputsDb()
     } catch (error) {
-        message.value = `Erro ao buscar cadernos e insumos:", ${error}`
-        color.value = 'green'
-        snackbar.value = true;
+        showMessage(`Erro ao buscar cadernos e insumos:", ${error}`, 'green')
         console.error("Erro ao buscar cadernos e insumos:", error);
     }
 });
@@ -91,9 +87,7 @@ const getNotebooksDb = async () => {
             nome: notebook.name
         }));
     } catch (error) {
-        message.value = `Erro ao buscar cadernos: ${error}`
-        color.value = 'red'
-        snackbar.value = true;
+        showMessage(`Erro ao buscar cadernos: ${error}`, 'red')
     }
 };
 
@@ -109,28 +103,21 @@ const getAgriculturalInputsDb = async () => {
             pago: input.pago
         }));
     } catch (error) {
-        message.value = `Erro ao buscar insumos: ${error}`
-        color.value = 'red'
-        snackbar.value = true;
+        showMessage(`Erro ao buscar insumos: ${error}`, 'red')
     }
 };
 
 const addPurchaseAgriculturalInput = async () => {
-    if (!notebookSelected.value || !agriculturalInputSelected.value || !quantity.value) {
-        message.value = 'Todos os campos devem estar preenchidos.'
-        color.value = 'red'
-        snackbar.value = true;
-
+    if (notebookSelected.value === null || agriculturalInputSelected.value === null || !quantity.value || !valorTotal) {
+        showMessage('Todos os campos devem estar preenchidos.', 'red')
         return;
     }
 
     if (descontadoCaderno.value === true) pago.value = false
-    console.log("agriculturalInputSelected.value: ", agriculturalInputSelected.value)
-    console.log("agriculturalInputSelected.value: ", quantity.value)
     const valorTotal = await calculaValorTotal()
-    await newPurchaseAgriculturalInput(crypto.randomUUID(), agriculturalInputSelected.value, notebookSelected.value, quantity.value,
+    await newPurchaseAgriculturalInput(agriculturalInputSelected.value, notebookSelected.value, quantity.value,
         valorTotal, descontadoCaderno.value, pago.value);
-    snackbar.value = true;
+    showMessage("Compra cadastrada com sucesso", "green")
 };
 
 const calculaValorTotal = async () => {

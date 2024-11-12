@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 class="display-1 text-center">Insumos cadastrados</h1>
+    <h1 class="display-1 text-center">Usuários cadastrados</h1>
     <v-data-table :headers="headers.value" :items="history" :items-per-page="10" class="elevation-1" item-key="id">
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon @click="edit(item)" color="primary" small>mdi-pencil</v-icon>
@@ -8,7 +8,7 @@
       </template>
     </v-data-table>
 
-    <dialog-delete v-model="openDialogDelete" :item="selectedPrice" @deleteConfirmed="handleDeleteInput"/>
+    <dialog-delete v-model="openDialogDelete" :item="selectedUser" @deleteConfirmed="handleDelete"/>
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
 
@@ -19,23 +19,20 @@
 import {onMounted, ref} from "vue";
 import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
-import {deleteItem} from "@/services/essentialFunctions";
-import {getUsersAndEmailLogin} from "@/services/userService";
-// import {getUsersAndEmailLogin} from "@/services/userService";
+import {deleteItem, getItens} from "@/services/essentialFunctions";
+import {useShowMessage} from "@/composables/useShowMessage";
+
+const { snackbar, color, message, showMessage } = useShowMessage();
 
 const history = ref([]);
 const headers = ref([
     { text: "Nome", value: "nome" },
-    { text: "Email", value: "descricao" },
+    { text: "Email", value: "email" },
     { text: "Ações", value: "actions", sortable: false }
 ]);
 
 let openDialogDelete = ref(false);
-let selectedPrice = ref(null);
-
-const snackbar = ref(false);
-const color = ref('');
-const message = ref('');
+let selectedUser = ref(null);
 
 onMounted(async () => {
     await loadUsers();
@@ -43,10 +40,12 @@ onMounted(async () => {
 
 const loadUsers = async () => {
     try {
-        const users = await getUsersAndEmailLogin("usuarios");
+        const users = await getItens("usuarios");
+        console.log("history: ", history)
         history.value = users.map(input => ({
             nome: input.nome,
-            email: input.email
+            email: input.email,
+            actions: null
         }));
     } catch (error) {
         console.error("Erro ao carregar usuários:", error);
@@ -54,25 +53,19 @@ const loadUsers = async () => {
 };
 
 const openDelete = (item) => {
-    selectedPrice.value = item;
+    selectedUser.value = item;
     openDialogDelete.value = true;
 };
 
-const handleDeleteInput = () => {
+const handleDelete = () => {
     try {
-        deleteItem("insumos", selectedPrice.value.id);
+        deleteItem("usuarios", selectedUser.value.id);
         showMessage('Dado excluído com sucesso.', 'green');
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');
     } finally {
         loadUsers();
     }
-};
-
-const showMessage = (msg, colorFeedback) => {
-    message.value = msg;
-    color.value = colorFeedback;
-    snackbar.value = true;
 };
 </script>
 

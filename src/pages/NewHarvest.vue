@@ -11,7 +11,7 @@
             <v-row>
               <v-col cols="12">
                 <v-select label="Selecione o Caderno" :items="notebooks" v-model="notebookSelected"
-                        item-title="name" item-value="id" required rounded variant="outlined"/>
+                          item-title="name" item-value="id" required rounded variant="outlined"/>
               </v-col>
 
               <v-col cols="12" md="12" class="font-weight-bold"><p>Quantidade de caixas</p></v-col>
@@ -31,7 +31,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-btn type="submit" class="mt-4 bg-primary">
+                <v-btn type="submit" class="mt-4 bg-primary" rounded>
                   Adicionar Caixas
                 </v-btn>
               </v-col>
@@ -58,13 +58,16 @@ import {dataAtualpricesCadastrados, getpricesDate} from "@/services/bananaPriceS
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import store from "@/store";
 import {getItens} from "@/services/essentialFunctions";
+import {useShowMessage} from "@/composables/useShowMessage";
+
+const { snackbar, color, message, showMessage } = useShowMessage();
 
 const notebooks = ref([]);
 const quantities = ref([
-    { key: 'prataPrimeira', label: 'Banana Prata 1ª', value: 0 },
-    { key: 'prataSegunda', label: 'Banana Prata 2ª', value: 0 },
-    { key: 'caturraPrimeira', label: 'Banana Caturra 1ª', value: 0 },
-    { key: 'caturraSegunda', label: 'Banana Caturra 2ª', value: 0 },
+    {key: 'prataPrimeira', label: 'Banana Prata 1ª', value: 0},
+    {key: 'prataSegunda', label: 'Banana Prata 2ª', value: 0},
+    {key: 'caturraPrimeira', label: 'Banana Caturra 1ª', value: 0},
+    {key: 'caturraSegunda', label: 'Banana Caturra 2ª', value: 0},
 ]);
 
 const unitPrices = ref({
@@ -86,10 +89,6 @@ let loading = ref(true);
 const grandTotal = ref(null);
 const notebookSelected = ref(null);
 
-const snackbar = ref(false);
-const color = ref('');
-const message = ref('');
-
 const isAdmin = computed(() => store.getters['auth/isAdmin']);
 
 const calculateTotal = () => {
@@ -107,29 +106,30 @@ const calculateTotal = () => {
 };
 
 const addBoxes = () => {
-    if (!notebookSelected.value || !quantities.value || !unitPrices.value) {
-        message.value = `Todos os campos devem estar preenchidos.`
-        color.value = 'red'
-        snackbar.value = true;
-        return;
+    try {
+        if (!notebookSelected.value && !quantities.value && !unitPrices.value) {
+            showMessage(`Todos os campos devem estar preenchidos.`, 'red')
+            return;
+        }
+
+        newHarvest(notebookSelected.value, quantities.value, totalPrice.value);
+
+        notebookSelected.value = null;
+        grandTotal.value = null;
+
+        quantities.value.forEach(quantity => {
+            quantity.value = 0;
+        });
+
+        for (const key in totalPrice.value) {
+            totalPrice.value[key] = 0;
+        }
+
+        showMessage('Nova colheita cadastrada com sucesso!', 'green')
+    } catch (error) {
+        showMessage(error, 'red')
     }
 
-    newHarvest(crypto.randomUUID(), notebookSelected.value, quantities.value, totalPrice.value);
-
-    notebookSelected.value = null;
-    grandTotal.value = null;
-
-    quantities.value.forEach(quantity => {
-        quantity.value = 0;
-    });
-
-    for (const key in totalPrice.value) {
-        totalPrice.value[key] = 0;
-    }
-
-    message.value = 'Nova colheita cadastrada com sucesso!'
-    color.value = 'green'
-    snackbar.value = true;
 };
 
 
@@ -146,9 +146,7 @@ const getpricesDb = async () => {
     try {
         const pricesDate = await getItens('precosBanana');
         if (!pricesDate || pricesDate.length === 0) {
-            message.value = `Não há dados de preços disponíveis.`
-            color.value = 'red'
-            snackbar.value = true;
+            showMessage(`Não há dados de preços disponíveis.`, 'red')
 
             hasCurrentPrices.value = false;
             loading.value = false;
@@ -164,19 +162,14 @@ const getpricesDb = async () => {
                 unitPrices.value = updatedPrices;
                 hasCurrentPrices.value = true;
             } else {
-                message.value = `As propriedades dataInicio ou dataFim estão faltando nos preços atualizados.`
-                color.value = 'red'
-                snackbar.value = true;
-
+                showMessage(`As propriedades dataInicio ou dataFim estão faltando nos preços atualizados.`, 'red')
                 hasCurrentPrices.value = false;
             }
         } else {
             hasCurrentPrices.value = false;
         }
     } catch (error) {
-        message.value = `Erro ao buscar preços das bananas: ${error}`
-        color.value = 'red'
-        snackbar.value = true;
+        showMessage(`Erro ao buscar preços das bananas: ${error}`, 'red')
         console.error('Erro ao buscar preços das bananas:', error);
     } finally {
         loading.value = false;
@@ -189,12 +182,10 @@ const getNotebooksDb = async () => {
 
         notebooks.value = notebooksData.map(notebook => ({
             id: notebook.id,
-            name: notebook.name
+            nome: notebook.nome
         }));
     } catch (error) {
-        message.value = `Erro ao buscar cadernos: ${error}`
-        color.value = 'red'
-        snackbar.value = true;
+        showMessage(`Erro ao buscar cadernos: ${error}`, 'red')
         console.error('Erro ao buscar cadernos:', error);
     }
 };

@@ -5,12 +5,9 @@
     <v-text-field v-model="search" label="Buscar caderno" class="mb-4" clearable rounded variant="outlined" density="compact"/>
 
     <v-row>
-      <v-col
-              v-for="(item, index) in filteredCards"
-              :key="index" cols="12" sm="6" md="3"
-      >
+      <v-col v-for="(item, index) in filteredCards" :key="index" cols="12" sm="6" md="3">
         <v-card class="d-flex flex-column justify-space-between pa-4" min-height="200px">
-          <v-card-title>{{ item.name }}</v-card-title>
+          <v-card-title>{{ item.nome }}</v-card-title>
 
           <v-card-actions class="justify-space-between">
             <v-btn @click="openNotebook(item)">Abrir</v-btn>
@@ -27,6 +24,8 @@
     <dialog-delete v-model="openDialogDelete" :item="selectedNotebook" @deleteConfirmed="handleDeleteNotebook"/>
 
     <dialog-update-notebook v-model="openDialogUpdate" :item="selectedNotebook" @editConfirmed="handleEditNotebook"/>
+
+    <feedback-message v-model="snackbar" :message="message" :color="color"/>
   </v-container>
 </template>
 
@@ -37,16 +36,16 @@ import DialogUpdateNotebook from "@/components/DialogUpdateNotebook.vue";
 import router from "@/router";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
 import {updateNotebook} from "@/services/notebookService";
+import {useShowMessage} from "@/composables/useShowMessage";
+import FeedbackMessage from "@/components/FeedbackMessage.vue";
+
+const { snackbar, color, message, showMessage } = useShowMessage();
 
 const cards = ref([]);
 const search = ref("");
 let openDialogDelete = ref(false)
 const openDialogUpdate = ref(false)
 const selectedNotebook = ref(null);
-
-const snackbar = ref(false);
-const color = ref('');
-const message = ref('');
 
 onMounted(async () => {
     try {
@@ -58,7 +57,7 @@ onMounted(async () => {
 
 const filteredCards = computed(() => {
     return cards.value.filter((item) =>
-        item.name.toLowerCase().includes(search.value.toLowerCase())
+        item.nome.toLowerCase().includes(search.value.toLowerCase())
     );
 });
 
@@ -78,7 +77,6 @@ const openUpdate = ( (item) => {
 
 const handleEditNotebook = ((updatedItem) => {
     try {
-        console.log("updated: ", updatedItem)
         updateNotebook(updatedItem)
     } catch (error){
         console.error("Erro ao editar o caderno:", error);
@@ -103,12 +101,6 @@ const handleDeleteNotebook = ( () => {
         loadNotebooks()
     }
 })
-
-const showMessage = (msg, colorFeedback) => {
-    message.value = msg;
-    color.value = colorFeedback;
-    snackbar.value = true;
-};
 </script>
 
 <style scoped>

@@ -10,7 +10,7 @@
     <v-container fluid>
       <v-row justify="center" align="center">
         <v-col cols="12" sm="10" md="8" lg="6">
-          <v-form v-model="valid" @submit.prevent="registerUser">
+          <v-form @submit.prevent="registerUser">
             <v-text-field v-model="newNotebookFarmer.userName" label="Nome do Usuário" required
                           :rules="[v => !!v || 'Nome é obrigatório']" rounded variant="outlined" density="compact"/>
 
@@ -40,22 +40,20 @@ import {newUser} from "@/services/userService";
 import {newNotebook} from "@/services/notebookService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {newUserLogin} from "@/services/loginService";
+import {useShowMessage} from "@/composables/useShowMessage";
+
+const { snackbar, color, message, showMessage } = useShowMessage();
 
 const newNotebookFarmer = ref({
     userName: '',
     email: '',
     password: ''
 })
-const valid = ref(false);
 const auth = getAuth();
-
-const snackbar = ref(false);
-const color = ref("");
-const message = ref("");
 
 const registerUser = async () => {
     try {
-        if (!newNotebookFarmer.value.userName || !newNotebookFarmer.value.email || !newNotebookFarmer.value.password) {
+        if (!newNotebookFarmer.value.userName && !newNotebookFarmer.value.email && !newNotebookFarmer.value.password) {
             showMessage(`Todos os campos devem estar preenchidos.`, 'red')
             return;
         }
@@ -81,12 +79,6 @@ const registerUser = async () => {
     } catch (error) {
         showMessage(error, 'red')
     }
-};
-
-const showMessage = (msg, colorFeedback) => {
-    message.value = msg;
-    color.value = colorFeedback;
-    snackbar.value = true;
 };
 </script>
 
