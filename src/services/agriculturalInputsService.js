@@ -1,4 +1,4 @@
-import {collection, doc, getDocs, query, setDoc, where} from "firebase/firestore";
+import {collection, doc, getDocs, query, setDoc, updateDoc, where} from "firebase/firestore";
 import {db} from '@/plugins/firebase';
 import {getItemById} from "@/services/essentialFunctions";
 
@@ -27,6 +27,15 @@ export const getAgriculturalInputs = async () => {
     return listPrices
 };
 
+export const updateAgriculturalInput = async (agriculturalInput) => {
+    const docRef = doc(db, 'insumos', agriculturalInput.id);
+    await updateDoc(docRef, {
+        nome: agriculturalInput.nome,
+        descricao: agriculturalInput.descricao,
+        valor: agriculturalInput.valor
+    });
+};
+
 export const newPurchaseAgriculturalInput = async (agriculturalInput, notebook, quantity, total, descontadoCaderno, pago) => {
     try {
         await setDoc(doc(db, "compraInsumos", crypto.randomUUID()), {
@@ -46,22 +55,26 @@ export const newPurchaseAgriculturalInput = async (agriculturalInput, notebook, 
 
 
 export const getPurchaseAgriculturalInputsByNotebook = async (notebookId) => {
-    const idValue = notebookId.value || notebookId;
-    const q = query(collection(db, 'compraInsumos'), where("caderno", "==", idValue));
-    const querySnapshot = await getDocs(q);
-
-    return await Promise.all(
-        querySnapshot.docs.map(async (docSnap) => {
-            const data = docSnap.data();
-            const insumoData = await getItemById("insumos", data.insumo);
-
-            return {
-                id: docSnap.id,
-                ...data,
-                insumoNome: insumoData.name || 'Nome não encontrado'
-            };
-        })
-    );
+    try {
+        const q = query(collection(db, 'compraInsumos'), where("caderno", "==", notebookId));
+        const querySnapshot = await getDocs(q);
+        console.log("query snap: ", querySnapshot)
+        
+        return await Promise.all(
+            querySnapshot.docs.map(async (docSnap) => {
+                const data = docSnap.data();
+                const insumoData = await getItemById("insumos", data.insumo);
+                console.log("insumoData: ", insumoData)
+                return {
+                    id: docSnap.id,
+                    ...data,
+                    insumoNome: insumoData.name || 'Nome não encontrado'
+                };
+            })
+        );
+    }catch (error) {
+        console.error("Erro ao buscar os dados:", error.message);
+    }
 };
 
 export const statusPurchaseInput = async (purchase) => {

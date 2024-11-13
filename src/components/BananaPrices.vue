@@ -40,7 +40,7 @@
     </template>
     <template v-else>
       <v-alert type="warning" dismissible>
-        Não há valores cadastrados para esta semana. Por favor, cadastre novos valores.
+        Clique em "Novo preço Banana" para cadastrar os preços.
       </v-alert>
     </template>
   </v-card>
@@ -72,10 +72,6 @@ const getpricesDb = async () => {
 
             if (pricesToday) {
                 prices.value = updatedPrices;
-
-                if (Object.keys(prices.value).length === 0) {
-                    console.log("Não há valores válidos cadastrados para esta semana.");
-                }
             } else {
                 console.error("As propriedades dataInicio ou dataFim estão faltando nos preços atualizados.");
             }

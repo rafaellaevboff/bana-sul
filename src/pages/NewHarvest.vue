@@ -41,7 +41,7 @@
 
         <div v-else-if="!loading && !hasCurrentPrices" class="alert alert-warning">
           <v-alert type="warning" dismissible>
-            Não há valores cadastrados para esta semana. Por favor, cadastre novos valores.
+            Não há valores cadastrados de preço de banana para esta semana. Por favor, cadastre novos valores no item "Novo preço Banana".
           </v-alert>
         </div>
       </v-col>

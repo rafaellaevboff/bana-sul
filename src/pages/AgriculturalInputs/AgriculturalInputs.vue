@@ -3,12 +3,14 @@
     <h1 class="display-1 text-center">Insumos cadastrados</h1>
     <v-data-table :headers="headers.value" :items="history" :items-per-page="10" class="elevation-1" item-key="id">
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon @click="edit(item)" color="primary" small>mdi-pencil</v-icon>
+        <v-icon @click="openUpdate(item)" color="primary" small>mdi-pencil</v-icon>
         <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
       </template>
     </v-data-table>
 
     <dialog-delete v-model="openDialogDelete" :item="selectedInput" @deleteConfirmed="handleDeleteInput"/>
+
+    <dialog-update-agricultural-input v-model="openDialogUpdate" :item="selectedInput" @editConfirmed="handleEditInput"/>
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
 
@@ -21,6 +23,8 @@ import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
+import DialogUpdateAgriculturalInput from "@/components/DialogUpdateAgriculturalInput.vue";
+import {updateAgriculturalInput} from "@/services/agriculturalInputsService";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
@@ -33,6 +37,7 @@ const headers = ref([
 ]);
 
 let openDialogDelete = ref(false);
+let openDialogUpdate = ref(false);
 let selectedInput = ref(null);
 
 onMounted(async () => {
@@ -46,6 +51,7 @@ const loadInputs = async () => {
             nome: input.nome,
             descricao: input.descricao,
             valor: input.valor,
+            id: input.id,
             actions: null
         }));
     } catch (error) {
@@ -53,8 +59,20 @@ const loadInputs = async () => {
     }
 };
 
-const edit = (item) => {
-    console.log("Edit input with ID:", item.id);
+const openUpdate = (item) => {
+    selectedInput.value = item
+    openDialogUpdate.value = true
+}
+
+const handleEditInput = (updatedItem) => {
+    try {
+        console.log("updated item: ", updatedItem)
+        updateAgriculturalInput(updatedItem)
+    } catch (error){
+        console.error("Erro ao editar o caderno:", error);
+    } finally {
+        loadInputs()
+    }
 };
 
 const openDelete = (item) => {
