@@ -39,7 +39,7 @@ export const updateAgriculturalInput = async (agriculturalInput) => {
 export const newPurchaseAgriculturalInput = async (agriculturalInput, notebook, quantity, total, descontadoCaderno, pago) => {
     try {
         await setDoc(doc(db, "compraInsumos", crypto.randomUUID()), {
-            insumo: agriculturalInput,
+            insumo: await getItemById("insumos", agriculturalInput),
             caderno: notebook,
             quantidade: quantity,
             valorTotal: total,

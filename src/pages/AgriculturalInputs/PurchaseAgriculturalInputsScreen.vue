@@ -84,7 +84,7 @@ const getNotebooksDb = async () => {
         loading.value = false;
         notebooks.value = notebooksData.map(notebook => ({
             id: notebook.id,
-            nome: notebook.name
+            nome: notebook.nome
         }));
     } catch (error) {
         showMessage(`Erro ao buscar cadernos: ${error}`, 'red')
@@ -97,7 +97,7 @@ const getAgriculturalInputsDb = async () => {
 
         agriculturalInputs.value = inputsData.map(input => ({
             id: input.id,
-            nome: input.name,
+            nome: input.nome,
             valor: input.valor,
             descontadoCaderno: input.descontadoCaderno,
             pago: input.pago
@@ -108,13 +108,14 @@ const getAgriculturalInputsDb = async () => {
 };
 
 const addPurchaseAgriculturalInput = async () => {
+    const valorTotal = await calculaValorTotal()
+
     if (notebookSelected.value === null || agriculturalInputSelected.value === null || !quantity.value || !valorTotal) {
         showMessage('Todos os campos devem estar preenchidos.', 'red')
         return;
     }
 
     if (descontadoCaderno.value === true) pago.value = false
-    const valorTotal = await calculaValorTotal()
     await newPurchaseAgriculturalInput(agriculturalInputSelected.value, notebookSelected.value, quantity.value,
         valorTotal, descontadoCaderno.value, pago.value);
     showMessage("Compra cadastrada com sucesso", "green")

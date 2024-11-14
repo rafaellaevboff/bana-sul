@@ -1,4 +1,4 @@
-import {collection, deleteDoc, doc, getDoc, getDocs, updateDoc} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDoc, getDocs} from "firebase/firestore";
 import {db} from "@/plugins/firebase";
 
 export const getItens = async (nameCollection) => {
