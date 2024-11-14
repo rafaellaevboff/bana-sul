@@ -3,12 +3,14 @@
     <h1 class="display-1 text-center">Histórico de preços de banana</h1>
     <v-data-table :headers="headers.value" :items="history" :items-per-page="10" class="elevation-1" item-key="id">
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon @click="editPrice(item)" color="primary" small>mdi-pencil</v-icon>
+      <v-icon @click="openUpdate(item)" color="primary" small>mdi-pencil</v-icon>
       <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
     </template>
     </v-data-table>
 
     <dialog-delete v-model="openDialogDelete" :item="selectedPrice" @deleteConfirmed="handleDeleteNotebook"/>
+
+    <dialog-update-prices v-model="openDialogUpdate" :item="selectedPrice" @editConfirmed="handleEditPrices"/>
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
 
@@ -22,6 +24,8 @@ import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
+import DialogUpdatePrices from "@/components/DialogsUpdate/DialogUpdatePrices.vue";
+import {updatePrice} from "@/services/bananaPriceService";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
@@ -37,14 +41,15 @@ const headers = ref([
 ]);
 
 let openDialogDelete = ref(false);
+let openDialogUpdate = ref(false);
 let selectedPrice = ref(null);
 
 
 onMounted(async () => {
-    await loadNotebooks();
+    await loadPrices();
 });
 
-const loadNotebooks = async () => {
+const loadPrices = async () => {
     try {
         const prices = await getItens('precosBanana');
         history.value = prices.map(price => ({
@@ -62,12 +67,7 @@ const loadNotebooks = async () => {
     }
 };
 
-const editPrice = (item) => {
-    console.log("Edit price with ID:", item.id);
-};
-
 const openDelete = (item) => {
-    console.log("Deleting price with ID:", item.id);
     selectedPrice.value = item;
     openDialogDelete.value = true;
 };
@@ -79,9 +79,24 @@ const handleDeleteNotebook = () => {
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');
     } finally {
-        loadNotebooks();
+        loadPrices();
     }
 };
+
+const openUpdate =  (item) => {
+    selectedPrice.value = item;
+    openDialogUpdate.value = true;
+};
+
+const handleEditPrices = async (updatedItem) => {
+    try {
+        await updatePrice(updatedItem)
+    } catch (error) {
+        console.error("Erro ao editar o preço:", error);
+    } finally {
+        await loadPrices()
+    }
+}
 </script>
 
 <style scoped>

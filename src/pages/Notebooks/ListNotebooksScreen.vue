@@ -32,7 +32,7 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import DialogDelete from "@/components/DialogDelete.vue";
-import DialogUpdateNotebook from "@/components/DialogUpdateNotebook.vue";
+import DialogUpdateNotebook from "@/components/DialogsUpdate/DialogUpdateNotebook.vue";
 import router from "@/router";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
 import {updateNotebook} from "@/services/notebookService";

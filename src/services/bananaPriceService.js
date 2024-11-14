@@ -1,4 +1,4 @@
-import {doc, setDoc} from "firebase/firestore";
+import {doc, setDoc, updateDoc} from "firebase/firestore";
 import {db} from '@/plugins/firebase';
 
 export const newBananaPrice = async (dataInicio, dataFim, prataPrimeira, prataSegunda, caturraPrimeira, caturraSegunda) => {
@@ -33,3 +33,14 @@ export const dataAtualpricesCadastrados = async (pricesDate) => {
         return Date.now() >= startDate && Date.now() <= endDate;
     });
 };
+
+
+export const updatePrice = async (price) => {
+    const docRef = doc(db, 'precosBanana', price.id);
+    await updateDoc(docRef, {
+        prataPrimeira: price.prataPrimeira,
+        prataSegunda: price.prataSegunda,
+        caturraPrimeira: price.caturraPrimeira,
+        caturraSegunda: price.caturraSegunda,
+    });
+}

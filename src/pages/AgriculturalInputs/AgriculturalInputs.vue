@@ -23,7 +23,7 @@ import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
-import DialogUpdateAgriculturalInput from "@/components/DialogUpdateAgriculturalInput.vue";
+import DialogUpdateAgriculturalInput from "@/components/DialogsUpdate/DialogUpdateAgriculturalInput.vue";
 import {updateAgriculturalInput} from "@/services/agriculturalInputsService";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
@@ -66,7 +66,6 @@ const openUpdate = (item) => {
 
 const handleEditInput = (updatedItem) => {
     try {
-        console.log("updated item: ", updatedItem)
         updateAgriculturalInput(updatedItem)
     } catch (error){
         console.error("Erro ao editar o caderno:", error);

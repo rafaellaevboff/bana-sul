@@ -3,7 +3,10 @@
     <v-card>
       <v-card-title class="headline">Editar Caderno</v-card-title>
       <v-card-text>
-        <v-text-field v-model="editedItem.name" label="Nome" required/>
+        <v-text-field v-model="editedItem.prataPrimeira" label="Prata 1ª" required/>
+        <v-text-field v-model="editedItem.prataSegunda" label="Prata 2ª" required/>
+        <v-text-field v-model="editedItem.caturraPrimeira" label="Caturra 1ª" required/>
+        <v-text-field v-model="editedItem.caturraSegunda" label="Caturra 2ª" required/>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
