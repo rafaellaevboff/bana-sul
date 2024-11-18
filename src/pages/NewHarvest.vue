@@ -11,7 +11,7 @@
             <v-row>
               <v-col cols="12">
                 <v-select label="Selecione o Caderno" :items="notebooks" v-model="notebookSelected"
-                          item-title="name" item-value="id" required rounded variant="outlined"/>
+                          item-title="nome" item-value="id" required rounded variant="outlined"/>
               </v-col>
 
               <v-col cols="12" md="12" class="font-weight-bold"><p>Quantidade de caixas</p></v-col>
@@ -41,7 +41,7 @@
 
         <div v-else-if="!loading && !hasCurrentPrices" class="alert alert-warning">
           <v-alert type="warning" dismissible>
-            Não há valores cadastrados de preço de banana para esta semana. Por favor, cadastre novos valores no item "Novo preço Banana".
+            Não há valores cadastrados de preço de banana para esta semana. Por favor, cadastre novos valores no item "Novo Preço Banana".
           </v-alert>
         </div>
       </v-col>
@@ -54,7 +54,7 @@
 <script setup>
 import {computed, onMounted, ref} from 'vue';
 import {newHarvest} from "@/services/harvestService";
-import {dataAtualpricesCadastrados, getpricesDate} from "@/services/bananaPriceService";
+import {currentDateRegisteredPrices, getpricesDate} from "@/services/bananaPriceService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import store from "@/store";
 import {getItens} from "@/services/essentialFunctions";
@@ -64,10 +64,10 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 
 const notebooks = ref([]);
 const quantities = ref([
-    {key: 'prataPrimeira', label: 'Banana Prata 1ª', value: 0},
-    {key: 'prataSegunda', label: 'Banana Prata 2ª', value: 0},
-    {key: 'caturraPrimeira', label: 'Banana Caturra 1ª', value: 0},
-    {key: 'caturraSegunda', label: 'Banana Caturra 2ª', value: 0},
+    {key: 'prataPrimeira', label: 'Banana Prata 1ª', value: null},
+    {key: 'prataSegunda', label: 'Banana Prata 2ª', value: null},
+    {key: 'caturraPrimeira', label: 'Banana Caturra 1ª', value: null},
+    {key: 'caturraSegunda', label: 'Banana Caturra 2ª', value: null},
 ]);
 
 const unitPrices = ref({
@@ -107,8 +107,14 @@ const calculateTotal = () => {
 
 const addBoxes = () => {
     try {
-        if (!notebookSelected.value && !quantities.value && !unitPrices.value) {
-            showMessage(`Todos os campos devem estar preenchidos.`, 'red')
+        if (!notebookSelected.value) {
+            showMessage(`Por favor, selecione um caderno.`, 'red');
+            return;
+        }
+
+        const hasValidQuantity = quantities.value.some(quantity => quantity.value !== null && quantity.value > 0);
+        if (!hasValidQuantity) {
+            showMessage(`Pelo menos um dos campos de quantidade deve ter um valor maior que zero.`, 'red');
             return;
         }
 
@@ -145,6 +151,7 @@ const calculatedPrices = computed(() => {
 const getpricesDb = async () => {
     try {
         const pricesDate = await getItens('precosBanana');
+        console.log("pricesDate: ", pricesDate)
         if (!pricesDate || pricesDate.length === 0) {
             showMessage(`Não há dados de preços disponíveis.`, 'red')
 
@@ -153,11 +160,13 @@ const getpricesDb = async () => {
             return;
         }
 
-        const todayHasPrices = await dataAtualpricesCadastrados(pricesDate);
+        const todayHasPrices = await currentDateRegisteredPrices(pricesDate);
+        console.log("today has prices: ", todayHasPrices)
 
         if (todayHasPrices) {
             const updatedPrices = await getpricesDate(pricesDate);
 
+            console.log("updated prices: ", updatedPrices)
             if (updatedPrices && updatedPrices.dataInicio && updatedPrices.dataFim) {
                 unitPrices.value = updatedPrices;
                 hasCurrentPrices.value = true;

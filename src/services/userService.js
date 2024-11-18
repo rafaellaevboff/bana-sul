@@ -18,10 +18,11 @@ export const newUser = async (uid, name, email) => {
 };
 
 export const updateUser = async (user) => {
-    await db.collection('usuarios').doc(user.id).update({
-        name: user.name,
-        email: user.email,
-        perfil: user.perfil
+    console.log("doc: ", user)
+    const docRef = doc(db, 'usuarios', user.id);
+    await updateDoc(docRef, {
+        nome: user.nome,
+        email: user.email
     });
 };
 

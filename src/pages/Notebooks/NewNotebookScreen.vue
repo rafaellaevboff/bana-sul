@@ -53,7 +53,7 @@ const auth = getAuth();
 
 const registerUser = async () => {
     try {
-        if (!newNotebookFarmer.value.userName && !newNotebookFarmer.value.email && !newNotebookFarmer.value.password) {
+        if (!newNotebookFarmer.value.userName || !newNotebookFarmer.value.email || !newNotebookFarmer.value.password) {
             showMessage(`Todos os campos devem estar preenchidos.`, 'red')
             return;
         }

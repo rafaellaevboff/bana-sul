@@ -1,4 +1,4 @@
-import {collection, deleteDoc, doc, getDoc, getDocs} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDoc, getDocs, query, where} from "firebase/firestore";
 import {db} from "@/plugins/firebase";
 
 export const getItens = async (nameCollection) => {
@@ -34,5 +34,20 @@ export const getItemById = async (nameCollection, id) => {
         }
     } catch (error) {
         console.error("Erro ao buscar o item:", error);
+    }
+};
+
+export const getItemByNotebook = async (nameCollection , notebookId) => {
+    try {
+        const q = query(collection(db, nameCollection), where("caderno", "==", notebookId));
+        const querySnapshot = await getDocs(q);
+        console.log("query snap: ", querySnapshot);
+
+        return querySnapshot.docs.map((docSnap) => ({
+            id: docSnap.id,
+            ...docSnap.data(),
+        }));
+    } catch (error) {
+        console.error("Erro ao buscar os dados:", error.message);
     }
 };

@@ -57,6 +57,7 @@ import {newBananaPrice} from "@/services/bananaPriceService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
+import {parseISO} from "date-fns";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
@@ -64,10 +65,10 @@ const startDate = ref('');
 const endDate = ref('');
 const pricesHistory = ref(null);
 const prices = ref({
-    silverFirst: 0,
-    silverSecond: 0,
-    caturraFirst: 0,
-    caturraSecond: 0,
+    silverFirst: null,
+    silverSecond: null,
+    caturraFirst: null,
+    caturraSecond: null,
 });
 
 onMounted(async () => {
@@ -75,16 +76,18 @@ onMounted(async () => {
 });
 
 const registerPrices = async () => {
-    if (!startDate.value && !endDate.value && !prices.value.silverFirst && !prices.value.silverSecond && !prices.value.caturraFirst && !prices.value.caturraSecond) {
+    if (!startDate.value || !endDate.value && prices.value.silverFirst == null || prices.value.silverSecond == null || prices.value.caturraFirst == null || prices.value.caturraSecond == null) {
         showMessage(`Todos os campos devem estar preenchidos.`, 'red')
         return;
     }
 
     const hasConflict = pricesHistory.value.some(history => {
-        const dataInicio = new Date(history.dataInicio);
-        const dataFim = new Date(history.dataFim);
+        const newStartDate = parseISO(history.dataInicio);
+        const newEndDate = parseISO(history.dataFim);
+        const start = parseISO(startDate.value);
+        const end = parseISO(endDate.value);
 
-        return (new Date(startDate.value) <= dataFim && new Date(endDate.value) >= dataInicio);
+        return !(end < newStartDate || start > newEndDate);
     });
 
 

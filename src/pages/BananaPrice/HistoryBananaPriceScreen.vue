@@ -31,13 +31,13 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 
 const history = ref([]);
 const headers = ref([
-    { text: "Data Início", value: "dataInicio" },
-    { text: "Data Fim", value: "dataFim" },
-    { text: "Prata 1ª", value: "prataPrimeira" },
-    { text: "Prata 2ª", value: "prataSegunda" },
-    { text: "Caturra 1ª", value: "caturraPrimeira" },
-    { text: "Caturra 2ª", value: "caturraSegunda" },
-    { text: "Ações", value: "actions", sortable: false }
+    { title: "Data Início", key: "dataInicio" },
+    { title: "Data Fim", key: "dataFim" },
+    { title: "Prata 1ª", key: "prataPrimeira" },
+    { title: "Prata 2ª", key: "prataSegunda" },
+    { title: "Caturra 1ª", key: "caturraPrimeira" },
+    { title: "Caturra 2ª", key: "caturraSegunda" },
+    { title: "Ações", key: "actions", sortable: false }
 ]);
 
 let openDialogDelete = ref(false);
@@ -91,7 +91,9 @@ const openUpdate =  (item) => {
 const handleEditPrices = async (updatedItem) => {
     try {
         await updatePrice(updatedItem)
+        showMessage('Valor editado', 'green');
     } catch (error) {
+        showMessage('Erro ao editar o preço.', 'red');
         console.error("Erro ao editar o preço:", error);
     } finally {
         await loadPrices()

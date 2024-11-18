@@ -34,3 +34,9 @@ export const getNotebookByUser = async (id) => {
         return null;
     }
 };
+
+// export const saldoAgricultor = async (id) => {
+//     let harvest = await getItemByNotebook('colheita', id)
+//     let agriculturalInputs = await agriculturalInputsDiscountedInNotebook(id)
+//     let payments = await getItemByNotebook('pagamentos', id)
+// }

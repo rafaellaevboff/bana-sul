@@ -1,15 +1,15 @@
 <template>
   <v-navigation-drawer app v-model="drawer" permanent>
     <v-list density="comfortable">
-
-      <v-list-item link to="/app/home" class="text-start">
-        <template v-slot:prepend>
-          <v-icon :icon="'mdi-home'"/>
-        </template>
-        <v-list-item-content v-text="'Página Inicial'"/>
-      </v-list-item>
-
       <div v-if="isAdmin">
+        <v-list-item link to="/app/home" class="text-start">
+          <template v-slot:prepend>
+            <v-icon :icon="'mdi-home'"/>
+          </template>
+          <v-list-item-content v-text="'Página Inicial'"/>
+        </v-list-item>
+
+
         <v-list-subheader>CADERNOS</v-list-subheader>
         <v-list-item link to="/app/cadernos" class="text-start">
           <template v-slot:prepend>
@@ -41,7 +41,7 @@
           <template v-slot:prepend>
             <v-icon :icon="'mdi-cash-edit'"/>
           </template>
-          <v-list-item-content v-text="'Novo preço Banana'"/>
+          <v-list-item-content v-text="'Novo Preço Banana'"/>
         </v-list-item>
 
         <v-list-item link to="/app/historicoValoresBanana" class="text-start">

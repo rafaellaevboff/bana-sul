@@ -12,6 +12,7 @@
     "core-js": "^3.8.3",
     "date-fns": "^4.1.0",
     "firebase": "^10.13.1",
+    "firebase-admin": "^13.0.0",
     "vue": "^3.5.3",
     "vue-router": "^4.4.4",
     "vuetify": "^3.7.1",

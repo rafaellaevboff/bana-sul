@@ -5,7 +5,7 @@
     </template>
     <template v-else-if="Object.keys(prices).length > 0">
       <v-card-title
-              v-text="`Valores semanal das Bananas - ${formatDate(prices.dataInicio)} à ${formatDate(prices.dataFim)}`"/>
+              v-text="`Valores semanais das Bananas - ${formatDate(prices.dataInicio)} à ${formatDate(prices.dataFim)}`"/>
       <v-card-text>
         <v-row>
           <v-col cols="12" md="6">
@@ -40,7 +40,7 @@
     </template>
     <template v-else>
       <v-alert type="warning" dismissible>
-        Clique em "Novo preço Banana" para cadastrar os preços.
+        Clique em "Novo Preço Banana" para cadastrar os preços.
       </v-alert>
     </template>
   </v-card>
@@ -49,7 +49,7 @@
 <script setup>
 import {formatDate} from "@/services/formatService";
 import {onMounted, ref} from "vue";
-import {dataAtualpricesCadastrados, getpricesDate} from "@/services/bananaPriceService";
+import {currentDateRegisteredPrices, getpricesDate} from "@/services/bananaPriceService";
 import {getItens} from "@/services/essentialFunctions";
 
 const prices = ref({});
@@ -64,11 +64,11 @@ const getpricesDb = async () => {
             return;
         }
 
-        const todayHasPrices = await dataAtualpricesCadastrados(pricesDate);
+        const todayHasPrices = await currentDateRegisteredPrices(pricesDate);
 
         if (todayHasPrices) {
             const updatedPrices = await getpricesDate(pricesDate);
-            const pricesToday = await dataAtualpricesCadastrados(pricesDate);
+            const pricesToday = await currentDateRegisteredPrices(pricesDate);
 
             if (pricesToday) {
                 prices.value = updatedPrices;

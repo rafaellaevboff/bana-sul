@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title class="headline">Editar Caderno</v-card-title>
       <v-card-text>
-        <v-text-field v-model="editedItem.name" label="Nome" required/>
+        <v-text-field v-model="editedItem.nome" label="Nome" required/>
       </v-card-text>
       <v-card-actions>
         <v-spacer />

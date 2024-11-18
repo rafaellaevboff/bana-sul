@@ -1,87 +1,69 @@
 <template>
   <div class="container">
-    <h1>Lista de Itens</h1>
+    <h1>Minhas compras</h1>
 
-    <table v-if="itens && itens.length > 0" class="table">
-      <thead>
-      <tr>
-        <th>Item</th>
-        <th>Status</th>
-        <th>Quantidade</th>
-        <th>ValorTotal</th>
-        <th>Data</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(item, index) in itens" :key="index">
-        <td>{{ item.insumoNome }}</td>
-        <td>{{ item.status }}</td>
-        <td>{{ item.quantidade }}</td>
-        <td>{{ item.valorTotal }}</td>
-        <td>{{ item.dataCadastro }}</td>
-      </tr>
-      </tbody>
-    </table>
-
-    <div v-else class="loading">Carregando itens...</div>
+    <v-data-table
+            :headers="headers"
+            :items="itens"
+            class="table"
+            item-value="id"
+            loading-text="Carregando itens..."
+            :loading="isLoading"
+    >
+      <template v-slot:[`item.status`]="{ item }">
+        {{ item.status }}
+      </template>
+    </v-data-table>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { getPurchaseAgriculturalInputsByNotebook, statusPurchaseInput } from '@/services/agriculturalInputsService';
+import {computed, onMounted, ref} from 'vue';
+import {getPurchaseAgriculturalInputsByNotebook} from '@/services/agriculturalInputsService';
 
-const farmerNotebook = ref(null);
 const itens = ref([]);
+const isLoading = ref(true);
+
+const headers = [
+    { title: 'Item', key: 'nomeInsumo' },
+    { title: 'Quantidade', key: 'quantidade' },
+    { title: 'Valor Total', key: 'valorTotal' },
+    { title: 'Data', key: 'dataCadastro' },
+    { title: 'Status', key: 'status' },
+];
 
 onMounted(async () => {
-    await farmerNotebookDefinition();
     await loadItens();
+    isLoading.value = false;
 });
 
-const farmerNotebookDefinition = async () => {
+const farmerNotebook = computed(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
-        farmerNotebook.value = localStorage.getItem('farmerNotebook');
+        return localStorage.getItem('farmerNotebook');
     }
-};
+    return null
+});
 
 const loadItens = async () => {
     if (farmerNotebook.value) {
-        itens.value = await getPurchaseAgriculturalInputsByNotebook(farmerNotebook);
-        setStatusPurchases();
+        const rawItens = await getPurchaseAgriculturalInputsByNotebook(farmerNotebook.value);
+        itens.value = rawItens.map(item => ({
+            ...item,
+        }));
+        console.log("Itens processados: ", itens.value);
     }
 };
 
-const setStatusPurchases = async () => {
-    if (itens.value && Array.isArray(itens.value)) {
-        for (const item of itens.value) {
-            item.status = await statusPurchaseInput(item);
-        }
-    }
-};
+
 </script>
 
 <style scoped>
 .container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
 }
 
 .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-.loading {
-    text-align: center;
-    font-size: 16px;
-    color: #888;
     margin-top: 20px;
 }
 </style>

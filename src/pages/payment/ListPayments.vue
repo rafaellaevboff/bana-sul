@@ -31,10 +31,10 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 const history = ref([]);
 const search = ref("");
 const headers = ref([
-    { text: "Agricultor", value: "nome" },
-    { text: "Valor", value: "real" },
-    { text: "Data", value: "data" },
-    { text: "Ações", value: "actions", sortable: false }
+    { title: "Agricultor", key: "nome" },
+    { title: "Valor", key: "real" },
+    { title: "Data", key: "data" },
+    { title: "Ações", key: "actions", sortable: false }
 ]);
 
 let openDialogDelete = ref(false);

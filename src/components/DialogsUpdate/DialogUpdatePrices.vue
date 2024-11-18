@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isOpen" max-width="400px">
     <v-card>
-      <v-card-title class="headline">Editar Caderno</v-card-title>
+      <v-card-title class="headline">Editar Preços</v-card-title>
       <v-card-text>
         <v-text-field v-model="editedItem.prataPrimeira" label="Prata 1ª" required/>
         <v-text-field v-model="editedItem.prataSegunda" label="Prata 2ª" required/>

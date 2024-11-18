@@ -30,10 +30,10 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 
 const history = ref([]);
 const headers = ref([
-    { text: "Nome", value: "nome" },
-    { text: "Descrição", value: "descricao" },
-    { text: "Preço", value: "valor" },
-    { text: "Ações", value: "actions", sortable: false }
+    { title: "Nome", key: "nome" },
+    { title: "Descrição", key: "descricao" },
+    { title: "Preço", key: "valor" },
+    { title: "Ações", key: "actions", sortable: false }
 ]);
 
 let openDialogDelete = ref(false);
@@ -64,13 +64,16 @@ const openUpdate = (item) => {
     openDialogUpdate.value = true
 }
 
-const handleEditInput = (updatedItem) => {
+const handleEditInput = async (updatedItem) => {
     try {
-        updateAgriculturalInput(updatedItem)
-    } catch (error){
-        console.error("Erro ao editar o caderno:", error);
+        await updateAgriculturalInput(updatedItem)
+        showMessage('Insumo editado', 'green');
+
+    } catch (error) {
+        showMessage('Erro ao editar o insumo.', 'red');
+        console.error("Erro ao editar o insumo:", error);
     } finally {
-        loadInputs()
+        await loadInputs()
     }
 };
 

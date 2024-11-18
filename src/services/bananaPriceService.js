@@ -20,17 +20,23 @@ export const newBananaPrice = async (dataInicio, dataFim, prataPrimeira, prataSe
 
 export const getpricesDate = async (pricesDate) => {
     return pricesDate.find(item => {
-        const startDate = new Date(item.dataInicio);
-        const endDate = new Date(item.dataFim);
-        return Date.now() >= startDate && Date.now() <= endDate;
+        const startDate = item.dataInicio;
+        const endDate = item.dataFim;
+        const date = new Date();
+        const today = date.toISOString().split('T')[0];
+
+        return today >= startDate && today <= endDate;
     });
 };
 
-export const dataAtualpricesCadastrados = async (pricesDate) => {
+export const currentDateRegisteredPrices = async (pricesDate) => {
     return pricesDate.some(item => {
-        const startDate = new Date(item.dataInicio);
-        const endDate = new Date(item.dataFim);
-        return Date.now() >= startDate && Date.now() <= endDate;
+        const startDate = item.dataInicio;
+        const endDate = item.dataFim;
+        const date = new Date();
+        const today = date.toISOString().split('T')[0];
+
+        return today >= startDate && today <= endDate;
     });
 };
 

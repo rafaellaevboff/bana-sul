@@ -43,7 +43,7 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 const notebooks = ref([]);
 const notebookSelected = ref(null)
 
-const real = ref(1)
+const real = ref(null)
 let loading = ref(true);
 
 onMounted(async () => {
@@ -71,7 +71,6 @@ const getNotebooksDb = async () => {
 const addPayment = async () => {
     try {
         if (notebookSelected.value === null || !real.value) {
-            console.log("kjdcbskjfcbaljsdc")
             showMessage('Todos os campos devem estar preenchidos.', 'red')
             return;
         }

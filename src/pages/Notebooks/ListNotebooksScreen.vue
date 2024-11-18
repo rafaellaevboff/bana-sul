@@ -75,10 +75,13 @@ const openUpdate = ( (item) => {
     openDialogUpdate.value = true
 })
 
-const handleEditNotebook = ((updatedItem) => {
+const handleEditNotebook = (async (updatedItem) => {
     try {
-        updateNotebook(updatedItem)
-    } catch (error){
+        await updateNotebook(updatedItem)
+        showMessage('Notebook editado', 'green');
+
+    } catch (error) {
+        showMessage('Erro ao editar o caderno.', 'red');
         console.error("Erro ao editar o caderno:", error);
     } finally {
         loadNotebooks()

@@ -45,7 +45,7 @@ export const newPurchaseAgriculturalInput = async (agriculturalInput, notebook, 
             valorTotal: total,
             descontadoCaderno: descontadoCaderno,
             pago: pago,
-            dataCadastro: Date.now()
+            dataCadastro: new Date()
         });
         console.log('Nova compra cadastrada com sucesso no Firestore');
     } catch (error) {
@@ -53,33 +53,48 @@ export const newPurchaseAgriculturalInput = async (agriculturalInput, notebook, 
     }
 };
 
-
 export const getPurchaseAgriculturalInputsByNotebook = async (notebookId) => {
     try {
         const q = query(collection(db, 'compraInsumos'), where("caderno", "==", notebookId));
         const querySnapshot = await getDocs(q);
-        console.log("query snap: ", querySnapshot)
-        
+
+        return querySnapshot.docs.map((docSnap) => {
+            const data = docSnap.data(); // Obtém os dados do documento
+            return {
+                id: docSnap.id, // ID do documento
+                ...data, // Dados do documento
+                status: statusPurchaseInput(data), // Calcula o status
+                nomeInsumo: data.insumo?.nome // Obtém o nome de insumo
+            };
+        });
+    } catch (error) {
+        console.error("Erro ao buscar os dados:", error.message);
+        return [];
+    }
+};
+
+export const agriculturalInputsDiscountedInNotebook = async (notebookId) => {
+    try {
+        const q = query(collection(db, 'compraInsumos'), where("caderno", "==", notebookId));
+        const querySnapshot = await getDocs(q);
+
         return await Promise.all(
-            querySnapshot.docs.map(async (docSnap) => {
-                const data = docSnap.data();
-                const insumoData = await getItemById("insumos", data.insumo);
-                console.log("insumoData: ", insumoData)
-                return {
-                    id: docSnap.id,
-                    ...data,
-                    insumoNome: insumoData.name || 'Nome não encontrado'
-                };
-            })
+            querySnapshot.docs
+                .filter((docSnap) => docSnap.data().descontadoCaderno === true)
+                .map(async (docSnap) => {
+                    const data = docSnap.data();
+                    return {
+                        id: docSnap.id,
+                        ...data,
+                    };
+                })
         );
-    }catch (error) {
+    } catch (error) {
         console.error("Erro ao buscar os dados:", error.message);
     }
 };
 
-export const statusPurchaseInput = async (purchase) => {
-    console.log("ENTROU AQ EM STATUS")
-    console.log(purchase)
+const statusPurchaseInput = (purchase) => {
     if(purchase.descontadoCaderno) return "Descontado no caderno"
     else if(purchase.pago) return "Pago"
     else return "Pagamento pendente"

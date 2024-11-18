@@ -43,7 +43,7 @@ const rules = {
 
 const submit = () => {
     try {
-        if (!insumo.value.nome && !insumo.value.descricao && !insumo.value.valor) {
+        if (!insumo.value.nome || !insumo.value.descricao || !insumo.value.valor) {
             showMessage('Todos os campos devem estar preenchidos.','red')
             return;
         }
