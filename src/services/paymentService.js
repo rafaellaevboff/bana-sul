@@ -1,11 +1,11 @@
 import {doc, setDoc} from "firebase/firestore";
 import {db} from "@/plugins/firebase";
 
-export const newPayment = async (notebook, real) => {
+export const newPayment = async (notebook, money) => {
     try {
         await setDoc(doc(db, "pagamentos", crypto.randomUUID()), {
             caderno: notebook,
-            real: real,
+            valor: money,
             dataCadastro: new Date()
         });
         console.log('Dados do usuário salvos com sucesso no Firestore');

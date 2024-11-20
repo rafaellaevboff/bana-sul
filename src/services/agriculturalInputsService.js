@@ -59,12 +59,12 @@ export const getPurchaseAgriculturalInputsByNotebook = async (notebookId) => {
         const querySnapshot = await getDocs(q);
 
         return querySnapshot.docs.map((docSnap) => {
-            const data = docSnap.data(); // Obtém os dados do documento
+            const data = docSnap.data();
             return {
-                id: docSnap.id, // ID do documento
-                ...data, // Dados do documento
-                status: statusPurchaseInput(data), // Calcula o status
-                nomeInsumo: data.insumo?.nome // Obtém o nome de insumo
+                id: docSnap.id,
+                ...data,
+                status: statusPurchaseInput(data),
+                nomeInsumo: data.insumo?.nome
             };
         });
     } catch (error) {

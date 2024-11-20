@@ -24,13 +24,13 @@ export const login = async (router, email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
 
-        await store.dispatch('auth/checkAuthStatus');
+        await store.dispatch('auth/verifyAuthentication');
         const userRole = store.getters['auth/isAdmin'];
 
         if (!userRole) {
-            const notebookDoc = await getNotebookByUser(userCredential.user.uid);
+            const notebookDoc = await getNotebookByUser(userCredential.user.uid, !userRole);
 
-            if (notebookDoc) {
+            if (notebookDoc.length > 0) {
                 const notebookId = notebookDoc.id;
                 localStorage.setItem('farmerNotebook', notebookId);
                 await router.push({ name: 'Caderno', params: { id: notebookId } });

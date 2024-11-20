@@ -1,9 +1,9 @@
-import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { auth, db } from "@/plugins/firebase";
+import {onAuthStateChanged} from "firebase/auth";
+import {collection, query, where, getDocs} from "firebase/firestore";
+import {auth, db} from "@/plugins/firebase";
 
 const state = {
-    isAdmin: null,
+    isAdmin: false,
     isAuthenticated: false,
 };
 
@@ -11,30 +11,30 @@ const mutations = {
     setIsAdmin(state, status) {
         state.isAdmin = status;
     },
-    setAuthenticated(state, status) {
+    setIsAuthenticated(state, status) {
         state.isAuthenticated = status;
     },
 };
 
 const actions = {
-    async checkAuthStatus({ commit }) {
+    async verifyAuthentication({commit}) {
         return new Promise((resolve) => {
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    commit('setAuthenticated', true);
+                    commit('setIsAuthenticated', true);
                     const usuariosRef = collection(db, 'usuarios');
                     const q = query(usuariosRef, where("login", "==", user.uid));
                     const querySnapshot = await getDocs(q);
 
                     if (!querySnapshot.empty) {
                         const doc = querySnapshot.docs[0];
-                        const userData = { id: doc.id, ...doc.data() };
+                        const userData = {id: doc.id, ...doc.data()};
                         commit('setIsAdmin', userData.perfil === "administrador");
                     } else {
                         commit('setIsAdmin', false);
                     }
                 } else {
-                    commit('setAuthenticated', false);
+                    commit('setIsAuthenticated', false);
                     commit('setIsAdmin', null);
                 }
                 resolve();

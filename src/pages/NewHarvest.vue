@@ -70,14 +70,9 @@ const quantities = ref([
     {key: 'caturraSegunda', label: 'Banana Caturra 2ª', value: null},
 ]);
 
-const unitPrices = ref({
-    silverFirst: 0,
-    silverSecond: 0,
-    caturraFirst: 0,
-    caturraSecond: 0,
-});
+const unitPrices = ref({});
 
-const totalPrice = ref({
+const totalPriceBananas = ref({
     prataPrimeira: 0,
     prataSegunda: 0,
     caturraPrimeira: 0,
@@ -98,8 +93,8 @@ const calculateTotal = () => {
         const quantityValue = parseFloat(quantity.value) || 0;
         const price = unitPrices.value[quantity.key];
 
-        totalPrice.value[quantity.key] = quantityValue * price;
-        total += totalPrice.value[quantity.key] || 0;
+        totalPriceBananas.value[quantity.key] = quantityValue * price;
+        total += totalPriceBananas.value[quantity.key] || 0;
     });
 
     grandTotal.value = total;
@@ -118,7 +113,7 @@ const addBoxes = () => {
             return;
         }
 
-        newHarvest(notebookSelected.value, quantities.value, totalPrice.value);
+        newHarvest(notebookSelected.value, quantities.value, unitPrices.value, grandTotal.value);
 
         notebookSelected.value = null;
         grandTotal.value = null;
@@ -127,8 +122,8 @@ const addBoxes = () => {
             quantity.value = 0;
         });
 
-        for (const key in totalPrice.value) {
-            totalPrice.value[key] = 0;
+        for (const key in totalPriceBananas.value) {
+            totalPriceBananas.value[key] = 0;
         }
 
         showMessage('Nova colheita cadastrada com sucesso!', 'green')
@@ -142,7 +137,7 @@ const addBoxes = () => {
 const calculatedPrices = computed(() => {
     const calculations = {};
     quantities.value.forEach(quantity => {
-        const total = totalPrice.value[quantity.key] || 0;
+        const total = totalPriceBananas.value[quantity.key] || 0;
         calculations[quantity.key] = total > 0 ? total : null;
     });
     return calculations;

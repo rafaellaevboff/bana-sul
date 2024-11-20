@@ -4,9 +4,8 @@
 
     <v-text-field v-model="search" label="Buscar caderno" class="mb-4" clearable rounded variant="outlined" density="compact"/>
 
-    <v-data-table :headers="headers.value" :items="filteredPayments" :items-per-page="10" class="elevation-1" item-key="id">
+    <v-data-table :headers="headers" :items="filteredPayments" :items-per-page="10" class="elevation-1" item-key="id">
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon @click="edit(item)" color="primary" small>mdi-pencil</v-icon>
         <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
       </template>
     </v-data-table>
@@ -31,10 +30,10 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 const history = ref([]);
 const search = ref("");
 const headers = ref([
-    { title: "Agricultor", key: "nome" },
-    { title: "Valor", key: "real" },
-    { title: "Data", key: "data" },
-    { title: "Ações", key: "actions", sortable: false }
+    { title: "Agricultor", key: "agricultor", align: 'start' },
+    { title: "Valor", key: "valor", align: 'end' },
+    { title: "Data", key: "data", align: 'end' },
+    { title: "", key: "actions", sortable: false, align: 'end' }
 ]);
 
 let openDialogDelete = ref(false);
@@ -60,30 +59,25 @@ const loadPayments = async () => {
         history.value = await Promise.all(
             payments.map(async payment => {
                 const notebook = await getItemById("cadernos", payment.caderno);
-                const date = new Date(payment.dataCadastro.seconds * 1000 + payment.dataCadastro.nanoseconds / 1000000);
-                const utcDate = date.toISOString();
-                const formattedDate = ref(format(new Date(utcDate), 'dd/MM/yyyy'));
+                const formattedDate = ref(format(new Date(payment.dataCadastro.seconds * 1000 + payment.dataCadastro.nanoseconds / 1e6), 'dd/MM/yyyy'));
 
                 return {
                     agricultor: notebook.nome,
-                    real: payment.real,
+                    valor: payment.valor,
                     data: formattedDate,
                     actions: null
                 };
             })
         );
-        console.log("Valores", history.value)
     } catch (error) {
         console.error("Erro ao carregar pagamentos:", error);
     }
 };
 
-const edit = (item) => {
-    console.log("Edit input with ID:", item.id);
-};
-
 const openDelete = (item) => {
     selectedPayment.value = item;
+    selectedPayment.value.nome = item.agricultor;
+    console.log("selectedPayment: ", selectedPayment)
     openDialogDelete.value = true;
 };
 

@@ -26,7 +26,6 @@ export const getItemById = async (nameCollection, id) => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-            console.log(docSnap.data())
             return docSnap.data();
         } else {
             console.log("Item não encontrado!");
@@ -41,7 +40,6 @@ export const getItemByNotebook = async (nameCollection , notebookId) => {
     try {
         const q = query(collection(db, nameCollection), where("caderno", "==", notebookId));
         const querySnapshot = await getDocs(q);
-        console.log("query snap: ", querySnapshot);
 
         return querySnapshot.docs.map((docSnap) => ({
             id: docSnap.id,

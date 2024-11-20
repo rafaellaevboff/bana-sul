@@ -13,7 +13,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-text-field :label="'Valor pago'" type="number" v-model="real" required
+                <v-text-field :label="'Valor pago'" type="number" v-model="money" required
                               rounded variant="outlined" density="compact"/>
               </v-col>
 
@@ -43,7 +43,7 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 const notebooks = ref([]);
 const notebookSelected = ref(null)
 
-const real = ref(null)
+const money = ref(null)
 let loading = ref(true);
 
 onMounted(async () => {
@@ -70,11 +70,11 @@ const getNotebooksDb = async () => {
 
 const addPayment = async () => {
     try {
-        if (notebookSelected.value === null || !real.value) {
+        if (notebookSelected.value === null || !money.value) {
             showMessage('Todos os campos devem estar preenchidos.', 'red')
             return;
         }
-        await newPayment(notebookSelected.value, real.value);
+        await newPayment(notebookSelected.value, money.value);
         showMessage('Pagamento cadastrado com sucesso!', 'green')
     } catch (error) {
         showMessage(error, 'red')

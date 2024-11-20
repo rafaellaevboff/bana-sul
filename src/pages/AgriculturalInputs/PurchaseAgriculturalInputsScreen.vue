@@ -9,11 +9,13 @@
             <v-row>
               <v-col cols="12">
                 <v-select label="Selecione o Caderno" :items="notebooks" v-model="notebookSelected"
+                          no-data-text="Nenhum caderno disponível."
                           item-title="nome" item-value="id" required rounded variant="outlined"/>
               </v-col>
 
               <v-col cols="12">
                 <v-select label="Selecione o Insumo" :items="agriculturalInputs" v-model="agriculturalInputSelected"
+                          no-data-text="Nenhum insumo disponível."
                           item-title="nome" item-value="id" required rounded variant="outlined"/>
               </v-col>
 
@@ -108,12 +110,12 @@ const getAgriculturalInputsDb = async () => {
 };
 
 const addPurchaseAgriculturalInput = async () => {
-    const valorTotal = await calculaValorTotal()
-
-    if (notebookSelected.value === null || agriculturalInputSelected.value === null || !quantity.value || !valorTotal) {
+    if (notebookSelected.value === null || agriculturalInputSelected.value === null || !quantity.value) {
         showMessage('Todos os campos devem estar preenchidos.', 'red')
         return;
     }
+
+    const valorTotal = await calculaValorTotal()
 
     if (descontadoCaderno.value === true) pago.value = false
     await newPurchaseAgriculturalInput(agriculturalInputSelected.value, notebookSelected.value, quantity.value,

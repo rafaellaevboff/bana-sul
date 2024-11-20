@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <h1 class="display-1 text-center">Histórico de preços de banana</h1>
-    <v-data-table :headers="headers.value" :items="history" :items-per-page="10" class="elevation-1" item-key="id">
+    <v-data-table :headers="headers" :items="history" :items-per-page="10" class="elevation-1" item-key="id">
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon @click="openUpdate(item)" color="primary" small>mdi-pencil</v-icon>
       <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
@@ -31,13 +31,13 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 
 const history = ref([]);
 const headers = ref([
-    { title: "Data Início", key: "dataInicio" },
-    { title: "Data Fim", key: "dataFim" },
-    { title: "Prata 1ª", key: "prataPrimeira" },
-    { title: "Prata 2ª", key: "prataSegunda" },
-    { title: "Caturra 1ª", key: "caturraPrimeira" },
-    { title: "Caturra 2ª", key: "caturraSegunda" },
-    { title: "Ações", key: "actions", sortable: false }
+    { title: "Data Início", key: "dataInicio", align: 'start' },
+    { title: "Data Fim", key: "dataFim", align: 'end' },
+    { title: "Prata 1ª", key: "prataPrimeira", align: 'end' },
+    { title: "Prata 2ª", key: "prataSegunda", align: 'end' },
+    { title: "Caturra 1ª", key: "caturraPrimeira", align: 'end' },
+    { title: "Caturra 2ª", key: "caturraSegunda", align: 'end' },
+    { title: "", key: "actions", sortable: false, align: 'end' }
 ]);
 
 let openDialogDelete = ref(false);

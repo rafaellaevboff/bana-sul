@@ -2,14 +2,8 @@
   <div class="container">
     <h1>Minhas compras</h1>
 
-    <v-data-table
-            :headers="headers"
-            :items="itens"
-            class="table"
-            item-value="id"
-            loading-text="Carregando itens..."
-            :loading="isLoading"
-    >
+    <v-data-table :headers="headers" :items="itens" class="table" item-value="id"
+                  loading-text="Carregando itens..." :loading="isLoading">
       <template v-slot:[`item.status`]="{ item }">
         {{ item.status }}
       </template>
@@ -50,7 +44,6 @@ const loadItens = async () => {
         itens.value = rawItens.map(item => ({
             ...item,
         }));
-        console.log("Itens processados: ", itens.value);
     }
 };
 

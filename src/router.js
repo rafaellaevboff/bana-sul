@@ -22,8 +22,8 @@ import ListUsers from "@/pages/ListUsers.vue";
 import ListPayments from "@/pages/payment/ListPayments.vue";
 
 const routes = [
-    {path: '/', name: 'Login', component: LoginScreen},
-    {path: '/resetSenha', name: 'ResetPasswordScreen', component: ResetPasswordScreen},
+    {path: '/', name: 'Login', component: LoginScreen, requiresAdmin:false},
+    {path: '/resetSenha', name: 'ResetPasswordScreen', component: ResetPasswordScreen, requiresAdmin:false},
     {
         path: '/app',
         component: LayoutScreen,
@@ -38,7 +38,7 @@ const routes = [
                 path: 'listaUsuarios',
                 name: 'Lista Usuarios',
                 component: ListUsers,
-                meta: {requiresAuth: true}
+                meta: {requiresAuth: true, requiresAdmin:false}
             },
             {
                 path: 'cadernos',
@@ -51,7 +51,7 @@ const routes = [
                 name: 'Caderno',
                 component: FarmerNotebook,
                 props: true,
-                meta: {requiresAuth: true}
+                meta: {requiresAuth: true, requiresAdmin:false}
             },
             {
                 path: 'novoCadernoAgricultor',
@@ -111,7 +111,7 @@ const routes = [
                 path: 'minhasCompras',
                 name: 'MinhasCompras',
                 component: MyPurchasesScreen,
-                meta: {requiresAuth: true}
+                meta: {requiresAuth: true, requiresAdmin:false}
             },
         ],
     },
@@ -135,8 +135,8 @@ router.beforeEach(async (to, from, next) => {
     }
 
     if (user) {
-        await store.dispatch('auth/checkAuthStatus');
-        const isAuthenticated = store.getters['auth/isAuthenticated'];
+        await store.dispatch('auth/verifyAuthentication');
+        const isAuthenticated = await store.getters['auth/isAuthenticated'];
         const isAdmin = store.getters['auth/isAdmin'];
 
         if (!isAuthenticated) return next({ name: 'Login' });
@@ -147,7 +147,6 @@ router.beforeEach(async (to, from, next) => {
 
         if (!isAdmin) {
             const notebookDoc = await getDoc(doc(db, 'cadernos.usuario', user.uid));
-
 
             if (notebookDoc.exists()) {
                 const notebookData = notebookDoc.data();

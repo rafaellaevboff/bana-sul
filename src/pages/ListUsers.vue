@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <h1 class="display-1 text-center">Usuários cadastrados</h1>
-    <v-data-table :headers="headers.value" :items="history" :items-per-page="10" class="elevation-1" item-key="id">
+    <v-data-table :headers="headers" :items="history" :items-per-page="10" class="elevation-1" item-key="id">
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon @click="openUpdate(item)" color="primary" small>mdi-pencil</v-icon>
         <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
@@ -30,9 +30,9 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 
 const history = ref([]);
 const headers = ref([
-    { title: "Nome", key: "nome" },
-    { title: "Email", key: "email" },
-    { title: "Ações", key: "actions", sortable: false }
+    { title: "Nome", key: "nome", align: 'start' },
+    { title: "Email", key: "email", align: 'end' },
+    { title: "", key: "actions", sortable: false, align: 'end' }
 ]);
 
 let openDialogDelete = ref(false);

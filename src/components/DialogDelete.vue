@@ -15,11 +15,18 @@
 </template>
 
 <script setup>
-import {ref, defineProps, defineEmits, watch} from "vue";
+import {defineEmits, defineProps, ref, watch} from "vue";
 
 const props = defineProps({
-    modelValue: Boolean,
-    item: Object,
+    modelValue: {
+        type: Boolean,
+        required: true,
+    },
+    item: {
+        type: Object,
+        required: true,
+        default: () => ({}),
+    }
 });
 
 const emit = defineEmits(["update:modelValue", "deleteConfirmed"]);
