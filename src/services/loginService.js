@@ -29,8 +29,7 @@ export const login = async (router, email, password) => {
 
         if (!userRole) {
             const notebookDoc = await getNotebookByUser(userCredential.user.uid, !userRole);
-
-            if (notebookDoc.length > 0) {
+            if (notebookDoc) {
                 const notebookId = notebookDoc.id;
                 localStorage.setItem('farmerNotebook', notebookId);
                 await router.push({ name: 'Caderno', params: { id: notebookId } });
