@@ -44,14 +44,38 @@ export const saldoAgricultor = async (id) => {
     let agriculturalInputs = await agriculturalInputsDiscountedInNotebook(id)
     let payments = await getItemByNotebook('pagamentos', id)
 
-    let harvestsTotal = harvests.reduce((sum, item) => sum + item.precoTotal, 0);
+    let harvestsTotal = harvests.reduce((sum, item) => sum + item.total, 0);
     let agriculturalInputsTotal = agriculturalInputs.reduce((sum, item) => sum + item.valorTotal, 0);
     let paymentsTotal = payments.reduce((sum, item) => sum + item.valor, 0);
 
-    console.log("harvestsTotal: ", harvestsTotal)
-    console.log("agriculturalInputsTotal: ", agriculturalInputsTotal)
-    console.log("paymentsTotal: ", paymentsTotal)
+    return harvestsTotal - (agriculturalInputsTotal + paymentsTotal);
+}
 
-    console.log("total: ", harvestsTotal - agriculturalInputsTotal - paymentsTotal)
-    return harvestsTotal - agriculturalInputsTotal - paymentsTotal;
+export const getNotebookItems = async (id) => {
+    let harvests = await getItemByNotebook('colheita', id);
+    let agriculturalInputs = await agriculturalInputsDiscountedInNotebook(id);
+    let payments = await getItemByNotebook('pagamentos', id);
+
+    let harvestsMapped = harvests.map(harvest => ({
+        tipo: 'harvest',
+        valorTotal: harvest.total,
+        dataCadastro: harvest.dataCadastro
+    }));
+
+    let agriculturalInputsMapped = agriculturalInputs.map(input => ({
+        tipo: 'agriculturalInput',
+        valorTotal: input.valorTotal,
+        dataCadastro: input.dataCadastro
+    }));
+
+    let paymentsMapped = payments.map(payment => ({
+        tipo: 'payment',
+        valorTotal: payment.valor,
+        dataCadastro: payment.dataCadastro
+    }));
+    console.log("harvest: ", harvestsMapped)
+    console.log("agriculturalInputsMapped: ", agriculturalInputsMapped)
+    console.log("paymentsMapped: ", paymentsMapped)
+
+    return [...harvestsMapped, ...agriculturalInputsMapped, ...paymentsMapped];
 }

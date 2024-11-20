@@ -74,7 +74,7 @@ const addPayment = async () => {
             showMessage('Todos os campos devem estar preenchidos.', 'red')
             return;
         }
-        await newPayment(notebookSelected.value, money.value);
+        await newPayment(notebookSelected.value, money.value.toNumber());
         showMessage('Pagamento cadastrado com sucesso!', 'green')
     } catch (error) {
         showMessage(error, 'red')

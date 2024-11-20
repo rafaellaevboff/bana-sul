@@ -46,7 +46,6 @@ onMounted(async () => {
 const loadUsers = async () => {
     try {
         const users = await getItens("usuarios");
-        console.log("history: ", history)
         history.value = users.map(input => ({
             nome: input.nome,
             email: input.email,

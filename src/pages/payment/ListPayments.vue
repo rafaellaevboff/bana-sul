@@ -77,7 +77,6 @@ const loadPayments = async () => {
 const openDelete = (item) => {
     selectedPayment.value = item;
     selectedPayment.value.nome = item.agricultor;
-    console.log("selectedPayment: ", selectedPayment)
     openDialogDelete.value = true;
 };
 

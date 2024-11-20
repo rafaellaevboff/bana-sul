@@ -26,17 +26,18 @@ const headers = [
     { title: 'Status', key: 'status' },
 ];
 
-onMounted(async () => {
-    await loadItens();
-    isLoading.value = false;
-});
-
 const farmerNotebook = computed(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
         return localStorage.getItem('farmerNotebook');
     }
     return null
 });
+
+onMounted(async () => {
+    await loadItens();
+    isLoading.value = false;
+});
+
 
 const loadItens = async () => {
     if (farmerNotebook.value) {

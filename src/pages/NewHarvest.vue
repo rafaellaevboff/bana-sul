@@ -146,7 +146,6 @@ const calculatedPrices = computed(() => {
 const getpricesDb = async () => {
     try {
         const pricesDate = await getItens('precosBanana');
-        console.log("pricesDate: ", pricesDate)
         if (!pricesDate || pricesDate.length === 0) {
             showMessage(`Não há dados de preços disponíveis.`, 'red')
 
@@ -156,12 +155,10 @@ const getpricesDb = async () => {
         }
 
         const todayHasPrices = await currentDateRegisteredPrices(pricesDate);
-        console.log("today has prices: ", todayHasPrices)
 
         if (todayHasPrices) {
             const updatedPrices = await getpricesDate(pricesDate);
 
-            console.log("updated prices: ", updatedPrices)
             if (updatedPrices && updatedPrices.dataInicio && updatedPrices.dataFim) {
                 unitPrices.value = updatedPrices;
                 hasCurrentPrices.value = true;

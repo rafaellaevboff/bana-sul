@@ -18,7 +18,6 @@ export const newUser = async (uid, name, email) => {
 };
 
 export const updateUser = async (user) => {
-    console.log("doc: ", user)
     const docRef = doc(db, 'usuarios', user.id);
     await updateDoc(docRef, {
         nome: user.nome,
