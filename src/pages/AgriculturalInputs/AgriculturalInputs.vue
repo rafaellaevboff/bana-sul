@@ -60,20 +60,20 @@ const loadInputs = async () => {
 };
 
 const openUpdate = (item) => {
-    selectedInput.value = item
-    openDialogUpdate.value = true
+    selectedInput.value = item;
+    openDialogUpdate.value = true;
 }
 
 const handleEditInput = async (updatedItem) => {
     try {
-        await updateAgriculturalInput(updatedItem)
+        await updateAgriculturalInput(updatedItem);
         showMessage('Insumo editado', 'green');
 
     } catch (error) {
         showMessage('Erro ao editar o insumo.', 'red');
         console.error("Erro ao editar o insumo:", error);
     } finally {
-        await loadInputs()
+        await loadInputs();
     }
 };
 

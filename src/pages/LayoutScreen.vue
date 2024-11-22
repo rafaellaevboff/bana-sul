@@ -33,17 +33,17 @@ import {logout} from '@/services/loginService';
 import NavigationDrawer from "@/components/NavigationDrawer.vue";
 import {useRouter} from "vue-router";
 
-const drawer = ref(false);
-const router = useRouter();
-const visibleList = ref(false);
+const drawer = ref(false)
+const router = useRouter()
+const visibleList = ref(false)
 
 const logoutApp = () => {
-    logout(router)
-}
+    logout(router);
+};
 
 const toggleLista = () => {
-    visibleList.value = !visibleList.value
-}
+    visibleList.value = !visibleList.value;
+};
 
 </script>
 

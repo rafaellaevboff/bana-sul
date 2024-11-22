@@ -36,6 +36,7 @@ const insumo = ref({
     descricao: '',
     valor: ''
 });
+
 const rules = {
     required: value => !!value || 'Campo obrigatório',
     isNumber: value => !isNaN(value) || 'Deve ser um número válido'
@@ -44,18 +45,18 @@ const rules = {
 const submit = () => {
     try {
         if (!insumo.value.nome || !insumo.value.descricao || !insumo.value.valor) {
-            showMessage('Todos os campos devem estar preenchidos.','red')
+            showMessage('Todos os campos devem estar preenchidos.','red');
             return;
         }
 
-        newAgriculturalInput(insumo.value.nome, insumo.value.descricao, insumo.value.valor)
+        newAgriculturalInput(insumo.value.nome, insumo.value.descricao, insumo.value.valor);
 
-        showMessage('Insumo cadastrado com sucesso!', 'green')
+        showMessage('Insumo cadastrado com sucesso!', 'green');
         insumo.value = {nome: '', descricao: '', valor: ''};
     } catch (error) {
-        showMessage(error, 'red')
+        showMessage(error, 'red');
     }
-};
+}
 </script>
 
 <style scoped>

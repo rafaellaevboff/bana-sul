@@ -22,17 +22,17 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue'])
 
-const localVisible = ref(props.modelValue);
+const localVisible = ref(props.modelValue)
 
 watch(() => props.modelValue, (newValue) => {
-    localVisible.value = newValue;
-});
+    localVisible.value = newValue
+})
 
 watch(localVisible, (newValue) => {
     emit('update:modelValue', newValue);
-});
+})
 </script>
 
 <style scoped>

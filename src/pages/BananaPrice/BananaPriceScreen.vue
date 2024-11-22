@@ -73,11 +73,11 @@ const prices = ref({
 
 onMounted(async () => {
     await getPrices();
-});
+})
 
 const registerPrices = async () => {
     if (!startDate.value || !endDate.value && prices.value.silverFirst == null || prices.value.silverSecond == null || prices.value.caturraFirst == null || prices.value.caturraSecond == null) {
-        showMessage(`Todos os campos devem estar preenchidos.`, 'red')
+        showMessage(`Todos os campos devem estar preenchidos.`, 'red');
         return;
     }
 
@@ -92,7 +92,7 @@ const registerPrices = async () => {
 
 
     if(hasConflict){
-        showMessage(`Já existem valores de banana cadastrados na data selecionada.`, 'red')
+        showMessage(`Já existem valores de banana cadastrados na data selecionada.`, 'red');
         return;
     }
 
@@ -106,8 +106,8 @@ const registerPrices = async () => {
             prices.value.caturraSecond
         );
 
-        message.value = `Preços cadastrados com sucesso!`
-        color.value = 'green'
+        message.value = `Preços cadastrados com sucesso!`;
+        color.value = 'green';
         snackbar.value = true;
 
         startDate.value = '';
@@ -119,8 +119,8 @@ const registerPrices = async () => {
             caturraSecond: 0,
         };
     } catch (error){
-        message.value = `Erro ao cadastrar valores`
-        color.value = 'red'
+        message.value = `Erro ao cadastrar valores`;
+        color.value = 'red';
         snackbar.value = true;
     }
 };

@@ -44,9 +44,9 @@ export const saldoAgricultor = async (id) => {
     let agriculturalInputs = await agriculturalInputsDiscountedInNotebook(id)
     let payments = await getItemByNotebook('pagamentos', id)
 
-    let harvestsTotal = harvests.reduce((sum, item) => sum + item.total, 0);
-    let agriculturalInputsTotal = agriculturalInputs.reduce((sum, item) => sum + item.valorTotal, 0);
-    let paymentsTotal = payments.reduce((sum, item) => sum + item.valor, 0);
+    let harvestsTotal = harvests.reduce((sum, item) => sum + item.total, 0)
+    let agriculturalInputsTotal = agriculturalInputs.reduce((sum, item) => sum + item.valorTotal, 0)
+    let paymentsTotal = payments.reduce((sum, item) => sum + item.valor, 0)
 
     return harvestsTotal - (agriculturalInputsTotal + paymentsTotal);
 }
@@ -56,26 +56,41 @@ export const getNotebookItems = async (id) => {
     let agriculturalInputs = await agriculturalInputsDiscountedInNotebook(id);
     let payments = await getItemByNotebook('pagamentos', id);
 
-    let harvestsMapped = harvests.map(harvest => ({
-        tipo: 'harvest',
-        valorTotal: harvest.total,
-        dataCadastro: harvest.dataCadastro
-    }));
+    let harvestsMapped = harvests.map(harvest => {
+        let totalPrataPrimeira = harvest.precosBanana.prataPrimeira *
+            (harvest.quantidade.find(q => q.key === 'prataPrimeira')?.value || 0)
+
+        let totalCaturraPrimeira = harvest.precosBanana.caturraPrimeira *
+            (harvest.quantidade.find(q => q.key === 'caturraPrimeira')?.value || 0)
+
+        let totalPrataSegunda = harvest.precosBanana.prataSegunda *
+            (harvest.quantidade.find(q => q.key === 'prataSegunda')?.value || 0)
+
+        let totalCaturraSegunda = harvest.precosBanana.caturraSegunda *
+            (harvest.quantidade.find(q => q.key === 'caturraSegunda')?.value || 0)
+
+        let total = totalPrataPrimeira + totalCaturraPrimeira + totalPrataSegunda + totalCaturraSegunda;
+
+        return {
+            tipo: 'harvest',
+            valor: total,
+            dataCadastro: harvest.dataCadastro,
+            precosBanana: harvest.precosBanana,
+            quantidade: harvest.quantidade
+        };
+    });
 
     let agriculturalInputsMapped = agriculturalInputs.map(input => ({
         tipo: 'agriculturalInput',
-        valorTotal: input.valorTotal,
+        valor: input.valorTotal,
         dataCadastro: input.dataCadastro
     }));
 
     let paymentsMapped = payments.map(payment => ({
         tipo: 'payment',
-        valorTotal: payment.valor,
+        valor: payment.valor,
         dataCadastro: payment.dataCadastro
     }));
-    console.log("harvest: ", harvestsMapped)
-    console.log("agriculturalInputsMapped: ", agriculturalInputsMapped)
-    console.log("paymentsMapped: ", paymentsMapped)
 
     return [...harvestsMapped, ...agriculturalInputsMapped, ...paymentsMapped];
-}
+};

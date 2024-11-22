@@ -59,26 +59,25 @@ import {useShowMessage} from "@/composables/useShowMessage";
 const { snackbar, color, message, showMessage } = useShowMessage();
 
 const notebooks = ref([]);
-const notebookSelected = ref(null)
+const notebookSelected = ref(null);
 
 const agriculturalInputs = ref([]);
-const agriculturalInputSelected = ref(null)
+const agriculturalInputSelected = ref(null);
 
-const quantity = ref(1)
-const descontadoCaderno = ref(false)
-let pago = ref(false)
+const quantity = ref(1);
+const descontadoCaderno = ref(false);
+let pago = ref(false);
 let loading = ref(true);
 
 onMounted(async () => {
     try {
-        await getNotebooksDb()
-        await getAgriculturalInputsDb()
+        await getNotebooksDb();
+        await getAgriculturalInputsDb();
     } catch (error) {
-        showMessage(`Erro ao buscar cadernos e insumos:", ${error}`, 'green')
+        showMessage(`Erro ao buscar cadernos e insumos:", ${error}`, 'green');
         console.error("Erro ao buscar cadernos e insumos:", error);
     }
 });
-
 
 const getNotebooksDb = async () => {
     try {
@@ -89,9 +88,9 @@ const getNotebooksDb = async () => {
             nome: notebook.nome
         }));
     } catch (error) {
-        showMessage(`Erro ao buscar cadernos: ${error}`, 'red')
+        showMessage(`Erro ao buscar cadernos: ${error}`, 'red');
     }
-};
+}
 
 const getAgriculturalInputsDb = async () => {
     try {
@@ -105,28 +104,28 @@ const getAgriculturalInputsDb = async () => {
             pago: input.pago
         }));
     } catch (error) {
-        showMessage(`Erro ao buscar insumos: ${error}`, 'red')
+        showMessage(`Erro ao buscar insumos: ${error}`, 'red');
     }
-};
+}
 
 const addPurchaseAgriculturalInput = async () => {
     if (notebookSelected.value === null || agriculturalInputSelected.value === null || !quantity.value) {
-        showMessage('Todos os campos devem estar preenchidos.', 'red')
+        showMessage('Todos os campos devem estar preenchidos.', 'red');
         return;
     }
 
     const valorTotal = await calculaValorTotal()
 
-    if (descontadoCaderno.value === true) pago.value = false
+    if (descontadoCaderno.value === true) pago.value = false;
     await newPurchaseAgriculturalInput(agriculturalInputSelected.value, notebookSelected.value, quantity.value,
         valorTotal, descontadoCaderno.value, pago.value);
-    showMessage("Compra cadastrada com sucesso", "green")
-};
+    showMessage("Compra cadastrada com sucesso", "green");
+}
 
 const calculaValorTotal = async () => {
-    const priceAgriculturalInputs = await getItemById('insumos', agriculturalInputSelected.value)
-    console.log("priceAgriculturalInputs>: ", priceAgriculturalInputs)
-    return priceAgriculturalInputs.valor * quantity.value
+    const priceAgriculturalInputs = await getItemById('insumos', agriculturalInputSelected.value);
+    console.log("priceAgriculturalInputs>: ", priceAgriculturalInputs);
+    return priceAgriculturalInputs.valor * quantity.value;
 }
 
 </script>

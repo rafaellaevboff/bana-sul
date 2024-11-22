@@ -30,7 +30,7 @@ const farmerNotebook = computed(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
         return localStorage.getItem('farmerNotebook');
     }
-    return null
+    return null;
 });
 
 onMounted(async () => {

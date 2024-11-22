@@ -43,8 +43,8 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 
 const cards = ref([]);
 const search = ref("");
-let openDialogDelete = ref(false)
-const openDialogUpdate = ref(false)
+let openDialogDelete = ref(false);
+const openDialogUpdate = ref(false);
 const selectedNotebook = ref(null);
 
 onMounted(async () => {
@@ -72,26 +72,26 @@ const openNotebook = ( (item) => {
 
 const openUpdate = ( (item) => {
     selectedNotebook.value = item;
-    openDialogUpdate.value = true
+    openDialogUpdate.value = true;
 })
 
 const handleEditNotebook = (async (updatedItem) => {
     try {
-        await updateNotebook(updatedItem)
+        await updateNotebook(updatedItem);
         showMessage('Notebook editado', 'green');
 
     } catch (error) {
         showMessage('Erro ao editar o caderno.', 'red');
         console.error("Erro ao editar o caderno:", error);
     } finally {
-        loadNotebooks()
+        await loadNotebooks();
     }
-})
+});
 
 const openDelete = (async (item) => {
-    selectedNotebook.value = item
-    openDialogDelete.value = true
-})
+    selectedNotebook.value = item;
+    openDialogDelete.value = true;
+});
 
 const handleDeleteNotebook = ( () => {
     try {
@@ -101,9 +101,9 @@ const handleDeleteNotebook = ( () => {
         showMessage(`Erro ao excluir o caderno: ${error}`,'green');
         console.error("Erro ao excluir o caderno:", error);
     } finally {
-        loadNotebooks()
+        loadNotebooks();
     }
-})
+});
 </script>
 
 <style scoped>

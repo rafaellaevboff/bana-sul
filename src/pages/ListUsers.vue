@@ -60,7 +60,7 @@ const loadUsers = async () => {
 const openUpdate = (item) => {
     selectedUser.value = item;
     openDialogUpdate.value = true;
-}
+};
 
 const handleEditUser = async (updatedItem) => {
     try {
@@ -72,7 +72,7 @@ const handleEditUser = async (updatedItem) => {
     } finally {
         await loadUsers()
     }
-}
+};
 
 const openDelete = (item) => {
     selectedUser.value = item;

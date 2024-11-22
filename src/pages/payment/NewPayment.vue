@@ -48,9 +48,9 @@ let loading = ref(true);
 
 onMounted(async () => {
     try {
-        await getNotebooksDb()
+        await getNotebooksDb();
     } catch (error) {
-        showMessage(`Erro ao buscar cadernos:", ${error}`, 'green')
+        showMessage(`Erro ao buscar cadernos:", ${error}`, 'green');
         console.error("Erro ao buscar cadernos:", error);
     }
 });
@@ -64,18 +64,18 @@ const getNotebooksDb = async () => {
             nome: notebook.nome
         }));
     } catch (error) {
-        showMessage(`Erro ao buscar cadernos: ${error}`, 'red')
+        showMessage(`Erro ao buscar cadernos: ${error}`, 'red');
     }
 };
 
 const addPayment = async () => {
     try {
         if (notebookSelected.value === null || !money.value) {
-            showMessage('Todos os campos devem estar preenchidos.', 'red')
+            showMessage('Todos os campos devem estar preenchidos.', 'red');
             return;
         }
         await newPayment(notebookSelected.value, money.value.toNumber());
-        showMessage('Pagamento cadastrado com sucesso!', 'green')
+        showMessage('Pagamento cadastrado com sucesso!', 'green');
     } catch (error) {
         showMessage(error, 'red')
     }

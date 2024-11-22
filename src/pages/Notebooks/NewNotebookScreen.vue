@@ -48,13 +48,13 @@ const newNotebookFarmer = ref({
     userName: '',
     email: '',
     password: ''
-})
+});
 const auth = getAuth();
 
 const registerUser = async () => {
     try {
         if (!newNotebookFarmer.value.userName || !newNotebookFarmer.value.email || !newNotebookFarmer.value.password) {
-            showMessage(`Todos os campos devem estar preenchidos.`, 'red')
+            showMessage(`Todos os campos devem estar preenchidos.`, 'red');
             return;
         }
 
@@ -63,19 +63,19 @@ const registerUser = async () => {
             newNotebookFarmer.value.email,
             newNotebookFarmer.value.password
         );
-        const user = userCredential.user
+        const user = userCredential.user;
 
         await newUser(user.uid, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
-        await newNotebook(newNotebookFarmer.value.userName, user.uid)
+        await newNotebook(newNotebookFarmer.value.userName, user.uid);
 
-        showMessage('Caderno cadastrado com sucesso!', 'green')
+        showMessage('Caderno cadastrado com sucesso!', 'green');
         console.log("Usuário registrado: ", userCredential.user);
 
         newNotebookFarmer.value = {
             userName: '',
             email: '',
             password: ''
-        }
+        };
     } catch (error) {
         showMessage(error, 'red')
     }

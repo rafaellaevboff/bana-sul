@@ -34,7 +34,7 @@ const resetPassword = async () => {
         alert("Email enviado com sucesso!");
 
     } catch (error) {
-        alert("Erro ao enviar e-mail: ", error)
+        alert("Erro ao enviar e-mail: ", error);
     }
 };
 

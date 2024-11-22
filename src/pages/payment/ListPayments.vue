@@ -41,7 +41,7 @@ let selectedPayment = ref(null);
 
 onMounted(async () => {
     try {
-        await loadPayments()
+        await loadPayments();
     } catch (error) {
         console.error("Erro ao carregar lista de pagamentos:", error);
     }
