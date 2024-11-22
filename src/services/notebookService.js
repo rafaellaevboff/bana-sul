@@ -74,7 +74,7 @@ export const getNotebookItems = async (id) => {
         return {
             tipo: 'harvest',
             valor: total,
-            dataCadastro: harvest.dataCadastro,
+            dataEfetuacao: harvest.dataEfetuacao,
             precosBanana: harvest.precosBanana,
             quantidade: harvest.quantidade
         };
@@ -83,13 +83,13 @@ export const getNotebookItems = async (id) => {
     let agriculturalInputsMapped = agriculturalInputs.map(input => ({
         tipo: 'agriculturalInput',
         valor: input.valorTotal,
-        dataCadastro: input.dataCadastro
+        dataEfetuacao: input.dataEfetuacao
     }));
 
     let paymentsMapped = payments.map(payment => ({
         tipo: 'payment',
         valor: payment.valor,
-        dataCadastro: payment.dataCadastro
+        dataEfetuacao: payment.dataEfetuacao
     }));
 
     return [...harvestsMapped, ...agriculturalInputsMapped, ...paymentsMapped];

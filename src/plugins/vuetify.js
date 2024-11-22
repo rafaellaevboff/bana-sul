@@ -9,10 +9,10 @@ const vuetify = createVuetify({
     directives,
     ssr: true,
     theme: {
-        defaultTheme: 'myCustomTheme', // Definir o tema padrão
+        defaultTheme: 'myCustomTheme',
         themes: {
             myCustomTheme: {
-                dark: false, // ou true, se preferir o tema escuro
+                dark: false,
                 colors: {
                     primary: '#f9d200',
                     secondary: '#212121',

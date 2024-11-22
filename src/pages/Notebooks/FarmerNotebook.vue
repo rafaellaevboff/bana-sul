@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <!-- Overlay de Loading -->
     <v-overlay :value="loading" absolute>
       <v-progress-circular indeterminate color="primary" size="64" class="ma-auto"></v-progress-circular>
     </v-overlay>
@@ -27,10 +26,10 @@
         <v-card class="pa-4 d-flex flex-wrap justify-space-between">
           <v-card-title class="text-start text-wrap">
             {{ t(transacao.tipo) }} |
-            Data: {{ format(new Date(transacao.dataEfetuacao.seconds * 1000 + transacao.dataEfetuacao.nanoseconds / 1e6), 'dd/MM/yyyy') }}
+            Data: {{ format(transacao.dataEfetuacao, 'dd/MM/yyyy') }}
           </v-card-title>
 
-          <v-card-subtitle v-if="expandedCard === index" class="text-wrap">
+          <v-card-subtitle v-if="expandedCards.has(index)" class="text-wrap">
             <div v-if="transacao.tipo === 'harvest'" class="left-section">
               <div v-for="(quantidade, idx) in transacao.quantidade" :key="idx">
                 <span>{{ quantidade.label }}:</span>
@@ -43,7 +42,7 @@
 
           <div class="right-section d-flex align-center">
             <v-btn v-if="transacao.tipo === 'harvest'" small icon @click="toggleExpand(index)" class="mr-3">
-              <v-icon>{{ expandedCard === index ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+              <v-icon>{{ expandedCards.has(index) ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
             </v-btn>
             <v-chip :color="transacao.tipo === 'harvest' ? 'green' : transacao.tipo === 'payment' ? 'red' : 'orange'">
               {{ formatCurrency(transacao.valor) }}
@@ -68,7 +67,7 @@ const { t } = useI18n();
 
 const transacoes = ref([]);
 const totalAtual = ref(0);
-const expandedCard = ref(null);
+const expandedCards = ref(new Set());
 const loading = ref(true);
 
 const route = useRoute();
@@ -85,21 +84,31 @@ const farmerNotebook = computed(() => {
 
 onMounted(async () => {
     try {
+        loading.value = true;
         await calcularTotal();
         const item = await getItemById('cadernos', uuid.value);
         nameNotebook.value = item.nome;
         transacoes.value = await getNotebookItems(farmerNotebook.value ? farmerNotebook.value : uuid.value);
     } finally {
-        loading.value = false; // Oculta o overlay após carregar
+        loading.value = false;
     }
 });
 
 async function calcularTotal() {
-    totalAtual.value = await saldoAgricultor(farmerNotebook.value ? farmerNotebook.value : uuid.value);
+    loading.value = true;
+    try {
+        totalAtual.value = await saldoAgricultor(farmerNotebook.value ? farmerNotebook.value : uuid.value);
+    } finally {
+        loading.value = false;
+    }
 }
 
 function toggleExpand(index) {
-    expandedCard.value = expandedCard.value === index ? null : index;
+    if (expandedCards.value.has(index)) {
+        expandedCards.value.delete(index);
+    } else {
+        expandedCards.value.add(index);
+    }
 }
 </script>
 
