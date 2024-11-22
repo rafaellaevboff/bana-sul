@@ -36,11 +36,12 @@ export const updateAgriculturalInput = async (agriculturalInput) => {
     });
 };
 
-export const newPurchaseAgriculturalInput = async (agriculturalInput, notebook, quantity, total, descontadoCaderno, pago) => {
+export const newPurchaseAgriculturalInput = async (notebook, agriculturalInput, purchaseDate, quantity, total, descontadoCaderno, pago) => {
     try {
         await setDoc(doc(db, "compraInsumos", crypto.randomUUID()), {
-            insumo: await getItemById("insumos", agriculturalInput),
             caderno: notebook,
+            insumo: await getItemById("insumos", agriculturalInput),
+            dataEfetuacao: purchaseDate,
             quantidade: quantity,
             valorTotal: total,
             descontadoCaderno: descontadoCaderno,

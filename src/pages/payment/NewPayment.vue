@@ -13,6 +13,11 @@
               </v-col>
 
               <v-col cols="12">
+                <v-text-field label="Data da colheita" type="date" v-model="paymentDate" required
+                              rounded variant="outlined" density="compact"/>
+              </v-col>
+
+              <v-col cols="12">
                 <v-text-field :label="'Valor pago'" type="number" v-model="money" required
                               rounded variant="outlined" density="compact"/>
               </v-col>
@@ -36,12 +41,13 @@ import {onMounted, ref} from 'vue';
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {getItens} from "@/services/essentialFunctions";
 import {newPayment} from "@/services/paymentService";
-import { useShowMessage } from '@/composables/useShowMessage';
+import {useShowMessage} from '@/composables/useShowMessage';
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
 const notebooks = ref([]);
 const notebookSelected = ref(null)
+let paymentDate = ref(null);
 
 const money = ref(null)
 let loading = ref(true);
@@ -70,16 +76,24 @@ const getNotebooksDb = async () => {
 
 const addPayment = async () => {
     try {
-        if (notebookSelected.value === null || !money.value) {
+        if (notebookSelected.value === null || !money.value || !paymentDate.value) {
             showMessage('Todos os campos devem estar preenchidos.', 'red');
             return;
         }
-        await newPayment(notebookSelected.value, money.value.toNumber());
+        await newPayment(notebookSelected.value, money.value, paymentDate.value);
         showMessage('Pagamento cadastrado com sucesso!', 'green');
     } catch (error) {
         showMessage(error, 'red')
+    } finally {
+        await resetVariables()
     }
 };
+
+const resetVariables = async () => {
+    notebookSelected.value = null;
+    money.value = null
+    paymentDate.value = null
+}
 
 </script>
 

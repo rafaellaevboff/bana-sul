@@ -13,10 +13,16 @@
                           item-title="nome" item-value="id" required rounded variant="outlined"/>
               </v-col>
 
+
               <v-col cols="12">
                 <v-select label="Selecione o Insumo" :items="agriculturalInputs" v-model="agriculturalInputSelected"
                           no-data-text="Nenhum insumo disponível."
                           item-title="nome" item-value="id" required rounded variant="outlined"/>
+              </v-col>
+
+              <v-col cols="12">
+                <v-text-field label="Data da colheita" type="date" v-model="purchaseDate" required
+                              rounded variant="outlined" density="compact"/>
               </v-col>
 
               <v-col cols="12">
@@ -60,6 +66,7 @@ const { snackbar, color, message, showMessage } = useShowMessage();
 
 const notebooks = ref([]);
 const notebookSelected = ref(null);
+const purchaseDate = ref(null);
 
 const agriculturalInputs = ref([]);
 const agriculturalInputSelected = ref(null);
@@ -109,7 +116,7 @@ const getAgriculturalInputsDb = async () => {
 }
 
 const addPurchaseAgriculturalInput = async () => {
-    if (notebookSelected.value === null || agriculturalInputSelected.value === null || !quantity.value) {
+    if (notebookSelected.value === null || !purchaseDate.value || agriculturalInputSelected.value === null || !quantity.value) {
         showMessage('Todos os campos devem estar preenchidos.', 'red');
         return;
     }
@@ -117,7 +124,7 @@ const addPurchaseAgriculturalInput = async () => {
     const valorTotal = await calculaValorTotal()
 
     if (descontadoCaderno.value === true) pago.value = false;
-    await newPurchaseAgriculturalInput(agriculturalInputSelected.value, notebookSelected.value, quantity.value,
+    await newPurchaseAgriculturalInput(notebookSelected.value, agriculturalInputSelected.value, purchaseDate.value, quantity.value,
         valorTotal, descontadoCaderno.value, pago.value);
     showMessage("Compra cadastrada com sucesso", "green");
 }

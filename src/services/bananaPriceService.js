@@ -40,6 +40,23 @@ export const currentDateRegisteredPrices = async (pricesDate) => {
     });
 };
 
+export const getpricesDateHarvest = async (pricesDate, harvestDate) => {
+    return pricesDate.find(item => {
+        const startDate = item.dataInicio;
+        const endDate = item.dataFim;
+
+        return harvestDate >= startDate && harvestDate <= endDate;
+    });
+};
+
+export const dateRegisteredPricesHarvest = async (pricesDate, harvestDate) => {
+    return pricesDate.some(item => {
+        const startDate = item.dataInicio;
+        const endDate = item.dataFim;
+
+        return harvestDate >= startDate && harvestDate <= endDate;
+    });
+};
 
 export const updatePrice = async (price) => {
     const docRef = doc(db, 'precosBanana', price.id);

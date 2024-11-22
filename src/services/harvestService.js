@@ -1,13 +1,14 @@
 import {doc, getFirestore, setDoc} from "firebase/firestore";
 const db = getFirestore();
 
-export const newHarvest = async (notebook, quantity, unitPrices, total) => {
+export const newHarvest = async (notebook, quantity, unitPrices, total, harvestDate) => {
     try {
         await setDoc(doc(db, "colheita", crypto.randomUUID()), {
             caderno: notebook,
             quantidade: quantity,
             precosBanana: unitPrices,
             total: total,
+            dataEfetuacao: harvestDate,
             dataCadastro: new Date()
         });
         console.log('Dados da colheita salvos com sucesso no Firestore');

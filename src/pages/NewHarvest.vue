@@ -6,7 +6,7 @@
 
         <v-progress-circular v-if="loading" indeterminate color="primary" class="my-4"/>
 
-        <v-form v-if="!loading && hasCurrentPrices" @submit.prevent="addBoxes">
+        <v-form v-if="!loading" @submit.prevent="addBoxes">
           <v-container>
             <v-row>
               <v-col cols="12">
@@ -14,11 +14,16 @@
                           item-title="nome" item-value="id" required rounded variant="outlined"/>
               </v-col>
 
+              <v-col cols="12">
+                <v-text-field label="Data da colheita" type="date" v-model="harvestDate" required
+                              rounded variant="outlined" density="compact"/>
+              </v-col>
+
               <v-col cols="12" md="12" class="font-weight-bold"><p>Quantidade de caixas</p></v-col>
 
               <v-col v-for="(quantity, index) in quantities" :key="index" cols="12" md="6">
                 <v-text-field :label="'Quantidade de Caixas - ' + quantity.label"
-                              type="number" :min="1" v-model="quantity.value"
+                              type="number" :min="1" v-model="quantity.value" :disabled="!harvestDate"
                               @input="calculateTotal" required rounded variant="outlined" density="compact"/>
               </v-col>
 
@@ -38,12 +43,6 @@
             </v-row>
           </v-container>
         </v-form>
-
-        <div v-else-if="!loading && !hasCurrentPrices" class="alert alert-warning">
-          <v-alert type="warning" dismissible>
-            Não há valores cadastrados de preço de banana para esta semana. Por favor, cadastre novos valores no item "Novo Preço Banana".
-          </v-alert>
-        </div>
       </v-col>
     </v-row>
 
@@ -52,15 +51,15 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue';
+import {computed, onMounted, ref, watch} from 'vue';
 import {newHarvest} from "@/services/harvestService";
-import {currentDateRegisteredPrices, getpricesDate} from "@/services/bananaPriceService";
+import {dateRegisteredPricesHarvest, getpricesDateHarvest} from "@/services/bananaPriceService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import store from "@/store";
 import {getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
 
-const { snackbar, color, message, showMessage } = useShowMessage();
+const {snackbar, color, message, showMessage} = useShowMessage();
 
 const notebooks = ref([]);
 const quantities = ref([
@@ -83,8 +82,18 @@ let hasCurrentPrices = ref(false);
 let loading = ref(true);
 const grandTotal = ref(null);
 const notebookSelected = ref(null);
+const harvestDate = ref(null)
 
 const isAdmin = computed(() => store.getters['auth/isAdmin']);
+
+onMounted(async () => {
+    await getNotebooksDb();
+});
+
+watch(harvestDate, async (newVal) => {
+    await resetQuantitiesPrices()
+    if (newVal) await getpricesDb();
+});
 
 const calculateTotal = () => {
     let total = 0;
@@ -100,39 +109,17 @@ const calculateTotal = () => {
     grandTotal.value = total;
 };
 
-const addBoxes = () => {
+const addBoxes = async () => {
     try {
-        if (!notebookSelected.value) {
-            showMessage(`Por favor, selecione um caderno.`, 'red');
-            return;
-        }
-
-        const hasValidQuantity = quantities.value.some(quantity => quantity.value !== null && quantity.value > 0);
-        if (!hasValidQuantity) {
-            showMessage(`Pelo menos um dos campos de quantidade deve ter um valor maior que zero.`, 'red');
-            return;
-        }
-
-        newHarvest(notebookSelected.value, quantities.value, unitPrices.value, grandTotal.value);
-
-        notebookSelected.value = null;
-        grandTotal.value = null;
-
-        quantities.value.forEach(quantity => {
-            quantity.value = 0;
-        });
-
-        for (const key in totalPriceBananas.value) {
-            totalPriceBananas.value[key] = 0;
-        }
-
+        await validationsSave()
+        await newHarvest(notebookSelected.value, quantities.value, unitPrices.value, grandTotal.value, harvestDate.value);
+        await resetVariables()
         showMessage('Nova colheita cadastrada com sucesso!', 'green')
     } catch (error) {
-        showMessage(error, 'red')
+        const errorMessage = error.message || error;
+        showMessage(errorMessage, 'red')
     }
-
 };
-
 
 const calculatedPrices = computed(() => {
     const calculations = {};
@@ -143,21 +130,16 @@ const calculatedPrices = computed(() => {
     return calculations;
 });
 
+
 const getpricesDb = async () => {
     try {
+        if (!harvestDate.value) throw new Error('Você deve selecionar a data antes das quantidades')
         const pricesDate = await getItens('precosBanana');
-        if (!pricesDate || pricesDate.length === 0) {
-            showMessage(`Não há dados de preços disponíveis.`, 'red')
+        await pricesVerification(pricesDate)
 
-            hasCurrentPrices.value = false;
-            loading.value = false;
-            return;
-        }
-
-        const todayHasPrices = await currentDateRegisteredPrices(pricesDate);
-
-        if (todayHasPrices) {
-            const updatedPrices = await getpricesDate(pricesDate);
+        const harvestDateHasPrices = await dateRegisteredPricesHarvest(pricesDate, harvestDate.value);
+        if (harvestDateHasPrices) {
+            const updatedPrices = await getpricesDateHarvest(pricesDate, harvestDate.value);
 
             if (updatedPrices && updatedPrices.dataInicio && updatedPrices.dataFim) {
                 unitPrices.value = updatedPrices;
@@ -167,13 +149,14 @@ const getpricesDb = async () => {
                 hasCurrentPrices.value = false;
             }
         } else {
+            harvestDate.value = null
             hasCurrentPrices.value = false;
+            throw new Error('Você deve selecionar uma data que possua preços cadastrados')
         }
     } catch (error) {
-        showMessage(`Erro ao buscar preços das bananas: ${error}`, 'red')
-        console.error('Erro ao buscar preços das bananas:', error);
-    } finally {
-        loading.value = false;
+        const errorMessage = error.message || error;
+        showMessage(`Erro ao buscar preços das bananas: ${errorMessage}`, 'red')
+        console.error('Erro ao buscar preços das bananas:', errorMessage);
     }
 };
 
@@ -188,11 +171,45 @@ const getNotebooksDb = async () => {
     } catch (error) {
         showMessage(`Erro ao buscar cadernos: ${error}`, 'red')
         console.error('Erro ao buscar cadernos:', error);
+    } finally {
+        loading.value = false;
     }
 };
 
-onMounted(async () => {
-    await getNotebooksDb();
-    await getpricesDb();
-});
+const validationsSave = async () => {
+    if (!notebookSelected.value || !harvestDate.value) {
+        throw new Error("Por favor, selecione um caderno.");
+    }
+
+    const hasValidQuantity = quantities.value.some(quantity => quantity.value !== null && quantity.value > 0);
+    if (!hasValidQuantity) {
+        throw new Error("Pelo menos um dos campos de quantidade deve ter um valor maior que zero.");
+    }
+}
+
+const resetVariables = async () => {
+    notebookSelected.value = null;
+    harvestDate.value = null
+    await resetQuantitiesPrices()
+}
+
+const resetQuantitiesPrices = async () => {
+    grandTotal.value = null;
+
+    quantities.value.forEach(quantity => {
+        quantity.value = 0;
+    });
+
+    for (const key in totalPriceBananas.value) {
+        totalPriceBananas.value[key] = 0;
+    }
+}
+
+const pricesVerification = async (pricesDate) => {
+    if (!pricesDate || pricesDate.length === 0) {
+        hasCurrentPrices.value = false;
+        loading.value = false;
+        throw new Error("Não há dados de preços disponíveis.");
+    }
+}
 </script>

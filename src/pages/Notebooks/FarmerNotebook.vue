@@ -27,7 +27,7 @@
         <v-card class="pa-4 d-flex flex-wrap justify-space-between">
           <v-card-title class="text-start text-wrap">
             {{ t(transacao.tipo) }} |
-            Data: {{ format(new Date(transacao.dataCadastro.seconds * 1000 + transacao.dataCadastro.nanoseconds / 1e6), 'dd/MM/yyyy') }}
+            Data: {{ format(new Date(transacao.dataEfetuacao.seconds * 1000 + transacao.dataEfetuacao.nanoseconds / 1e6), 'dd/MM/yyyy') }}
           </v-card-title>
 
           <v-card-subtitle v-if="expandedCard === index" class="text-wrap">
