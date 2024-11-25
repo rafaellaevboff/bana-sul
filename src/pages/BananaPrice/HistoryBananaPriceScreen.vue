@@ -19,7 +19,7 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {formatDate} from "@/services/formatService";
+import {formatCurrency, formatDate} from "@/services/formatService";
 import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
@@ -55,10 +55,10 @@ const loadPrices = async () => {
         history.value = prices.map(price => ({
             dataInicio: formatDate(price.dataInicio),
             dataFim: formatDate(price.dataFim),
-            prataPrimeira: price.prataPrimeira,
-            prataSegunda: price.prataSegunda,
-            caturraPrimeira: price.caturraPrimeira,
-            caturraSegunda: price.caturraSegunda,
+            prataPrimeira: formatCurrency(price.prataPrimeira),
+            prataSegunda: formatCurrency(price.prataSegunda),
+            caturraPrimeira: formatCurrency(price.caturraPrimeira),
+            caturraSegunda: formatCurrency(price.caturraSegunda),
             id: price.id,
             actions: null
         }));

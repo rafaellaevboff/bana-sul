@@ -4,8 +4,15 @@
       <v-progress-circular indeterminate color="primary" size="64" class="ma-auto"></v-progress-circular>
     </v-overlay>
 
-    <v-row v-if="!loading">
-      <h1>{{ nameNotebook }}</h1>
+    <v-row v-if="!loading" align="center" justify="space-between">
+      <v-col cols="auto">
+        <h1>{{ nameNotebook }}</h1>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn icon link :to="`/app/comprasInsumo/${farmerNotebook}`" title="Compra de insumos">
+          <v-icon>mdi-basket</v-icon>
+        </v-btn>
+      </v-col>
     </v-row>
 
     <v-row v-if="!loading">
@@ -26,7 +33,7 @@
         <v-card class="pa-4 d-flex flex-wrap justify-space-between">
           <v-card-title class="text-start text-wrap">
             {{ t(transacao.tipo) }} |
-            Data: {{ format(transacao.dataEfetuacao, 'dd/MM/yyyy') }}
+            Data: {{ transacao.dataEfetuacao }}
           </v-card-title>
 
           <v-card-subtitle v-if="expandedCards.has(index)" class="text-wrap">
@@ -55,13 +62,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
-import { getNotebookItems, saldoAgricultor } from "@/services/notebookService";
-import { formatCurrency } from "@/services/formatService";
-import { useI18n } from 'vue-i18n';
-import { useRoute } from "vue-router";
-import { getItemById } from "@/services/essentialFunctions";
-import { format } from "date-fns";
+import {computed, onMounted, ref} from 'vue';
+import {getNotebookItems, saldoAgricultor} from "@/services/notebookService";
+import {formatCurrency} from "@/services/formatService";
+import {useI18n} from 'vue-i18n';
+import {useRoute} from "vue-router";
+import {getItemById} from "@/services/essentialFunctions";
 
 const { t } = useI18n();
 
@@ -74,13 +80,7 @@ const route = useRoute();
 const uuid = computed(() => route.params.id);
 
 const nameNotebook = ref('');
-
-const farmerNotebook = computed(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-        return localStorage.getItem('farmerNotebook');
-    }
-    return null;
-});
+const farmerNotebook = route.params.id
 
 onMounted(async () => {
     try {
@@ -88,7 +88,7 @@ onMounted(async () => {
         await calcularTotal();
         const item = await getItemById('cadernos', uuid.value);
         nameNotebook.value = item.nome;
-        transacoes.value = await getNotebookItems(farmerNotebook.value ? farmerNotebook.value : uuid.value);
+        transacoes.value = await getNotebookItems(farmerNotebook);
     } finally {
         loading.value = false;
     }
@@ -97,7 +97,7 @@ onMounted(async () => {
 async function calcularTotal() {
     loading.value = true;
     try {
-        totalAtual.value = await saldoAgricultor(farmerNotebook.value ? farmerNotebook.value : uuid.value);
+        totalAtual.value = await saldoAgricultor(farmerNotebook);
     } finally {
         loading.value = false;
     }

@@ -71,7 +71,7 @@ const purchaseDate = ref(null);
 const agriculturalInputs = ref([]);
 const agriculturalInputSelected = ref(null);
 
-const quantity = ref(1);
+const quantity = ref(null);
 const descontadoCaderno = ref(false);
 let pago = ref(false);
 let loading = ref(true);
@@ -125,16 +125,24 @@ const addPurchaseAgriculturalInput = async () => {
 
     if (descontadoCaderno.value === true) pago.value = false;
     await newPurchaseAgriculturalInput(notebookSelected.value, agriculturalInputSelected.value, purchaseDate.value, quantity.value,
-        valorTotal, descontadoCaderno.value, pago.value);
+        parseFloat(valorTotal), descontadoCaderno.value, pago.value);
     showMessage("Compra cadastrada com sucesso", "green");
+    await resetVariables()
 }
 
 const calculaValorTotal = async () => {
     const priceAgriculturalInputs = await getItemById('insumos', agriculturalInputSelected.value);
-    console.log("priceAgriculturalInputs>: ", priceAgriculturalInputs);
     return priceAgriculturalInputs.valor * quantity.value;
 }
 
+const resetVariables = async () => {
+    notebookSelected.value = null;
+    agriculturalInputSelected.value = null;
+    purchaseDate.value = null;
+    quantity.value = null;
+    descontadoCaderno.value = false;
+    pago.value = false;
+}
 </script>
 
 <style scoped>

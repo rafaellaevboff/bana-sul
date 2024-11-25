@@ -5,14 +5,13 @@
         <h1 class="display-1 text-center">Cadastro de Insumo</h1>
 
         <v-form ref="form" @submit.prevent="submit">
-          <v-text-field v-model="insumo.nome" label="Nome do Insumo" :rules="[rules.required]" outlined required
+          <v-text-field v-model="insumo.nome" label="Nome do Insumo" outlined required
                         rounded variant="outlined" density="compact"/>
 
-          <v-textarea v-model="insumo.descricao" label="Descrição" :rules="[rules.required]" required
+          <v-textarea v-model="insumo.descricao" label="Descrição" required
                       rounded variant="outlined" density="compact"/>
 
-          <v-text-field v-model="insumo.valor" label="Valor" :rules="[rules.required, rules.isNumber]" outlined required
-                        rounded variant="outlined" density="compact"/>
+          <field-value v-model="insumo.valor"/>
 
           <v-btn type="submit" :style="{ width: '30%' }" class="bg-primary" rounded>Cadastrar</v-btn>
         </v-form>
@@ -28,6 +27,7 @@ import {ref} from 'vue';
 import {newAgriculturalInput} from "@/services/agriculturalInputsService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {useShowMessage} from "@/composables/useShowMessage";
+import FieldValue from "@/components/FieldValue.vue";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
@@ -37,26 +37,29 @@ const insumo = ref({
     valor: ''
 });
 
-const rules = {
-    required: value => !!value || 'Campo obrigatório',
-    isNumber: value => !isNaN(value) || 'Deve ser um número válido'
-};
-
-const submit = () => {
+const submit = async () => {
     try {
-        if (!insumo.value.nome || !insumo.value.descricao || !insumo.value.valor) {
-            showMessage('Todos os campos devem estar preenchidos.','red');
-            return;
-        }
-
-        newAgriculturalInput(insumo.value.nome, insumo.value.descricao, insumo.value.valor);
-
+        await fieldsVerification()
+        await newAgriculturalInput(insumo.value.nome, insumo.value.descricao, parseFloat(insumo.value.valor));
         showMessage('Insumo cadastrado com sucesso!', 'green');
-        insumo.value = {nome: '', descricao: '', valor: ''};
+        await resetVariables()
     } catch (error) {
         showMessage(error, 'red');
     }
 }
+
+const fieldsVerification = async () => {
+    if (!insumo.value.nome || !insumo.value.descricao || !insumo.value.valor) {
+        throw new Error("Todos os campos devem estar preenchidos.");
+    }
+}
+
+const resetVariables = async () => {
+    insumo.value.nome = null;
+    insumo.value.descricao = null;
+    insumo.value.valor = null;
+}
+
 </script>
 
 <style scoped>

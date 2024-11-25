@@ -18,8 +18,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-text-field :label="'Valor pago'" type="number" v-model="money" required
-                              rounded variant="outlined" density="compact"/>
+                <field-value v-model="money" label="Valor Pago"/>
               </v-col>
 
               <v-col cols="12">
@@ -42,6 +41,7 @@ import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {getItens} from "@/services/essentialFunctions";
 import {newPayment} from "@/services/paymentService";
 import {useShowMessage} from '@/composables/useShowMessage';
+import FieldValue from "@/components/FieldValue.vue";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
@@ -80,18 +80,17 @@ const addPayment = async () => {
             showMessage('Todos os campos devem estar preenchidos.', 'red');
             return;
         }
-        await newPayment(notebookSelected.value, money.value, paymentDate.value);
+        await newPayment(notebookSelected.value, parseFloat(money.value), paymentDate.value);
         showMessage('Pagamento cadastrado com sucesso!', 'green');
+        await resetVariables();
     } catch (error) {
-        showMessage(error, 'red')
-    } finally {
-        await resetVariables()
+        showMessage(error, 'red');
     }
 };
 
 const resetVariables = async () => {
     notebookSelected.value = null;
-    money.value = null
+    money.value = ""
     paymentDate.value = null
 }
 

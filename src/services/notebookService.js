@@ -2,6 +2,7 @@ import {collection, doc, getDocs, query, setDoc, updateDoc, where} from "firebas
 import {db} from '@/plugins/firebase';
 import {agriculturalInputsDiscountedInNotebook} from "@/services/agriculturalInputsService";
 import {getItemByNotebook} from "@/services/essentialFunctions";
+import {format} from "date-fns";
 
 export const newNotebook = async (name, usuarioUid) => {
     try {
@@ -74,7 +75,7 @@ export const getNotebookItems = async (id) => {
         return {
             tipo: 'harvest',
             valor: total,
-            dataEfetuacao: harvest.dataEfetuacao,
+            dataEfetuacao: format(harvest.dataEfetuacao, 'dd/MM/yyyy'),
             precosBanana: harvest.precosBanana,
             quantidade: harvest.quantidade
         };
@@ -83,13 +84,13 @@ export const getNotebookItems = async (id) => {
     let agriculturalInputsMapped = agriculturalInputs.map(input => ({
         tipo: 'agriculturalInput',
         valor: input.valorTotal,
-        dataEfetuacao: input.dataEfetuacao
+        dataEfetuacao: format(input.dataEfetuacao, 'dd/MM/yyyy')
     }));
 
     let paymentsMapped = payments.map(payment => ({
         tipo: 'payment',
         valor: payment.valor,
-        dataEfetuacao: payment.dataEfetuacao
+        dataEfetuacao: format(payment.dataEfetuacao, 'dd/MM/yyyy')
     }));
 
     return [...harvestsMapped, ...agriculturalInputsMapped, ...paymentsMapped];

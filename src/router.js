@@ -108,8 +108,8 @@ const routes = [
                 meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
-                path: 'minhasCompras',
-                name: 'MinhasCompras',
+                path: 'comprasInsumo/:id',
+                name: 'Compras Insumo',
                 component: MyPurchasesScreen,
                 meta: {requiresAuth: true, requiresAdmin:false}
             },

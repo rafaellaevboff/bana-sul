@@ -22,8 +22,8 @@
               <v-col cols="12" md="12" class="font-weight-bold"><p>Quantidade de caixas</p></v-col>
 
               <v-col v-for="(quantity, index) in quantities" :key="index" cols="12" md="6">
-                <v-text-field :label="'Quantidade de Caixas - ' + quantity.label"
-                              type="number" :min="1" v-model="quantity.value" :disabled="!harvestDate"
+                <v-text-field :label="'Quantidade de Caixas - ' + quantity.label" type="number"
+                              :min="1" v-model="quantity.value" :disabled="!hasCurrentPrices"
                               @input="calculateTotal" required rounded variant="outlined" density="compact"/>
               </v-col>
 
@@ -72,10 +72,10 @@ const quantities = ref([
 const unitPrices = ref({});
 
 const totalPriceBananas = ref({
-    prataPrimeira: 0,
-    prataSegunda: 0,
-    caturraPrimeira: 0,
-    caturraSegunda: 0,
+    prataPrimeira: null,
+    prataSegunda: null,
+    caturraPrimeira: null,
+    caturraSegunda: null,
 });
 
 let hasCurrentPrices = ref(false);
@@ -112,9 +112,9 @@ const calculateTotal = () => {
 const addBoxes = async () => {
     try {
         await validationsSave()
-        await newHarvest(notebookSelected.value, quantities.value, unitPrices.value, grandTotal.value, harvestDate.value);
-        await resetVariables()
+        await newHarvest(notebookSelected.value, quantities.value, unitPrices.value, parseFloat(grandTotal.value), harvestDate.value);
         showMessage('Nova colheita cadastrada com sucesso!', 'green')
+        await resetVariables()
     } catch (error) {
         const errorMessage = error.message || error;
         showMessage(errorMessage, 'red')
@@ -155,7 +155,7 @@ const getpricesDb = async () => {
         }
     } catch (error) {
         const errorMessage = error.message || error;
-        showMessage(`Erro ao buscar preços das bananas: ${errorMessage}`, 'red')
+        showMessage(errorMessage, 'red')
         console.error('Erro ao buscar preços das bananas:', errorMessage);
     }
 };
@@ -196,9 +196,11 @@ const resetVariables = async () => {
 const resetQuantitiesPrices = async () => {
     grandTotal.value = null;
 
-    quantities.value.forEach(quantity => {
-        quantity.value = 0;
-    });
+    if (hasCurrentPrices.value) {
+        quantities.value.forEach(quantity => {
+            quantity.value = null;
+        });
+    }
 
     for (const key in totalPriceBananas.value) {
         totalPriceBananas.value[key] = 0;

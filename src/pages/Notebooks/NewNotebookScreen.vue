@@ -69,7 +69,7 @@ const registerUser = async () => {
         await newNotebook(newNotebookFarmer.value.userName, user.uid);
 
         showMessage('Caderno cadastrado com sucesso!', 'green');
-        console.log("Usuário registrado: ", userCredential.user);
+        console.log("Usuário registrado!");
 
         newNotebookFarmer.value = {
             userName: '',

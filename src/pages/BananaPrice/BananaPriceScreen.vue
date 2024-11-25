@@ -17,27 +17,23 @@
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-text-field label="Banana Prata 1ª" type="number" v-model="prices.silverFirst" required
-                              rounded variant="outlined" density="compact"/>
+                <field-value v-model="prices.silverFirst" label="Banana Prata 1ª"/>
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-text-field label="Banana Prata 2ª" type="number" v-model="prices.silverSecond" required
-                              rounded variant="outlined" density="compact"/>
+                <field-value v-model="prices.silverSecond" label="Banana Prata 2ª"/>
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-text-field label="Banana Caturra 1ª" type="number" v-model="prices.caturraFirst" required
-                              rounded variant="outlined" density="compact"/>
+                <field-value v-model="prices.caturraFirst" label="Banana Caturra 1ª"/>
               </v-col>
 
               <v-col cols="12" md="6">
-                <v-text-field label="Banana Caturra 2ª" type="number" v-model="prices.caturraSecond" required
-                              rounded variant="outlined" density="compact"/>
+                <field-value v-model="prices.caturraSecond" label="Banana Caturra 2ª"/>
               </v-col>
 
               <v-col cols="12">
-                <v-btn type="submit" class="mt-4 bg-primary" rounded  :style="{ width: '30%' }">
+                <v-btn type="submit" class="mt-4 bg-primary" rounded :style="{ width: '30%' }">
                   Cadastrar
                 </v-btn>
               </v-col>
@@ -58,8 +54,9 @@ import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
 import {parseISO} from "date-fns";
+import FieldValue from "@/components/FieldValue.vue";
 
-const { snackbar, color, message, showMessage } = useShowMessage();
+const {snackbar, color, message, showMessage} = useShowMessage();
 
 const startDate = ref('');
 const endDate = ref('');
@@ -91,19 +88,19 @@ const registerPrices = async () => {
     });
 
 
-    if(hasConflict){
+    if (hasConflict) {
         showMessage(`Já existem valores de banana cadastrados na data selecionada.`, 'red');
         return;
     }
 
-    try{
+    try {
         await newBananaPrice(
             startDate.value,
             endDate.value,
-            prices.value.silverFirst,
-            prices.value.silverSecond,
-            prices.value.caturraFirst,
-            prices.value.caturraSecond
+            parseFloat(prices.value.silverFirst),
+            parseFloat(prices.value.silverSecond),
+            parseFloat(prices.value.caturraFirst),
+            parseFloat(prices.value.caturraSecond)
         );
 
         message.value = `Preços cadastrados com sucesso!`;
@@ -113,12 +110,12 @@ const registerPrices = async () => {
         startDate.value = '';
         endDate.value = '';
         prices.value = {
-            silverFirst: 0,
-            silverSecond: 0,
-            caturraFirst: 0,
-            caturraSecond: 0,
+            silverFirst: null,
+            silverSecond: null,
+            caturraFirst: null,
+            caturraSecond: null,
         };
-    } catch (error){
+    } catch (error) {
         message.value = `Erro ao cadastrar valores`;
         color.value = 'red';
         snackbar.value = true;

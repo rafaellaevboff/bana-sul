@@ -24,6 +24,7 @@ import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {deleteItem, getItemById, getItens} from "@/services/essentialFunctions";
 import {format} from "date-fns";
 import {useShowMessage} from "@/composables/useShowMessage";
+import {formatCurrency} from "@/services/formatService";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
@@ -63,7 +64,7 @@ const loadPayments = async () => {
 
                 return {
                     agricultor: notebook.nome,
-                    valor: payment.valor,
+                    valor: formatCurrency(payment.valor),
                     data: formattedDate,
                     actions: null
                 };

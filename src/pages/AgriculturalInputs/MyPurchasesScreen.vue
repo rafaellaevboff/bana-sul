@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Minhas compras</h1>
+    <h1>Compras de insumos</h1>
 
     <v-data-table :headers="headers" :items="itens" class="table" item-value="id"
                   loading-text="Carregando itens..." :loading="isLoading">
@@ -12,26 +12,23 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue';
-import {getPurchaseAgriculturalInputsByNotebook} from '@/services/agriculturalInputsService';
+import {onMounted, ref} from 'vue';
+import {getPurchaseAgriculturalInputsByNotebook} from "@/services/agriculturalInputsService";
+import {useRoute} from "vue-router";
 
 const itens = ref([]);
 const isLoading = ref(true);
+const route = useRoute();
+
+const id = route.params.id
 
 const headers = [
-    { title: 'Item', key: 'nomeInsumo' },
-    { title: 'Quantidade', key: 'quantidade' },
-    { title: 'Valor Total', key: 'valorTotal' },
-    { title: 'Data', key: 'dataCadastro' },
-    { title: 'Status', key: 'status' },
+    {title: 'Item', key: 'nomeInsumo'},
+    {title: 'Quantidade', key: 'quantidade'},
+    {title: 'Valor Total', key: 'valorTotal'},
+    {title: 'Data', key: 'dataEfetuacao'},
+    {title: 'Status', key: 'status'},
 ];
-
-const farmerNotebook = computed(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-        return localStorage.getItem('farmerNotebook');
-    }
-    return null;
-});
 
 onMounted(async () => {
     await loadItens();
@@ -40,15 +37,11 @@ onMounted(async () => {
 
 
 const loadItens = async () => {
-    if (farmerNotebook.value) {
-        const rawItens = await getPurchaseAgriculturalInputsByNotebook(farmerNotebook.value);
-        itens.value = rawItens.map(item => ({
-            ...item,
-        }));
-    }
+    const rawItens = await getPurchaseAgriculturalInputsByNotebook(id);
+    itens.value = rawItens.map(item => ({
+        ...item
+    }));
 };
-
-
 </script>
 
 <style scoped>

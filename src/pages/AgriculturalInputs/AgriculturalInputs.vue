@@ -48,11 +48,8 @@ const loadInputs = async () => {
     try {
         const agriculturalInputs = await getItens("insumos");
         history.value = agriculturalInputs.map(input => ({
-            nome: input.nome,
-            descricao: input.descricao,
-            valor: input.valor,
-            id: input.id,
-            actions: null
+            ...input,
+            valor: `R$${input.valor}`
         }));
     } catch (error) {
         console.error("Erro ao carregar insumos:", error);
@@ -68,7 +65,6 @@ const handleEditInput = async (updatedItem) => {
     try {
         await updateAgriculturalInput(updatedItem);
         showMessage('Insumo editado', 'green');
-
     } catch (error) {
         showMessage('Erro ao editar o insumo.', 'red');
         console.error("Erro ao editar o insumo:", error);
