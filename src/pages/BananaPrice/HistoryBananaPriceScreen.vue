@@ -8,9 +8,9 @@
     </template>
     </v-data-table>
 
-    <dialog-delete v-model="openDialogDelete" :item="selectedPrice" @deleteConfirmed="handleDeleteNotebook"/>
+    <dialog-delete v-model="openDialogDelete" :item="`${selectedPrice?.dataInicio} - ${selectedPrice?.dataFim}`" @deleteConfirmed="handleDeleteNotebook"/>
 
-    <dialog-update-prices v-model="openDialogUpdate" :item="selectedPrice" @editConfirmed="handleEditPrices"/>
+    <dialog-update-prices v-model="openDialogUpdate" :item="selectedPrice" @editConfirmed="handleUpdatePrices"/>
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
 
@@ -88,7 +88,7 @@ const openUpdate =  (item) => {
     openDialogUpdate.value = true;
 };
 
-const handleEditPrices = async (updatedItem) => {
+const handleUpdatePrices = async (updatedItem) => {
     try {
         await updatePrice(updatedItem)
         showMessage('Valor editado', 'green');

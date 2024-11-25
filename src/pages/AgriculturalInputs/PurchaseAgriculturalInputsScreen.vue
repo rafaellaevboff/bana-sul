@@ -31,7 +31,6 @@
               </v-col>
 
               <v-row>
-
                 <v-col cols="6">
                   <v-checkbox :label="'Descontado no Caderno'" v-model="descontadoCaderno"/>
                 </v-col>

@@ -1,46 +1,122 @@
 <template>
   <div class="container">
     <h1>Compras de insumos</h1>
+    <h2 style="color: grey">{{ nameNotebook }}</h2>
 
     <v-data-table :headers="headers" :items="itens" class="table" item-value="id"
                   loading-text="Carregando itens..." :loading="isLoading">
       <template v-slot:[`item.status`]="{ item }">
         {{ item.status }}
       </template>
+
+      <template v-if="isAdmin" v-slot:[`item.acoes`]="{ item }">
+        <v-icon @click="openUpdate(item)" color="blue">mdi-pencil</v-icon>
+        <v-icon @click="openDelete(item)" color="red">mdi-delete</v-icon>
+      </template>
     </v-data-table>
+
+    <dialog-delete v-model="openDialogDelete" :item="selectedItem?.insumo?.nome" @deleteConfirmed="handleDeletePurchase"/>
+
+    <dialog-update-purchase v-model="openDialogUpdate" :item="selectedItem" @editConfirmed="handleUpdatePurchase"/>
   </div>
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue';
-import {getPurchaseAgriculturalInputsByNotebook} from "@/services/agriculturalInputsService";
+import {computed, onMounted, ref} from 'vue';
+import {getPurchaseAgriculturalInputsByNotebook, updateAgriculturalInput} from "@/services/agriculturalInputsService";
 import {useRoute} from "vue-router";
+import {getNameNotebook} from "@/services/notebookService";
+import {deleteItem} from "@/services/essentialFunctions";
+import DialogDelete from "@/components/DialogDelete.vue";
+import DialogUpdatePurchase from "@/components/DialogsUpdate/DialogUpdatePurchase.vue";
+import store from "@/store";
+import {useShowMessage} from "@/composables/useShowMessage";
+
+const {showMessage} = useShowMessage();
 
 const itens = ref([]);
 const isLoading = ref(true);
 const route = useRoute();
 
-const id = route.params.id
+let openDialogDelete = ref(false);
+const openDialogUpdate = ref(false);
+const selectedItem = ref(null);
 
-const headers = [
-    {title: 'Item', key: 'nomeInsumo'},
-    {title: 'Quantidade', key: 'quantidade'},
-    {title: 'Valor Total', key: 'valorTotal'},
-    {title: 'Data', key: 'dataEfetuacao'},
-    {title: 'Status', key: 'status'},
-];
+const id = route.params.id;
+const notebook = ref(null);
 
-onMounted(async () => {
-    await loadItens();
-    isLoading.value = false;
+const headers = computed(() => {
+    const baseHeaders = [
+        {title: 'Item', key: 'nomeInsumo'},
+        {title: 'Quantidade', key: 'quantidade'},
+        {title: 'Valor Total', key: 'valorTotal'},
+        {title: 'Data', key: 'dataEfetuacao'},
+        {title: 'Status', key: 'status'},
+    ];
+    if (isAdmin.value) {
+        baseHeaders.push({title: 'Ações', key: 'acoes'});
+    }
+    return baseHeaders;
 });
 
+const isAdmin = computed(() => {
+    return store.getters['auth/isAdmin'];
+});
+
+onMounted(async () => {
+    try {
+        isLoading.value = true;
+        await loadItens();
+        notebook.value = await getNameNotebook(id);
+    } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+    } finally {
+        isLoading.value = false;
+    }
+});
+
+const nameNotebook = computed(() => {
+    return notebook.value ? notebook.value.name : 'Carregando...';
+});
 
 const loadItens = async () => {
     const rawItens = await getPurchaseAgriculturalInputsByNotebook(id);
-    itens.value = rawItens.map(item => ({
+    itens.value = Array.isArray(rawItens) ? rawItens.map(item => ({
         ...item
-    }));
+    })) : [];
+};
+
+const openUpdate = (item) => {
+    selectedItem.value = item;
+    openDialogUpdate.value = true;
+}
+
+const handleUpdatePurchase = async (updatedItem) => {
+    try {
+        await updateAgriculturalInput(updatedItem);
+        showMessage('Compra editads', 'green');
+    } catch (error) {
+        showMessage('Erro ao editar a compra.', 'red');
+        console.error("Erro ao editar a compra:", error);
+    } finally {
+        await loadItens();
+    }
+};
+
+const openDelete = (item) => {
+    selectedItem.value = item;
+    openDialogDelete.value = true;
+};
+
+const handleDeletePurchase = () => {
+    try {
+        deleteItem("compraInsumos", selectedItem.value.id);
+        showMessage('Dado excluído com sucesso.', 'green');
+    } catch (error) {
+        showMessage(`Erro ao excluir dado. ${error}.`, 'green');
+    } finally {
+        loadItens();
+    }
 };
 </script>
 

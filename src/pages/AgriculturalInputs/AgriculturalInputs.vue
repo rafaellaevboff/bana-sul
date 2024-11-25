@@ -8,9 +8,9 @@
       </template>
     </v-data-table>
 
-    <dialog-delete v-model="openDialogDelete" :item="selectedInput" @deleteConfirmed="handleDeleteInput"/>
+    <dialog-delete v-model="openDialogDelete" :item="selectedInput?.nome" @deleteConfirmed="handleDeleteInput"/>
 
-    <dialog-update-agricultural-input v-model="openDialogUpdate" :item="selectedInput" @editConfirmed="handleEditInput"/>
+    <dialog-update-agricultural-input v-model="openDialogUpdate" :item="selectedInput" @editConfirmed="handleUpdateInput"/>
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
 
@@ -61,7 +61,7 @@ const openUpdate = (item) => {
     openDialogUpdate.value = true;
 }
 
-const handleEditInput = async (updatedItem) => {
+const handleUpdateInput = async (updatedItem) => {
     try {
         await updateAgriculturalInput(updatedItem);
         showMessage('Insumo editado', 'green');

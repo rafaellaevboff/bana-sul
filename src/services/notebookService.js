@@ -1,4 +1,4 @@
-import {collection, doc, getDocs, query, setDoc, updateDoc, where} from "firebase/firestore";
+import {collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where} from "firebase/firestore";
 import {db} from '@/plugins/firebase';
 import {agriculturalInputsDiscountedInNotebook} from "@/services/agriculturalInputsService";
 import {getItemByNotebook} from "@/services/essentialFunctions";
@@ -22,6 +22,23 @@ export const updateNotebook = async (notebook) => {
     await updateDoc(docRef, {
         nome: notebook.nome
     });
+};
+
+export const getNameNotebook = async (id) => {
+    try {
+        const docRef = doc(db, 'cadernos', id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return { id: docSnap.id, name: docSnap.data().nome };
+        } else {
+            console.log("Nenhum documento encontrado!");
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao buscar o item:", error);
+        return null;
+    }
 };
 
 export const getNotebookByUser = async (id, userRole) => {

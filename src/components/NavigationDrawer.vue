@@ -102,7 +102,7 @@
         </v-list-item>
       </div>
       <div v-if="!isAdmin">
-        <v-list-item link to="/app/comprasInsumo" class="text-start">
+        <v-list-item link :to="`/app/comprasInsumo/${farmerNotebook}`" class="text-start">
           <template v-slot:prepend>
             <v-icon :icon="'mdi-basket'"/>
           </template>

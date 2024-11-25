@@ -10,7 +10,7 @@
       </template>
     </v-data-table>
 
-    <dialog-delete v-model="openDialogDelete" :item="selectedPayment" @deleteConfirmed="handleDeleteInput"/>
+    <dialog-delete v-model="openDialogDelete" :item="selectedPayment?.agricultor" @deleteConfirmed="handleDeleteInput"/>
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
 

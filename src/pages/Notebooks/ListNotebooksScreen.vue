@@ -21,9 +21,9 @@
       </v-col>
     </v-row>
 
-    <dialog-delete v-model="openDialogDelete" :item="selectedNotebook" @deleteConfirmed="handleDeleteNotebook"/>
+    <dialog-delete v-model="openDialogDelete" :item="selectedNotebook?.nome" @deleteConfirmed="handleDeleteNotebook"/>
 
-    <dialog-update-notebook v-model="openDialogUpdate" :item="selectedNotebook" @editConfirmed="handleEditNotebook"/>
+    <dialog-update-notebook v-model="openDialogUpdate" :item="selectedNotebook" @editConfirmed="handleUpdateNotebook"/>
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
   </v-container>
@@ -75,7 +75,7 @@ const openUpdate = ( (item) => {
     openDialogUpdate.value = true;
 })
 
-const handleEditNotebook = (async (updatedItem) => {
+const handleUpdateNotebook = (async (updatedItem) => {
     try {
         await updateNotebook(updatedItem);
         showMessage('Notebook editado', 'green');
