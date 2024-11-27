@@ -35,12 +35,11 @@
 
 <script setup>
 import {ref} from 'vue';
-import {getAuth} from 'firebase/auth';
 import {newUser} from "@/services/userService";
 import {newNotebook} from "@/services/notebookService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
-import {newUserLogin} from "@/services/loginService";
 import {useShowMessage} from "@/composables/useShowMessage";
+import axios from "axios";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
@@ -49,7 +48,6 @@ const newNotebookFarmer = ref({
     email: '',
     password: ''
 });
-const auth = getAuth();
 
 const registerUser = async () => {
     try {
@@ -58,23 +56,28 @@ const registerUser = async () => {
             return;
         }
 
-        const userCredential = await newUserLogin(
-            auth,
-            newNotebookFarmer.value.email,
-            newNotebookFarmer.value.password
+        const userCredential = await axios.post(
+          'https://us-central1-bana-sul.cloudfunctions.net/createUser',{ 
+            name: newNotebookFarmer.value.userName,
+            email: newNotebookFarmer.value.email,
+            password: newNotebookFarmer.value.password 
+          }
         );
-        const user = userCredential.user;
 
-        await newUser(user.uid, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
-        await newNotebook(newNotebookFarmer.value.userName, user.uid);
+        const uidUser = userCredential.data
+
+        console.log("user credencial: ", uidUser)
+
+        await newUser(uidUser, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
+        await newNotebook(newNotebookFarmer.value.userName, uidUser);
 
         showMessage('Caderno cadastrado com sucesso!', 'green');
         console.log("Usuário registrado!");
 
         newNotebookFarmer.value = {
-            userName: '',
-            email: '',
-            password: ''
+            userName: null,
+            email: null,
+            password: null
         };
     } catch (error) {
         showMessage(error, 'red')
