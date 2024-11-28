@@ -4,6 +4,8 @@
       <v-col cols="12" sm="10" md="8" lg="6">
         <h1 class="display-1 text-center">Pagamento</h1>
 
+        <v-progress-circular v-if="loading" indeterminate color="primary" class="my-4"/>
+
         <v-form v-if="!loading" @submit.prevent="addPayment">
           <v-container>
             <v-row>
@@ -50,7 +52,7 @@ const notebookSelected = ref(null)
 let paymentDate = ref(null);
 
 const money = ref(null)
-let loading = ref(true);
+let loading = ref(false);
 
 onMounted(async () => {
     try {
@@ -64,7 +66,6 @@ onMounted(async () => {
 const getNotebooksDb = async () => {
     try {
         const notebooksData = await getItens('cadernos');
-        loading.value = false;
         notebooks.value = notebooksData.map(notebook => ({
             id: notebook.id,
             nome: notebook.nome
@@ -76,7 +77,9 @@ const getNotebooksDb = async () => {
 
 const addPayment = async () => {
     try {
+      loading.value = true
         if (notebookSelected.value === null || !money.value || !paymentDate.value) {
+            loading.value = false;
             showMessage('Todos os campos devem estar preenchidos.', 'red');
             return;
         }
@@ -85,6 +88,8 @@ const addPayment = async () => {
         await resetVariables();
     } catch (error) {
         showMessage(error, 'red');
+    } finally{
+      loading.value = false;
     }
 };
 

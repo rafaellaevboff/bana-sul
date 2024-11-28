@@ -4,6 +4,8 @@
       <v-col cols="12" sm="10" md="8" lg="6">
         <h1 class="display-1 text-center">Compra de Insumos</h1>
 
+        <v-progress-circular v-if="loading" indeterminate color="primary" class="my-4"/>
+
         <v-form v-if="!loading" @submit.prevent="addPurchaseAgriculturalInput">
           <v-container>
             <v-row>
@@ -73,7 +75,7 @@ const agriculturalInputSelected = ref(null);
 const quantity = ref(null);
 const descontadoCaderno = ref(false);
 let pago = ref(false);
-let loading = ref(true);
+let loading = ref(false);
 
 onMounted(async () => {
     try {
@@ -88,7 +90,6 @@ onMounted(async () => {
 const getNotebooksDb = async () => {
     try {
         const notebooksData = await getItens('cadernos');
-        loading.value = false;
         notebooks.value = notebooksData.map(notebook => ({
             id: notebook.id,
             nome: notebook.nome
@@ -115,8 +116,11 @@ const getAgriculturalInputsDb = async () => {
 }
 
 const addPurchaseAgriculturalInput = async () => {
+  try{
+  loading.value = true
     if (notebookSelected.value === null || !purchaseDate.value || agriculturalInputSelected.value === null || !quantity.value) {
         showMessage('Todos os campos devem estar preenchidos.', 'red');
+        loading.value = false
         return;
     }
 
@@ -127,6 +131,11 @@ const addPurchaseAgriculturalInput = async () => {
         parseFloat(valorTotal), descontadoCaderno.value, pago.value);
     showMessage("Compra cadastrada com sucesso", "green");
     await resetVariables()
+  } catch(error){
+      showMessage(error, 'red')
+  } finally{
+    loading.value = false
+  }
 }
 
 const calculaValorTotal = async () => {

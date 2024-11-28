@@ -4,7 +4,9 @@
       <v-col cols="12" sm="10" md="8" lg="6">
         <h1 class="display-1 text-center">Cadastro de Insumo</h1>
 
-        <v-form ref="form" @submit.prevent="submit">
+        <v-progress-circular v-if="loading" indeterminate color="primary" class="my-4"/>
+
+        <v-form ref="form" @submit.prevent="submit" v-if="!loading">
           <v-text-field v-model="insumo.nome" label="Nome do Insumo" outlined required
                         rounded variant="outlined" density="compact"/>
 
@@ -37,19 +39,25 @@ const insumo = ref({
     valor: ''
 });
 
+const loading = ref(false)
+
 const submit = async () => {
     try {
+      loading.value = true
         await fieldsVerification()
         await newAgriculturalInput(insumo.value.nome, insumo.value.descricao, parseFloat(insumo.value.valor));
         showMessage('Insumo cadastrado com sucesso!', 'green');
         await resetVariables()
     } catch (error) {
         showMessage(error, 'red');
+    } finally{
+      loading.value = false
     }
 }
 
 const fieldsVerification = async () => {
     if (!insumo.value.nome || !insumo.value.descricao || !insumo.value.valor) {
+      loading.value = false
         throw new Error("Todos os campos devem estar preenchidos.");
     }
 }

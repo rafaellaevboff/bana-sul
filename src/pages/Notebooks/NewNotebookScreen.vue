@@ -1,13 +1,14 @@
 <template>
   <v-container>
-
     <v-row>
       <v-col>
         <h2>Novo Caderno e Novo Usuário</h2>
       </v-col>
     </v-row>
 
-    <v-container fluid>
+    <v-progress-circular v-if="loading" indeterminate color="primary" class="my-4"/>
+
+    <v-container fluid v-if="!loading">
       <v-row justify="center" align="center">
         <v-col cols="12" sm="10" md="8" lg="6">
           <v-form @submit.prevent="registerUser">
@@ -22,69 +23,69 @@
                           :rules="[v => !!v || 'Senha é obrigatória', v => v.length >= 6 || 'Senha deve ter no mínimo 6 caracteres']"
                           rounded variant="outlined" density="compact"/>
 
-            <v-btn type="submit" class="bg-primary" :style="{ width: '30%' }" rounded>Cadastrar</v-btn>
+            <v-btn type="submit" class="bg-primary" :style="{ width: '30%' }" rounded>
+              Cadastrar
+            </v-btn>
           </v-form>
         </v-col>
       </v-row>
     </v-container>
-
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
   </v-container>
 </template>
 
 <script setup>
-import {ref} from 'vue';
-import {newUser} from "@/services/userService";
-import {newNotebook} from "@/services/notebookService";
+import { ref } from 'vue';
+import { newUser } from "@/services/userService";
+import { newNotebook } from "@/services/notebookService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
-import {useShowMessage} from "@/composables/useShowMessage";
+import { useShowMessage } from "@/composables/useShowMessage";
 import axios from "axios";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
 const newNotebookFarmer = ref({
-    userName: '',
-    email: '',
-    password: ''
+  userName: '',
+  email: '',
+  password: ''
 });
 
+const loading = ref(false);
+
 const registerUser = async () => {
-    try {
-        if (!newNotebookFarmer.value.userName || !newNotebookFarmer.value.email || !newNotebookFarmer.value.password) {
-            showMessage(`Todos os campos devem estar preenchidos.`, 'red');
-            return;
-        }
-
-        const userCredential = await axios.post(
-          'https://us-central1-bana-sul.cloudfunctions.net/createUser',{ 
-            name: newNotebookFarmer.value.userName,
-            email: newNotebookFarmer.value.email,
-            password: newNotebookFarmer.value.password 
-          }
-        );
-
-        const uidUser = userCredential.data
-
-        console.log("user credencial: ", uidUser)
-
-        await newUser(uidUser, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
-        await newNotebook(newNotebookFarmer.value.userName, uidUser);
-
-        showMessage('Caderno cadastrado com sucesso!', 'green');
-        console.log("Usuário registrado!");
-
-        newNotebookFarmer.value = {
-            userName: null,
-            email: null,
-            password: null
-        };
-    } catch (error) {
-        showMessage(error, 'red')
+  try {
+    loading.value = true
+    if (!newNotebookFarmer.value.userName || !newNotebookFarmer.value.email || !newNotebookFarmer.value.password) {
+      showMessage(`Todos os campos devem estar preenchidos.`, 'red');
+      loading.value = false
+      return;
     }
+
+    const userCredential = await axios.post(
+      'https://us-central1-bana-sul.cloudfunctions.net/createUser', { 
+        name: newNotebookFarmer.value.userName,
+        email: newNotebookFarmer.value.email,
+        password: newNotebookFarmer.value.password 
+      }
+    );
+
+    const uidUser = userCredential.data;
+
+    await newUser(uidUser, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
+    await newNotebook(newNotebookFarmer.value.userName, uidUser);
+
+    showMessage('Caderno cadastrado com sucesso!', 'green');
+
+    newNotebookFarmer.value = {
+      userName: null,
+      email: null,
+      password: null
+    };
+  } catch (error) {
+    showMessage(error, 'red');
+  } finally{
+    loading.value = false
+  }
 };
 </script>
-
-<style scoped>
-
-</style>

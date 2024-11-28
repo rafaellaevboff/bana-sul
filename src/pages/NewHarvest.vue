@@ -79,7 +79,7 @@ const totalPriceBananas = ref({
 });
 
 let hasCurrentPrices = ref(false);
-let loading = ref(true);
+let loading = ref(false);
 const grandTotal = ref(null);
 const notebookSelected = ref(null);
 const harvestDate = ref(null)
@@ -111,6 +111,7 @@ const calculateTotal = () => {
 
 const addBoxes = async () => {
     try {
+        loading.value = true
         await validationsSave()
         await newHarvest(notebookSelected.value, quantities.value, unitPrices.value, parseFloat(grandTotal.value), harvestDate.value);
         showMessage('Nova colheita cadastrada com sucesso!', 'green')
@@ -118,6 +119,8 @@ const addBoxes = async () => {
     } catch (error) {
         const errorMessage = error.message || error;
         showMessage(errorMessage, 'red')
+    } finally{
+        loading.value = false
     }
 };
 
