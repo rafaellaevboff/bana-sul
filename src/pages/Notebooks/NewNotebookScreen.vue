@@ -63,7 +63,7 @@ const registerUser = async () => {
     }
 
     const userCredential = await axios.post(
-      'https://us-central1-bana-sul.cloudfunctions.net/createUser', { 
+      'https://us-central1-bana-pds.cloudfunctions.net/createUser', { 
         name: newNotebookFarmer.value.userName,
         email: newNotebookFarmer.value.email,
         password: newNotebookFarmer.value.password 

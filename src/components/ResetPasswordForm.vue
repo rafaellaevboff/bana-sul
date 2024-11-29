@@ -5,10 +5,16 @@
     <v-card-text>
       <v-form @submit.prevent="resetPassword">
         <v-text-field v-model="emailReset" label="Email" type="email" required rounded variant="outlined" density="compact"/>
-        <v-btn type="submit" block>Redefinir senha</v-btn>
-        <v-btn @click="handleLogin" class="mt-3" block>Entrar</v-btn>
+        <v-btn class="mt-3" type="submit" block color="primary" rounded>Redefinir senha</v-btn>
+        <v-btn class="mt-3" type="submit" block color="primary" rounded @click="handleLogin">Entrar</v-btn>
       </v-form>
     </v-card-text>
+
+    <v-alert v-if="error" type="error" variant="tonal" border="start" color="red lighten-3"
+             icon="mdi-alert-circle-outline" class="mb-4" rounded>
+      {{ error }}
+    </v-alert>
+
   </v-card>
 </template>
 
@@ -22,19 +28,23 @@ import Logo from '../assets/LogoBanaSul.png';
 
 const router = useRouter();
 const emailReset = ref("");
+const error = ref("");
 
 const handleLogin = () => goToLogin(router);
 
 const resetPassword = async () => {
     try {
-        await sendPasswordResetEmail(
-            auth,
-            emailReset.value
-        );
+        error.value = "";
+        await sendPasswordResetEmail(auth, emailReset.value);
         alert("Email enviado com sucesso!");
-
-    } catch (error) {
-        alert("Erro ao enviar e-mail: ", error);
+    } catch (err) {
+        error.value = `Erro ao enviar e-mail.`;
+    } finally{
+        if (error.value) {
+            setTimeout(() => {
+                error.value = "";
+            }, 6000);
+        }
     }
 };
 

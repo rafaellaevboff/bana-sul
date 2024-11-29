@@ -1,23 +1,23 @@
-import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
-import {auth} from "@/plugins/firebase";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth } from "@/plugins/firebase";
 import store from "@/store";
-import {getNotebookByUser} from "@/services/notebookService";
+import { getNotebookByUser } from "@/services/notebookService";
 
-export const logout = async (router) => {
+export const logout = async (router, setError) => {
     try {
         await signOut(auth);
-        localStorage.removeItem('farmerNotebook')
+        localStorage.removeItem('farmerNotebook');
         await router.push('/');
     } catch (error) {
-        alert(`Erro ao fazer logout: ${error.message}`);
+        setError(`Erro ao fazer logout: ${error.message}`);
     }
-}
+};
 
-export const login = async (router, email, password) => {
+export const login = async (router, email, password, setError) => {
     const auth = getAuth();
 
     if (!email.value || !password.value) {
-        console.error("Email e senha são obrigatórios.");
+        setError("Email e senha são obrigatórios.");
         return;
     }
 
@@ -40,11 +40,8 @@ export const login = async (router, email, password) => {
             await router.push('/app/home');
         }
     } catch (error) {
-        console.error("Erro ao fazer login:", error);
+        if (error.code === "auth/invalid-credential") setError('Senha ou e-mail incorretos.');
+        else setError(`Erro: ${error.message}`);
     }
 };
 
-
-export const newUserLogin = async (auth, email, password) => {
-    return await createUserWithEmailAndPassword(auth, email, password);
-}

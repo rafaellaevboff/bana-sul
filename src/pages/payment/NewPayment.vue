@@ -15,7 +15,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-text-field label="Data da colheita" type="date" v-model="paymentDate" required
+                <v-text-field label="Data do pagamento" type="date" v-model="paymentDate" required
                               rounded variant="outlined" density="compact"/>
               </v-col>
 
