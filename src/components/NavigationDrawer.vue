@@ -110,16 +110,6 @@
         </v-list-item>
       </div>
 
-      <div v-if="isAdmin">
-        <v-list-subheader>USUÁRIOS</v-list-subheader>
-        <v-list-item link to="/app/listaUsuarios" class="text-start">
-          <template v-slot:prepend>
-            <v-icon :icon="'mdi-account-group'"/>
-          </template>
-          <v-list-item-content v-text="'Usuários cadastrados'"/>
-        </v-list-item>
-      </div>
-
       <v-list-subheader>AÇÕES</v-list-subheader>
       <v-list-item @click="logoutApp" class="text-start">
         <template v-slot:prepend>

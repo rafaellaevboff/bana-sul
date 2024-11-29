@@ -18,7 +18,6 @@ import NotFoundScreen from "@/pages/NotFoundScreen.vue";
 import MyPurchasesScreen from "@/pages/AgriculturalInputs/MyPurchasesScreen.vue";
 import AgriculturalInputs from "@/pages/AgriculturalInputs/AgriculturalInputs.vue";
 import NewPayment from "@/pages/payment/NewPayment.vue";
-import ListUsers from "@/pages/ListUsers.vue";
 import ListPayments from "@/pages/payment/ListPayments.vue";
 
 const routes = [
@@ -33,12 +32,6 @@ const routes = [
                 name: 'Home',
                 component: HomeScreen,
                 meta: {requiresAuth: true, requiresAdmin:true}
-            },
-            {
-                path: 'listaUsuarios',
-                name: 'Lista Usuarios',
-                component: ListUsers,
-                meta: {requiresAuth: true, requiresAdmin:false}
             },
             {
                 path: 'cadernos',

@@ -13,6 +13,7 @@
     "run-backend": "functions-framework --target=createUser"
   },
   "dependencies": {
+    "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
     "@google-cloud/functions-framework": "^3.4.2",
     "@mdi/font": "^7.4.47",
     "axios": "^1.7.8",

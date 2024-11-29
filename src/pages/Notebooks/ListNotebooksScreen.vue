@@ -93,9 +93,9 @@ const openDelete = (async (item) => {
     openDialogDelete.value = true;
 });
 
-const handleDeleteNotebook = ( () => {
+const handleDeleteNotebook = ( async () => {
     try {
-        deleteItem("cadernos", selectedNotebook.value.id);
+        await deleteItem("cadernos", selectedNotebook.value.id);
         showMessage('Caderno selecionado foi excluído com sucesso.','green');
     } catch (error) {
         showMessage(`Erro ao excluir o caderno: ${error}`,'green');

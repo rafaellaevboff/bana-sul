@@ -1,10 +1,11 @@
 <template>
   <v-app>
     <v-app-bar app class="bg-primary" dark>
-      <v-app-bar-nav-icon @click="drawer = !drawer"/>
+
+      <v-app-bar-nav-icon class="custom-hover" @click="drawer = !drawer"/>
       <v-spacer/>
 
-      <v-btn icon @click="toggleLista">
+      <v-btn class="custom-hover" icon @click="toggleLista">
         <v-icon>mdi-exit-to-app</v-icon>
       </v-btn>
     </v-app-bar>
@@ -57,5 +58,9 @@ const toggleLista = () => {
     border-radius: 5px;
     width: 200px;
     z-index: 10;
+}
+
+.custom-hover:hover {
+    background-color: rgb(223, 190, 0) !important;
 }
 </style>

@@ -19,15 +19,20 @@ functions.http('createUser', async (req, res) => {
 
       try {
         const userRecord = await getAuth().createUser({
-          email: email,
-          password: password,
+          email,
+          password,
           displayName: name,
         });
 
-        res.status(200).send(userRecord.uid);
+        res.status(200).send({ uid: userRecord.uid });
       } catch (error) {
         console.error("Erro ao criar usuário:", error);
-        res.status(500).send("Erro ao criar usuário: " + error.message);
+
+        if (error.code === "auth/email-already-exists") {
+          res.status(400).send("O email fornecido já está em uso.");
+        } else {
+          res.status(500).send("Erro ao criar usuário: " + error.message);
+        }
       }
     } else {
       res.status(405).send("Método não permitido");

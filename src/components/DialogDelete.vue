@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title class="headline">Confirmação de Exclusão</v-card-title>
       <v-card-text>
-        <p>Você tem certeza que deseja excluir o item {{ item }}?</p>
+        <p>{{ dialogMessage }}</p>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import {defineEmits, defineProps, onMounted, ref, watch} from "vue";
+import {computed, defineEmits, defineProps, onMounted, ref, watch} from "vue";
 
 const props = defineProps({
     modelValue: {
@@ -26,6 +26,10 @@ const props = defineProps({
         type: String,
         required: true,
         default: "selecionado",
+    },
+    message: {
+      type: String,
+      required: false
     }
 });
 
@@ -33,6 +37,13 @@ onMounted(async () => {
     console.log("item: ", props.item)
 });
 
+
+const dialogMessage = computed(() => {
+    if (props.message) {
+        return props.message
+    }
+    return `Você tem certeza que deseja excluir o item ${ props.item }?`
+});
 
 const emit = defineEmits(["update:modelValue", "deleteConfirmed"]);
 
