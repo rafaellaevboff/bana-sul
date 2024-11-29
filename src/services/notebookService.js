@@ -50,10 +50,9 @@ export const getNotebookByUser = async (id, userRole) => {
         const doc = querySnapshot.docs[0];
         return {id: doc.id, ...doc.data()}
     } else if (userRole){
-        return true
+        return false
     } else {
-        console.log("Nenhum caderno encontrado para o usuário.");
-        return null;
+        throw new Error('Houve um problema ao fazer login!')
     }
 };
 

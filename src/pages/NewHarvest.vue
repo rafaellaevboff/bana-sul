@@ -22,7 +22,7 @@
               <v-col cols="12" md="12" class="font-weight-bold"><p>Quantidade de caixas</p></v-col>
 
               <v-col v-for="(quantity, index) in quantities" :key="index" cols="12" md="6">
-                <v-text-field :label="'Quantidade de Caixas - ' + quantity.label" type="number"
+                <v-text-field :label="quantity.label" type="number"
                               :min="1" v-model="quantity.value" :disabled="!hasCurrentPrices"
                               @input="calculateTotal" required rounded variant="outlined" density="compact"/>
               </v-col>

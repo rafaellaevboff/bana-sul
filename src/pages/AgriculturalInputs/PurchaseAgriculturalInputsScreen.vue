@@ -21,7 +21,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-text-field label="Data da colheita" type="date" v-model="purchaseDate" required
+                <v-text-field label="Data da compra" type="date" v-model="purchaseDate" required
                               rounded variant="outlined" density="compact"/>
               </v-col>
 

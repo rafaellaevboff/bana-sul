@@ -35,11 +35,10 @@
 
 <script setup>
 import {ref} from 'vue';
-import {getAuth} from 'firebase/auth';
+import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import {newUser} from "@/services/userService";
 import {newNotebook} from "@/services/notebookService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
-import {newUserLogin} from "@/services/loginService";
 import {useShowMessage} from "@/composables/useShowMessage";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
@@ -54,30 +53,39 @@ const auth = getAuth();
 const registerUser = async () => {
     try {
         if (!newNotebookFarmer.value.userName || !newNotebookFarmer.value.email || !newNotebookFarmer.value.password) {
-            showMessage(`Todos os campos devem estar preenchidos.`, 'red');
+            showMessage('Todos os campos devem estar preenchidos.', 'red');
             return;
         }
 
-        const userCredential = await newUserLogin(
+        const currentUser = {
+            uid: auth.currentUser.uid,
+            email: auth.currentUser.email,
+            displayName: auth.currentUser.displayName,
+        };
+
+        const adminPassword = prompt("Por favor, insira sua senha novamente para confirmar:");
+        const userCredential = await createUserWithEmailAndPassword(
             auth,
             newNotebookFarmer.value.email,
             newNotebookFarmer.value.password
         );
+        await signInWithEmailAndPassword(auth, currentUser.email, adminPassword);
         const user = userCredential.user;
 
         await newUser(user.uid, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
         await newNotebook(newNotebookFarmer.value.userName, user.uid);
 
         showMessage('Caderno cadastrado com sucesso!', 'green');
-        console.log("Usuário registrado!");
+        console.log("Usuário agricultor registrado!");
+
 
         newNotebookFarmer.value = {
-            userName: '',
-            email: '',
-            password: ''
+            userName: null,
+            email: null,
+            password: null
         };
     } catch (error) {
-        showMessage(error, 'red')
+        showMessage(error.message, 'red');
     }
 };
 </script>
