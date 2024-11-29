@@ -35,11 +35,11 @@
 
 <script setup>
 import {ref} from 'vue';
-import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import {newUser} from "@/services/userService";
 import {newNotebook} from "@/services/notebookService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {useShowMessage} from "@/composables/useShowMessage";
+import axios from "axios";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
@@ -48,7 +48,6 @@ const newNotebookFarmer = ref({
     email: '',
     password: ''
 });
-const auth = getAuth();
 
 const registerUser = async () => {
     try {
@@ -57,23 +56,20 @@ const registerUser = async () => {
             return;
         }
 
-        const currentUser = {
-            uid: auth.currentUser.uid,
-            email: auth.currentUser.email,
-            displayName: auth.currentUser.displayName,
-        };
-
-        const adminPassword = prompt("Por favor, insira sua senha novamente para confirmar:");
-        const userCredential = await createUserWithEmailAndPassword(
-            auth,
-            newNotebookFarmer.value.email,
-            newNotebookFarmer.value.password
+        const userCredential = await axios.post(
+          'https://us-central1-bana-sul.cloudfunctions.net/createUser',{
+            name: newNotebookFarmer.value.userName,
+            email: newNotebookFarmer.value.email,
+            password: newNotebookFarmer.value.password
+          }
         );
-        await signInWithEmailAndPassword(auth, currentUser.email, adminPassword);
-        const user = userCredential.user;
 
-        await newUser(user.uid, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
-        await newNotebook(newNotebookFarmer.value.userName, user.uid);
+        const uidUser = userCredential.data
+
+        console.log("user credencial: ", uidUser)
+
+        await newUser(uidUser, newNotebookFarmer.value.userName, newNotebookFarmer.value.email);
+        await newNotebook(newNotebookFarmer.value.userName, uidUser);
 
         showMessage('Caderno cadastrado com sucesso!', 'green');
         console.log("Usuário agricultor registrado!");
