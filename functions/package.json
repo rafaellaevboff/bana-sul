@@ -4,7 +4,7 @@
     "description": "Google Cloud Functions for Firebase",
     "main": "index.js",
     "scripts": {
-        "start": "functions-framework",
+        "start": "functions-framework --target=createUser",
         "deploy": "gcloud functions deploy createUser --runtime nodejs18 --trigger-http --allow-unauthenticated"
     },
     "dependencies": {
