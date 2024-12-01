@@ -1,41 +1,35 @@
 <template>
-  <v-dialog v-model="isOpen" max-width="400px">
-    <v-card>
-      <v-card-title class="headline">Editar Insumo</v-card-title>
-      <v-card-text>
+  <base-dialog-update v-model="isOpen" title="Editar Insumo"
+                      :confirmText="'Salvar'" :cancelText="'Cancelar'"
+                      @confirmed="confirmEdit" @cancelled="cancelEdit">
+    <template #content>
         <v-text-field v-model="editedItem.nome" label="Nome" required/>
         <v-text-field v-model="editedItem.descricao" label="Descricao" required/>
         <v-text-field v-model="editedItem.valor" label="Valor" required/>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn @click="cancel" color="grey darken-1">Cancelar</v-btn>
-        <v-btn @click="confirmEdit" color="blue">Salvar</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    </template>
+  </base-dialog-update>
 </template>
 
 <script setup>
 import {ref, defineProps, defineEmits, watch} from "vue";
+import BaseDialogUpdate from "@/components/DialogsUpdate/BaseDialogUpdate.vue";
 
 const props = defineProps({
     modelValue: Boolean,
-    item: Object,
+    item: {type: Object, required: true},
 });
 
 const emit = defineEmits(["update:modelValue", "editConfirmed"]);
 
 const isOpen = ref(props.modelValue);
-
 const editedItem = ref({...props.item});
 
-const cancel = () => {
+const confirmEdit = () => {
+    emit("editConfirmed", {...editedItem.value});
     emit("update:modelValue", false);
 };
 
-const confirmEdit = () => {
-    emit("editConfirmed", editedItem.value);
+const cancelEdit = () => {
     emit("update:modelValue", false);
 };
 

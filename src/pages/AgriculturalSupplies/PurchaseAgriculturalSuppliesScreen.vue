@@ -6,7 +6,7 @@
 
         <v-progress-circular v-if="loading" indeterminate color="primary" class="my-4"/>
 
-        <v-form v-if="!loading" @submit.prevent="addPurchaseAgriculturalInput">
+        <v-form v-if="!loading" @submit.prevent="addPurchaseAgriculturalSupply">
           <v-container>
             <v-row>
               <v-col cols="12">
@@ -17,7 +17,7 @@
 
 
               <v-col cols="12">
-                <v-select label="Selecione o Insumo" :items="agriculturalInputs" v-model="agriculturalInputSelected"
+                <v-select label="Selecione o Insumo" :items="agriculturalSupplies" v-model="agriculturalSupplySelected"
                           no-data-text="Nenhum insumo disponível."
                           item-title="nome" item-value="id" required rounded variant="outlined"/>
               </v-col>
@@ -34,11 +34,11 @@
 
               <v-row>
                 <v-col cols="6">
-                  <v-checkbox :label="'Descontado no Caderno'" v-model="descontadoCaderno"/>
+                  <v-checkbox :label="'Descontado no Caderno'" v-model="deductedNotebook"/>
                 </v-col>
 
-                <v-col cols="6" v-if="descontadoCaderno === false">
-                  <v-checkbox :label="'Pago em dinheiro'" v-model="pago"/>
+                <v-col cols="6" v-if="deductedNotebook === false">
+                  <v-checkbox :label="'Pago em dinheiro'" v-model="paid"/>
                 </v-col>
               </v-row>
 
@@ -58,7 +58,7 @@
 
 <script setup>
 import {onMounted, ref} from 'vue';
-import {getAgriculturalInputs, newPurchaseAgriculturalInput} from "@/services/agriculturalInputsService";
+import {getAgriculturalSupplies, newPurchaseAgriculturalSupply} from "@/services/agriculturalSuppliesService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {getItemById, getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
@@ -69,18 +69,18 @@ const notebooks = ref([]);
 const notebookSelected = ref(null);
 const purchaseDate = ref(null);
 
-const agriculturalInputs = ref([]);
-const agriculturalInputSelected = ref(null);
+const agriculturalSupplies = ref([]);
+const agriculturalSupplySelected = ref(null);
 
 const quantity = ref(null);
-const descontadoCaderno = ref(false);
-let pago = ref(false);
+const deductedNotebook = ref(false);
+let paid = ref(false);
 let loading = ref(false);
 
 onMounted(async () => {
     try {
         await getNotebooksDb();
-        await getAgriculturalInputsDb();
+        await getAgriculturalSuppliesDb();
     } catch (error) {
         showMessage(`Erro ao buscar cadernos e insumos:", ${error}`, 'green');
         console.error("Erro ao buscar cadernos e insumos:", error);
@@ -99,26 +99,22 @@ const getNotebooksDb = async () => {
     }
 }
 
-const getAgriculturalInputsDb = async () => {
+const getAgriculturalSuppliesDb = async () => {
     try {
-        const inputsData = await getAgriculturalInputs();
+        const SuppliesData = await getAgriculturalSupplies();
 
-        agriculturalInputs.value = inputsData.map(input => ({
-            id: input.id,
-            nome: input.nome,
-            valor: input.valor,
-            descontadoCaderno: input.descontadoCaderno,
-            pago: input.pago
+        agriculturalSupplies.value = SuppliesData.map(supply => ({
+            ...supply
         }));
     } catch (error) {
         showMessage(`Erro ao buscar insumos: ${error}`, 'red');
     }
 }
 
-const addPurchaseAgriculturalInput = async () => {
+const addPurchaseAgriculturalSupply = async () => {
   try{
   loading.value = true
-    if (notebookSelected.value === null || !purchaseDate.value || agriculturalInputSelected.value === null || !quantity.value) {
+    if (notebookSelected.value === null || !purchaseDate.value || agriculturalSupplySelected.value === null || !quantity.value) {
         showMessage('Todos os campos devem estar preenchidos.', 'red');
         loading.value = false
         return;
@@ -126,9 +122,9 @@ const addPurchaseAgriculturalInput = async () => {
 
     const valorTotal = await calculaValorTotal()
 
-    if (descontadoCaderno.value === true) pago.value = false;
-    await newPurchaseAgriculturalInput(notebookSelected.value, agriculturalInputSelected.value, purchaseDate.value, quantity.value,
-        parseFloat(valorTotal), descontadoCaderno.value, pago.value);
+    if (deductedNotebook.value === true) paid.value = false;
+    await newPurchaseAgriculturalSupply(notebookSelected.value, agriculturalSupplySelected.value, purchaseDate.value, quantity.value,
+        parseFloat(valorTotal), deductedNotebook.value, paid.value);
     showMessage("Compra cadastrada com sucesso", "green");
     await resetVariables()
   } catch(error){
@@ -139,17 +135,17 @@ const addPurchaseAgriculturalInput = async () => {
 }
 
 const calculaValorTotal = async () => {
-    const priceAgriculturalInputs = await getItemById('insumos', agriculturalInputSelected.value);
-    return priceAgriculturalInputs.valor * quantity.value;
+    const priceagriculturalSupplies = await getItemById('insumos', agriculturalSupplySelected.value);
+    return priceagriculturalSupplies.valor * quantity.value;
 }
 
 const resetVariables = async () => {
     notebookSelected.value = null;
-    agriculturalInputSelected.value = null;
+    agriculturalSupplySelected.value = null;
     purchaseDate.value = null;
     quantity.value = null;
-    descontadoCaderno.value = false;
-    pago.value = false;
+    deductedNotebook.value = false;
+    paid.value = false;
 }
 </script>
 

@@ -1,10 +1,14 @@
 <template>
-  <div class="container">
-    <h1>Compras de insumos</h1>
-    <h2 style="color: grey">{{ nameNotebook }}</h2>
 
-    <v-data-table :headers="headers" :items="itens" class="table" item-value="id"
-                  loading-text="Carregando itens..." :loading="isLoading">
+  <h1 class="mt-5">Compras de insumos</h1>
+
+  <v-row v-if="loading" class="d-flex justify-center align-center" style="height: 80vh;">
+    <v-progress-circular indeterminate color="primary" size="64" class="ma-auto"/>
+  </v-row>
+
+  <div v-if="!loading" class="container">
+    <h2 style="color: grey" class="mt-3">{{ nameNotebook }}</h2>
+    <v-data-table v-if="itens.length > 0" :headers="headers" :items="itens" class="table mt-5" item-value="id">
       <template v-slot:[`item.status`]="{ item }">
         {{ item.status }}
       </template>
@@ -15,6 +19,10 @@
       </template>
     </v-data-table>
 
+    <v-alert v-if="itens.length === 0" type="warning" class="text-center mt-5" outlined>
+      Nenhum dado cadastrado.
+    </v-alert>
+
     <dialog-delete v-model="openDialogDelete" :item="selectedItem?.insumo?.nome" @deleteConfirmed="handleDeletePurchase"/>
 
     <dialog-update-purchase v-model="openDialogUpdate" :item="selectedItem" @editConfirmed="handleUpdatePurchase"/>
@@ -23,7 +31,10 @@
 
 <script setup>
 import {computed, onMounted, ref} from 'vue';
-import {getPurchaseAgriculturalInputsByNotebook, updateAgriculturalInput} from "@/services/agriculturalInputsService";
+import {
+    getPurchaseAgriculturalSuppliesByNotebook,
+    updateAgriculturalSupply,
+} from "@/services/agriculturalSuppliesService";
 import {useRoute} from "vue-router";
 import {getNameNotebook} from "@/services/notebookService";
 import {deleteItem} from "@/services/essentialFunctions";
@@ -35,8 +46,8 @@ import {useShowMessage} from "@/composables/useShowMessage";
 const {showMessage} = useShowMessage();
 
 const itens = ref([]);
-const isLoading = ref(true);
 const route = useRoute();
+const loading = ref(true);
 
 let openDialogDelete = ref(false);
 const openDialogUpdate = ref(false);
@@ -65,13 +76,13 @@ const isAdmin = computed(() => {
 
 onMounted(async () => {
     try {
-        isLoading.value = true;
+        loading.value = true;
         await loadItens();
         notebook.value = await getNameNotebook(id);
     } catch (error) {
         console.error("Erro ao carregar dados:", error);
     } finally {
-        isLoading.value = false;
+        loading.value = false;
     }
 });
 
@@ -80,7 +91,7 @@ const nameNotebook = computed(() => {
 });
 
 const loadItens = async () => {
-    const rawItens = await getPurchaseAgriculturalInputsByNotebook(id);
+    const rawItens = await getPurchaseAgriculturalSuppliesByNotebook(id);
     itens.value = Array.isArray(rawItens) ? rawItens.map(item => ({
         ...item
     })) : [];
@@ -93,7 +104,7 @@ const openUpdate = (item) => {
 
 const handleUpdatePurchase = async (updatedItem) => {
     try {
-        await updateAgriculturalInput(updatedItem);
+        await updateAgriculturalSupply(updatedItem);
         showMessage('Compra editads', 'green');
     } catch (error) {
         showMessage('Erro ao editar a compra.', 'red');

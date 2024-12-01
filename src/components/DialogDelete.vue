@@ -64,4 +64,7 @@ watch(() => props.modelValue, (newValue) => {
 </script>
 
 <style scoped>
+.v-btn:hover {
+    background-color: rgba(247, 208, 0, 0.06) !important;
+}
 </style>

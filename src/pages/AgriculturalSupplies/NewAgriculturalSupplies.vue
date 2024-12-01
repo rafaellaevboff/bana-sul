@@ -7,13 +7,13 @@
         <v-progress-circular v-if="loading" indeterminate color="primary" class="my-4"/>
 
         <v-form ref="form" @submit.prevent="submit" v-if="!loading">
-          <v-text-field v-model="insumo.nome" label="Nome do Insumo" outlined required
+          <v-text-field v-model="supply.nome" label="Nome do Insumo" outlined required
                         rounded variant="outlined" density="compact"/>
 
-          <v-textarea v-model="insumo.descricao" label="Descrição" required
+          <v-textarea v-model="supply.descricao" label="Descrição" required
                       rounded variant="outlined" density="compact"/>
 
-          <field-value v-model="insumo.valor"/>
+          <field-value v-model="supply.valor"/>
 
           <v-btn type="submit" :style="{ width: '30%' }" class="bg-primary" rounded>Cadastrar</v-btn>
         </v-form>
@@ -26,14 +26,14 @@
 
 <script setup>
 import {ref} from 'vue';
-import {newAgriculturalInput} from "@/services/agriculturalInputsService";
+import {newAgriculturalSupply} from "@/services/agriculturalSuppliesService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {useShowMessage} from "@/composables/useShowMessage";
 import FieldValue from "@/components/FieldValue.vue";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
-const insumo = ref({
+const supply = ref({
     nome: '',
     descricao: '',
     valor: ''
@@ -45,7 +45,7 @@ const submit = async () => {
     try {
       loading.value = true
         await fieldsVerification()
-        await newAgriculturalInput(insumo.value.nome, insumo.value.descricao, parseFloat(insumo.value.valor));
+        await newAgriculturalSupply(supply.value.nome, supply.value.descricao, parseFloat(supply.value.valor));
         showMessage('Insumo cadastrado com sucesso!', 'green');
         await resetVariables()
     } catch (error) {
@@ -56,16 +56,16 @@ const submit = async () => {
 }
 
 const fieldsVerification = async () => {
-    if (!insumo.value.nome || !insumo.value.descricao || !insumo.value.valor) {
+    if (!supply.value.nome || !supply.value.descricao || !supply.value.valor) {
       loading.value = false
         throw new Error("Todos os campos devem estar preenchidos.");
     }
 }
 
 const resetVariables = async () => {
-    insumo.value.nome = null;
-    insumo.value.descricao = null;
-    insumo.value.valor = null;
+    supply.value.nome = null;
+    supply.value.descricao = null;
+    supply.value.valor = null;
 }
 
 </script>

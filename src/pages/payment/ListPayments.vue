@@ -1,16 +1,16 @@
 <template>
   <v-container>
-      <h1 class="display-1 text-center">Pagamentos cadastrados</h1>
+      <h1 class="display-1 text-center mb-4">Pagamentos cadastrados</h1>
 
     <v-text-field v-model="search" label="Buscar caderno" class="mb-4" clearable rounded variant="outlined" density="compact"/>
 
-    <v-data-table :headers="headers" :items="filteredPayments" :items-per-page="10" class="elevation-1" item-key="id">
+    <v-data-table :headers="headers" :items="filteredPayments" :items-per-page="10" class="elevation-1" item-key="id" no-data-text="Nenhum pagamento cadastrado">
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
       </template>
     </v-data-table>
 
-    <dialog-delete v-model="openDialogDelete" :item="selectedPayment?.agricultor" @deleteConfirmed="handleDeleteInput"/>
+    <dialog-delete v-model="openDialogDelete" :item="selectedPayment?.agricultor" @deleteConfirmed="handleDeleteSupply"/>
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
 
@@ -81,7 +81,7 @@ const openDelete = (item) => {
     openDialogDelete.value = true;
 };
 
-const handleDeleteInput = async () => {
+const handleDeleteSupply = async () => {
     try {
         await deleteItem("pagamentos", selectedPayment.value.id);
         showMessage('Dado excluído com sucesso.', 'green');

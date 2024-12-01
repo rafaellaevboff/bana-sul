@@ -1,15 +1,15 @@
 import {doc, setDoc, updateDoc} from "firebase/firestore";
 import {db} from '@/plugins/firebase';
 
-export const newBananaPrice = async (dataInicio, dataFim, prataPrimeira, prataSegunda, caturraPrimeira, caturraSegunda) => {
+export const newBananaPrice = async (startDate, endDate, firstSilver, secondSilver, firstCaturra, secondCaturra) => {
     try {
         await setDoc(doc(db, "precosBanana", crypto.randomUUID()), {
-            dataInicio: dataInicio,
-            dataFim: dataFim,
-            prataPrimeira: prataPrimeira,
-            prataSegunda: prataSegunda,
-            caturraPrimeira: caturraPrimeira,
-            caturraSegunda: caturraSegunda,
+            dataInicio: startDate,
+            dataFim: endDate,
+            prataPrimeira: firstSilver,
+            prataSegunda: secondSilver,
+            caturraPrimeira: firstCaturra,
+            caturraSegunda: secondCaturra,
             dataCadastro: new Date()
         });
         console.log('Preços de bananas salvos com sucesso no Firestore');

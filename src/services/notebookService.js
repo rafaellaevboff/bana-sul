@@ -1,6 +1,6 @@
 import {collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where} from "firebase/firestore";
 import {db} from '@/plugins/firebase';
-import {agriculturalInputsDiscountedInNotebook} from "@/services/agriculturalInputsService";
+import {agriculturalSuppliesDiscountedInNotebook} from "@/services/agriculturalSuppliesService";
 import {getItemByNotebook} from "@/services/essentialFunctions";
 import {format} from "date-fns";
 
@@ -56,37 +56,30 @@ export const getNotebookByUser = async (id, userRole) => {
     }
 };
 
-export const saldoAgricultor = async (id) => {
-    let harvests = await getItemByNotebook('colheita', id)
-    let agriculturalInputs = await agriculturalInputsDiscountedInNotebook(id)
-    let payments = await getItemByNotebook('pagamentos', id)
+export const farmerBalance = async (id) => {
+    const [harvests, agriculturalSupplies, payments] = await Promise.all([
+        getItemByNotebook('colheita', id),
+        agriculturalSuppliesDiscountedInNotebook(id),
+        getItemByNotebook('pagamentos', id)
+    ]);
 
     let harvestsTotal = harvests.reduce((sum, item) => sum + item.total, 0)
-    let agriculturalInputsTotal = agriculturalInputs.reduce((sum, item) => sum + item.valorTotal, 0)
+    let agriculturalSuppliesTotal = agriculturalSupplies.reduce((sum, item) => sum + item.valorTotal, 0)
     let paymentsTotal = payments.reduce((sum, item) => sum + item.valor, 0)
 
-    return harvestsTotal - (agriculturalInputsTotal + paymentsTotal);
+    return harvestsTotal - (agriculturalSuppliesTotal + paymentsTotal);
 }
 
 export const getNotebookItems = async (id) => {
-    let harvests = await getItemByNotebook('colheita', id);
-    let agriculturalInputs = await agriculturalInputsDiscountedInNotebook(id);
-    let payments = await getItemByNotebook('pagamentos', id);
+    const [harvests, agriculturalSupplies, payments] = await Promise.all([
+        getItemByNotebook('colheita', id),
+        agriculturalSuppliesDiscountedInNotebook(id),
+        getItemByNotebook('pagamentos', id)
+    ]);
 
     let harvestsMapped = harvests.map(harvest => {
-        let totalPrataPrimeira = harvest.precosBanana.prataPrimeira *
-            (harvest.quantidade.find(q => q.key === 'prataPrimeira')?.value || 0)
-
-        let totalCaturraPrimeira = harvest.precosBanana.caturraPrimeira *
-            (harvest.quantidade.find(q => q.key === 'caturraPrimeira')?.value || 0)
-
-        let totalPrataSegunda = harvest.precosBanana.prataSegunda *
-            (harvest.quantidade.find(q => q.key === 'prataSegunda')?.value || 0)
-
-        let totalCaturraSegunda = harvest.precosBanana.caturraSegunda *
-            (harvest.quantidade.find(q => q.key === 'caturraSegunda')?.value || 0)
-
-        let total = totalPrataPrimeira + totalCaturraPrimeira + totalPrataSegunda + totalCaturraSegunda;
+        let total = ['prataPrimeira', 'caturraPrimeira', 'prataSegunda', 'caturraSegunda']
+            .reduce((sum, key) => sum + (harvest.precosBanana[key] * (harvest.quantidade.find(q => q.key === key)?.value || 0)), 0);
 
         return {
             tipo: 'harvest',
@@ -97,10 +90,10 @@ export const getNotebookItems = async (id) => {
         };
     });
 
-    let agriculturalInputsMapped = agriculturalInputs.map(input => ({
+    let agriculturalSuppliesMapped = agriculturalSupplies.map(supply => ({
         tipo: 'agriculturalInput',
-        valor: input.valorTotal,
-        dataEfetuacao: format(input.dataEfetuacao, 'dd/MM/yyyy')
+        valor: supply.valorTotal,
+        dataEfetuacao: format(supply.dataEfetuacao, 'dd/MM/yyyy')
     }));
 
     let paymentsMapped = payments.map(payment => ({
@@ -109,5 +102,5 @@ export const getNotebookItems = async (id) => {
         dataEfetuacao: format(payment.dataEfetuacao, 'dd/MM/yyyy')
     }));
 
-    return [...harvestsMapped, ...agriculturalInputsMapped, ...paymentsMapped];
+    return [...harvestsMapped, ...agriculturalSuppliesMapped, ...paymentsMapped];
 };

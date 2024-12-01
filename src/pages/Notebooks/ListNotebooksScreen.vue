@@ -1,20 +1,20 @@
 <template>
   <v-container>
-    <h1 class="display-1 text-center">Cadernos</h1>
+    <h1 class="display-1 text-center mb-4">Cadernos</h1>
 
     <v-text-field v-model="search" label="Buscar caderno" class="mb-4" clearable rounded variant="outlined" density="compact"/>
 
     <v-row>
       <v-col v-for="(item, index) in filteredCards" :key="index" cols="12" sm="6" md="3">
-        <v-card class="d-flex flex-column justify-space-between pa-4" min-height="200px">
+        <v-card class="d-flex flex-column justify-space-between pa-4" min-height="200px" @click="openNotebook(item)">
           <v-card-title>{{ item.nome }}</v-card-title>
 
           <v-card-actions class="justify-space-between">
             <v-btn @click="openNotebook(item)">Abrir</v-btn>
 
             <div>
-              <v-icon @click="openUpdate(item)" color="blue">mdi-pencil</v-icon>
-              <v-icon @click="openDelete(item)" color="red">mdi-delete</v-icon>
+              <v-icon @click.stop="openUpdate(item)" color="blue">mdi-pencil</v-icon>
+              <v-icon @click.stop="openDelete(item)" color="red">mdi-delete</v-icon>
             </div>
           </v-card-actions>
         </v-card>
@@ -101,10 +101,13 @@ const handleDeleteNotebook = ( async () => {
         showMessage(`Erro ao excluir o caderno: ${error}`,'green');
         console.error("Erro ao excluir o caderno:", error);
     } finally {
-        loadNotebooks();
+        await loadNotebooks();
     }
 });
 </script>
 
 <style scoped>
+.v-btn:hover {
+    background-color: rgba(247, 208, 0, 0.06) !important;
+}
 </style>

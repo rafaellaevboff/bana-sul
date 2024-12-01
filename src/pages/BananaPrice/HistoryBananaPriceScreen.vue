@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <h1 class="display-1 text-center">Histórico de preços de banana</h1>
-    <v-data-table :headers="headers" :items="history" :items-per-page="10" class="elevation-1" item-key="id">
+    <h1 class="display-1 text-center mb-5">Histórico de preços de banana</h1>
+    <v-data-table :headers="headers" :items="history" :items-per-page="10" class="elevation-1" item-key="id" no-data-text="Nenhum valor de caixa de banana cadastrado.">
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon @click="openUpdate(item)" color="primary" small>mdi-pencil</v-icon>
       <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
@@ -43,7 +43,6 @@ const headers = ref([
 let openDialogDelete = ref(false);
 let openDialogUpdate = ref(false);
 let selectedPrice = ref(null);
-
 
 onMounted(async () => {
     await loadPrices();

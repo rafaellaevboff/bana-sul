@@ -10,13 +10,13 @@ import NewNotebookScreen from "@/pages/Notebooks/NewNotebookScreen.vue";
 import ListNotebooksScreen from "@/pages/Notebooks/ListNotebooksScreen.vue";
 import HistoryBananaPriceScreen from "@/pages/BananaPrice/HistoryBananaPriceScreen.vue";
 import FarmerNotebook from "@/pages/Notebooks/FarmerNotebook.vue";
-import NewAgriculturalInputs from "@/pages/AgriculturalInputs/NewAgriculturalInputs.vue";
-import PurchaseAgriculturalInputsScreen from "@/pages/AgriculturalInputs/PurchaseAgriculturalInputsScreen.vue";
+import NewAgriculturalSupplies from "@/pages/AgriculturalSupplies/NewAgriculturalSupplies.vue";
+import PurchaseAgriculturalSuppliesScreen from "@/pages/AgriculturalSupplies/PurchaseAgriculturalSuppliesScreen.vue";
 import {doc, getDoc, getFirestore} from "firebase/firestore";
 import store from "@/store";
 import NotFoundScreen from "@/pages/Sistem/NotFoundScreen.vue";
-import MyPurchasesScreen from "@/pages/AgriculturalInputs/MyPurchasesScreen.vue";
-import AgriculturalInputs from "@/pages/AgriculturalInputs/AgriculturalInputs.vue";
+import MyPurchasesScreen from "@/pages/AgriculturalSupplies/MyPurchasesScreen.vue";
+import AgriculturalSupplies from "@/pages/AgriculturalSupplies/AgriculturalSupplies.vue";
 import NewPayment from "@/pages/payment/NewPayment.vue";
 import ListPayments from "@/pages/payment/ListPayments.vue";
 
@@ -85,19 +85,19 @@ const routes = [
             {
                 path: 'novoInsumo',
                 name: 'NovoInsumo',
-                component: NewAgriculturalInputs,
+                component: NewAgriculturalSupplies,
                 meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
                 path: 'listaInsumos',
                 name: 'ListaInsumos',
-                component: AgriculturalInputs,
+                component: AgriculturalSupplies,
                 meta: {requiresAuth: true, requiresAdmin:true}
             },
             {
                 path: 'novaCompraInsumo',
                 name: 'NovaCompraInsumo',
-                component: PurchaseAgriculturalInputsScreen,
+                component: PurchaseAgriculturalSuppliesScreen,
                 meta: {requiresAuth: true, requiresAdmin:true}
             },
             {

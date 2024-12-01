@@ -1,16 +1,16 @@
 <template>
   <v-container>
     <h1 class="display-1 text-center">Insumos cadastrados</h1>
-    <v-data-table :headers="headers" :items="history" :items-per-page="10" class="elevation-1" item-key="id">
+    <v-data-table :headers="headers" :items="history" :items-per-page="10" class="elevation-1" item-key="id" no-data-text="Nenhum insumo cadastrado">
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon @click="openUpdate(item)" color="primary" small>mdi-pencil</v-icon>
         <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
       </template>
     </v-data-table>
 
-    <dialog-delete v-model="openDialogDelete" :item="selectedInput?.nome" @deleteConfirmed="handleDeleteInput"/>
+    <dialog-delete v-model="openDialogDelete" :item="selectedSupply?.nome" @deleteConfirmed="handleDeleteSupply"/>
 
-    <dialog-update-agricultural-input v-model="openDialogUpdate" :item="selectedInput" @editConfirmed="handleUpdateInput"/>
+    <dialog-update-agricultural-supply v-model="openDialogUpdate" :item="selectedSupply" @editConfirmed="handleUpdateSupply"/>
 
     <feedback-message v-model="snackbar" :message="message" :color="color"/>
 
@@ -23,8 +23,8 @@ import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
-import DialogUpdateAgriculturalInput from "@/components/DialogsUpdate/DialogUpdateAgriculturalInput.vue";
-import {updateAgriculturalInput} from "@/services/agriculturalInputsService";
+import DialogUpdateAgriculturalSupply from "@/components/DialogsUpdate/DialogUpdateAgriculturalSupply.vue";
+import {updateAgriculturalSupply} from "@/services/agriculturalSuppliesService";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
@@ -38,18 +38,18 @@ const headers = ref([
 
 let openDialogDelete = ref(false);
 let openDialogUpdate = ref(false);
-let selectedInput = ref(null);
+let selectedSupply = ref(null);
 
 onMounted(async () => {
-    await loadInputs();
+    await loadSupplies();
 });
 
-const loadInputs = async () => {
+const loadSupplies = async () => {
     try {
-        const agriculturalInputs = await getItens("insumos");
-        history.value = agriculturalInputs.map(input => ({
-            ...input,
-            valor: `R$${input.valor}`
+        const agriculturalSupplies = await getItens("insumos");
+        history.value = agriculturalSupplies.map(supply => ({
+            ...supply,
+            valor: `R$${supply.valor}`
         }));
     } catch (error) {
         console.error("Erro ao carregar insumos:", error);
@@ -57,35 +57,35 @@ const loadInputs = async () => {
 };
 
 const openUpdate = (item) => {
-    selectedInput.value = item;
+    selectedSupply.value = item;
     openDialogUpdate.value = true;
 }
 
-const handleUpdateInput = async (updatedItem) => {
+const handleUpdateSupply = async (updatedItem) => {
     try {
-        await updateAgriculturalInput(updatedItem);
+        await updateAgriculturalSupply(updatedItem);
         showMessage('Insumo editado', 'green');
     } catch (error) {
         showMessage('Erro ao editar o insumo.', 'red');
         console.error("Erro ao editar o insumo:", error);
     } finally {
-        await loadInputs();
+        await loadSupplies();
     }
 };
 
 const openDelete = (item) => {
-    selectedInput.value = item;
+    selectedSupply.value = item;
     openDialogDelete.value = true;
 };
 
-const handleDeleteInput = () => {
+const handleDeleteSupply = () => {
     try {
-        deleteItem("insumos", selectedInput.value.id);
+        deleteItem("insumos", selectedSupply.value.id);
         showMessage('Dado excluído com sucesso.', 'green');
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');
     } finally {
-        loadInputs();
+        loadSupplies();
     }
 };
 </script>
