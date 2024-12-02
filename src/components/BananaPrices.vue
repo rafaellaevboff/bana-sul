@@ -40,7 +40,7 @@
     </template>
     <template v-else>
       <v-alert type="warning" dismissible>
-        Clique em "Novo Preço Banana" para cadastrar os preços da data atual.
+        A data atual não possui valores de caixas de bananas cadastradas. Clique em "Novo Preço Banana" para cadastrar os preços da data atual.
       </v-alert>
     </template>
   </v-card>
