@@ -24,7 +24,7 @@
             <span class="headline">Valor Total</span>
           </v-card-title>
           <v-card-text :class="{'text-green-darken-1': currentTotal >= 0,'text-red-darken-1': currentTotal < 0}" class="text-h5">
-            {{ formatCurrency(currentTotal) }}
+            {{ currentTotal }}
           </v-card-text>
         </v-card>
       </v-col>
@@ -43,8 +43,8 @@
               <div v-for="(quantidade, idx) in transaction.quantidade" :key="idx">
                 <span>{{ quantidade.label }}:</span>
                 <span>{{ quantidade.value }} x </span>
-                <span>{{ formatCurrency(transaction.precosBanana[quantidade.key]) }} = </span>
-                <span>{{ formatCurrency(quantidade.value * transaction.precosBanana[quantidade.key]) }}</span>
+                <span>{{ transaction.precosBanana[quantidade.key] }} = </span>
+                <span>{{ quantidade.value * transaction.precosBanana[quantidade.key] }}</span>
               </div>
             </div>
           </v-card-subtitle>
@@ -54,7 +54,7 @@
               <v-icon>{{ expandedCards.has(index) ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
             </v-btn>
             <v-chip :color="transaction.tipo === 'harvest' ? 'green' : 'red'">
-              {{ formatCurrency(transaction.valor) }}
+              {{ transaction.valor }}
             </v-chip>
           </div>
         </v-card>
@@ -67,7 +67,6 @@
 <script setup>
 import {computed, onMounted, ref} from 'vue';
 import {getNotebookItems, farmerBalance} from "@/services/notebookService";
-import {formatCurrency} from "@/services/formatService";
 import {useI18n} from 'vue-i18n';
 import {useRoute} from "vue-router";
 import {getItemById} from "@/services/essentialFunctions";

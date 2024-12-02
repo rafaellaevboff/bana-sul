@@ -1,8 +1,26 @@
 <template>
   <v-container>
     <h1 class="display-1 text-center mb-5">Histórico de preços de banana</h1>
-    <v-data-table :headers="headers" :items="history" :items-per-page="10" class="elevation-1" item-key="id" no-data-text="Nenhum valor de caixa de banana cadastrado.">
-    <template v-slot:[`item.actions`]="{ item }">
+
+    <v-row v-if="loading" class="d-flex justify-center align-center" style="height: 80vh;">
+      <v-progress-circular indeterminate color="primary" size="64" class="ma-auto"/>
+    </v-row>
+
+    <v-data-table v-if="!loading" :headers="headers" :items="history" :items-per-page="10" class="elevation-1" item-key="id" no-data-text="Nenhum valor de caixa de banana cadastrado.">
+      <template v-slot:[`item.prataPrimeira`]="{ item }">
+        R$ {{ item.prataPrimeira }}
+      </template>
+      <template v-slot:[`item.prataSegunda`]="{ item }">
+        R$ {{ item.prataSegunda }}
+      </template>
+      <template v-slot:[`item.caturraPrimeira`]="{ item }">
+        R$ {{ item.caturraPrimeira }}
+      </template>
+      <template v-slot:[`item.caturraSegunda`]="{ item }">
+      R$ {{ item.caturraSegunda }}
+    </template>
+
+      <template v-slot:[`item.actions`]="{ item }">
       <v-icon @click="openUpdate(item)" color="primary" small>mdi-pencil</v-icon>
       <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
     </template>
@@ -19,7 +37,7 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {formatCurrency, formatDate} from "@/services/formatService";
+import {formatDate} from "@/services/formatService";
 import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
@@ -43,6 +61,7 @@ const headers = ref([
 let openDialogDelete = ref(false);
 let openDialogUpdate = ref(false);
 let selectedPrice = ref(null);
+const loading = ref(true);
 
 onMounted(async () => {
     await loadPrices();
@@ -50,19 +69,22 @@ onMounted(async () => {
 
 const loadPrices = async () => {
     try {
+        loading.value = true;
         const prices = await getItens('precosBanana');
         history.value = prices.map(price => ({
+            id: price.id,
             dataInicio: formatDate(price.dataInicio),
             dataFim: formatDate(price.dataFim),
-            prataPrimeira: formatCurrency(price.prataPrimeira),
-            prataSegunda: formatCurrency(price.prataSegunda),
-            caturraPrimeira: formatCurrency(price.caturraPrimeira),
-            caturraSegunda: formatCurrency(price.caturraSegunda),
-            id: price.id,
+            prataPrimeira: price.prataPrimeira,
+            prataSegunda: price.prataSegunda,
+            caturraPrimeira: price.caturraPrimeira,
+            caturraSegunda: price.caturraSegunda,
             actions: null
         }));
     } catch (error) {
         console.error("Erro ao carregar histórico:", error);
+    } finally {
+        loading.value = false;
     }
 };
 

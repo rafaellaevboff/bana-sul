@@ -2,7 +2,6 @@ import {collection, doc, getDocs, query, setDoc, updateDoc, where} from "firebas
 import {db} from '@/plugins/firebase';
 import {getItemById} from "@/services/essentialFunctions";
 import {format} from "date-fns";
-import {formatCurrency} from "@/services/formatService";
 
 export const newAgriculturalSupply = async (name, description, value) => {
     try {
@@ -34,7 +33,7 @@ export const updateAgriculturalSupply = async (agriculturalSupply) => {
     await updateDoc(docRef, {
         nome: agriculturalSupply.nome,
         descricao: agriculturalSupply.descricao,
-        valor: parseFloat(agriculturalSupply.valor)
+        valor: agriculturalSupply.valor
     });
 };
 
@@ -69,7 +68,7 @@ export const getPurchaseAgriculturalSuppliesByNotebook = async (notebookId) => {
                 status: statusPurchaseSupply(data),
                 nomeInsumo: data.insumo?.nome,
                 dataEfetuacao: format(data.dataEfetuacao, 'dd/MM/yyyy'),
-                valorTotal: formatCurrency(data.valorTotal)
+                valorTotal: data.valorTotal
             };
         });
     } catch (error) {

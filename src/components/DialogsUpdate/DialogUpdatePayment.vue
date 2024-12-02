@@ -1,21 +1,15 @@
 <template>
-  <base-dialog-update v-model="isOpen" title="Editar Insumo"
+  <base-dialog-update v-model="isOpen" title="Editar Pagamento"
                       :confirmText="'Salvar'" :cancelText="'Cancelar'"
                       @confirmed="confirmEdit" @cancelled="cancelEdit">
     <template #content>
-        <v-text-field v-model="editedItem.nome" label="Nome" required/>
-        <v-text-field v-model="editedItem.descricao" label="Descricao" required/>
-      <v-text-field v-model="editedItem.valor" label="Valor (R$)" required type="number">
-        <template v-slot:prepend-item>
-          <span>R$</span>
-        </template>
-      </v-text-field>
+      <v-text-field v-model="editedItem.valor" label="Valor (R$)" required type="number"/>
     </template>
   </base-dialog-update>
 </template>
 
 <script setup>
-import {defineEmits, defineProps, ref, watch} from "vue";
+import { ref, defineProps, defineEmits, watch } from "vue";
 import BaseDialogUpdate from "@/components/DialogsUpdate/BaseDialogUpdate.vue";
 
 const props = defineProps({

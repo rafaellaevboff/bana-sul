@@ -2,6 +2,10 @@
   <v-container>
     <h1 class="display-1 text-center mb-4">Cadernos</h1>
 
+    <v-row v-if="loading" class="d-flex justify-center align-center" style="height: 80vh;">
+      <v-progress-circular indeterminate color="primary" size="64" class="ma-auto"/>
+    </v-row>
+
     <v-text-field v-model="search" label="Buscar caderno" class="mb-4" clearable rounded variant="outlined" density="compact"/>
 
     <v-row>
@@ -46,12 +50,16 @@ const search = ref("");
 let openDialogDelete = ref(false);
 const openDialogUpdate = ref(false);
 const selectedNotebook = ref(null);
+const loading = ref(true);
 
 onMounted(async () => {
     try {
+        loading.value = true;
         await loadNotebooks()
     } catch (error) {
         console.error("Erro ao carregar cadernos:", error);
+    }finally {
+        loading.value = false;
     }
 });
 
@@ -68,7 +76,6 @@ const loadNotebooks = async () => {
 const openNotebook = ( (item) => {
     router.push(`/app/cadernoAgricultor/${item.id}`);
 })
-
 
 const openUpdate = ( (item) => {
     selectedNotebook.value = item;

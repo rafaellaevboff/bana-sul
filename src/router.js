@@ -2,23 +2,24 @@ import {createRouter, createWebHistory} from 'vue-router';
 import {getAuth} from 'firebase/auth';
 import LoginScreen from './pages/Login/LoginScreen.vue';
 import ResetPasswordScreen from './pages/Login/ResetPasswordScreen.vue';
-import HomeScreen from './pages/Sistem/HomeScreen.vue';
-import LayoutScreen from './pages/Sistem/LayoutScreen.vue';
+import HomeScreen from '@/pages/System/HomeScreen.vue';
+import LayoutScreen from '@/pages/System/LayoutScreen.vue';
 import BananaPriceScreen from "@/pages/BananaPrice/BananaPriceScreen.vue";
 import NewHarvest from "@/pages/Harvest/NewHarvest.vue";
 import NewNotebookScreen from "@/pages/Notebooks/NewNotebookScreen.vue";
-import ListNotebooksScreen from "@/pages/Notebooks/ListNotebooksScreen.vue";
+import ListNotebooksScreen from "@/pages/Notebooks/NotebooksScreenList.vue";
 import HistoryBananaPriceScreen from "@/pages/BananaPrice/HistoryBananaPriceScreen.vue";
 import FarmerNotebook from "@/pages/Notebooks/FarmerNotebook.vue";
 import NewAgriculturalSupplies from "@/pages/AgriculturalSupplies/NewAgriculturalSupplies.vue";
 import PurchaseAgriculturalSuppliesScreen from "@/pages/AgriculturalSupplies/PurchaseAgriculturalSuppliesScreen.vue";
 import {doc, getDoc, getFirestore} from "firebase/firestore";
 import store from "@/store";
-import NotFoundScreen from "@/pages/Sistem/NotFoundScreen.vue";
+import NotFoundScreen from "@/pages/System/NotFoundScreen.vue";
 import MyPurchasesScreen from "@/pages/AgriculturalSupplies/MyPurchasesScreen.vue";
 import AgriculturalSupplies from "@/pages/AgriculturalSupplies/AgriculturalSupplies.vue";
 import NewPayment from "@/pages/payment/NewPayment.vue";
-import ListPayments from "@/pages/payment/ListPayments.vue";
+import ListPayments from "@/pages/payment/PaymentsList.vue";
+import HarvestList from "@/pages/Harvest/HarvestList.vue";
 
 const routes = [
     {path: '/', name: 'Login', component: LoginScreen, requiresAdmin:false},
@@ -68,6 +69,12 @@ const routes = [
                 path: 'novaColheita',
                 name: 'NovaColheita',
                 component: NewHarvest,
+                meta: {requiresAuth: true, requiresAdmin:true}
+            },
+            {
+                path: 'colheitas',
+                name: 'Colheitas',
+                component: HarvestList,
                 meta: {requiresAuth: true, requiresAdmin:true}
             },
             {

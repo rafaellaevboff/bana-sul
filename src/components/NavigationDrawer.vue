@@ -60,6 +60,12 @@
           </template>
           <v-list-item-content v-text="'Nova colheita'"/>
         </v-list-item>
+        <v-list-item link to="/app/colheitas" class="text-start">
+          <template v-slot:prepend>
+            <v-icon :icon="'mdi-apps-box'"/>
+          </template>
+          <v-list-item-content v-text="'Colheitas'"/>
+        </v-list-item>
       </div>
 
       <div v-if="isAdmin">

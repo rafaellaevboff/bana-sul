@@ -3,16 +3,16 @@
                       :confirmText="'Salvar'" :cancelText="'Cancelar'"
                       @confirmed="confirmEdit" @cancelled="cancelEdit">
     <template #content>
-        <v-text-field v-model="editedItem.prataPrimeira" label="Prata 1ª" required/>
-        <v-text-field v-model="editedItem.prataSegunda" label="Prata 2ª" required/>
-        <v-text-field v-model="editedItem.caturraPrimeira" label="Caturra 1ª" required/>
-        <v-text-field v-model="editedItem.caturraSegunda" label="Caturra 2ª" required/>
+        <v-text-field v-model="editedItem.prataPrimeira" label="Prata 1ª (R$)" required type="number"/>
+        <v-text-field v-model="editedItem.prataSegunda" label="Prata 2ª (R$)" required type="number"/>
+        <v-text-field v-model="editedItem.caturraPrimeira" label="Caturra 1ª (R$)" required type="number"/>
+        <v-text-field v-model="editedItem.caturraSegunda" label="Caturra 2ª (R$)" required type="number"/>
     </template>
   </base-dialog-update>
 </template>
 
 <script setup>
-import {ref, defineProps, defineEmits, watch} from "vue";
+import {ref, defineProps, defineEmits, watch, onMounted} from "vue";
 import BaseDialogUpdate from "@/components/DialogsUpdate/BaseDialogUpdate.vue";
 
 const props = defineProps({
@@ -24,6 +24,10 @@ const emit = defineEmits(["update:modelValue", "editConfirmed"]);
 
 const isOpen = ref(props.modelValue);
 const editedItem = ref({...props.item});
+
+onMounted(async () => {
+    console.log("edited item: ", props.item)
+})
 
 const confirmEdit = () => {
     emit("editConfirmed", editedItem.value);

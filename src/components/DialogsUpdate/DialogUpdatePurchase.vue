@@ -1,5 +1,5 @@
 <template>
-<base-dialog-update v-model="isOpen" title="Editar Pagamento"
+  <base-dialog-update v-model="isOpen" title="Editar Compra"
                     :confirmText="'Salvar'" :cancelText="'Cancelar'"
                     @confirmed="confirmEdit" @cancelled="cancelEdit">
   <template #content>

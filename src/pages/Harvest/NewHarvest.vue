@@ -52,7 +52,7 @@
 
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue';
-import {newHarvest} from "@/services/harvestService";
+import {calculatedPricesHarvest, newHarvest} from "@/services/harvestService";
 import {dateRegisteredPricesHarvest, getpricesDateHarvest} from "@/services/bananaPriceService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import store from "@/store";
@@ -125,12 +125,7 @@ const addBoxes = async () => {
 };
 
 const calculatedPrices = computed(() => {
-    const calculations = {};
-    quantities.value.forEach(quantity => {
-        const total = totalPriceBananas.value[quantity.key] || 0;
-        calculations[quantity.key] = total > 0 ? total : null;
-    });
-    return calculations;
+    return calculatedPricesHarvest(quantities, totalPriceBananas)
 });
 
 

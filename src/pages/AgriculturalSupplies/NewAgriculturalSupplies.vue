@@ -13,7 +13,7 @@
           <v-textarea v-model="supply.descricao" label="Descrição" required
                       rounded variant="outlined" density="compact"/>
 
-          <field-value v-model="supply.valor"/>
+          <field-value v-model="supply.valor" label="Valor (R$)"/>
 
           <v-btn type="submit" :style="{ width: '30%' }" class="bg-primary" rounded>Cadastrar</v-btn>
         </v-form>

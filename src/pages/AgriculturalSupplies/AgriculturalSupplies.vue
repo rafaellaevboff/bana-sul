@@ -1,7 +1,17 @@
 <template>
   <v-container>
     <h1 class="display-1 text-center">Insumos cadastrados</h1>
-    <v-data-table :headers="headers" :items="history" :items-per-page="10" class="elevation-1" item-key="id" no-data-text="Nenhum insumo cadastrado">
+
+    <v-row v-if="loading" class="d-flex justify-center align-center" style="height: 80vh;">
+      <v-progress-circular indeterminate color="primary" size="64" class="ma-auto"/>
+    </v-row>
+
+    <v-text-field v-model="search" label="Buscar insumos" class="mb-4" clearable rounded variant="outlined" density="compact"/>
+
+    <v-data-table :headers="headers" :items="filteredSupplies" :items-per-page="10" class="elevation-1" item-key="id" no-data-text="Nenhum insumo cadastrado">
+      <template v-slot:[`item.valor`]="{ item }">
+        R$ {{ item.valor }}
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-icon @click="openUpdate(item)" color="primary" small>mdi-pencil</v-icon>
         <v-icon @click="openDelete(item)" color="red" small>mdi-delete</v-icon>
@@ -18,7 +28,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {deleteItem, getItens} from "@/services/essentialFunctions";
@@ -29,6 +39,9 @@ import {updateAgriculturalSupply} from "@/services/agriculturalSuppliesService";
 const { snackbar, color, message, showMessage } = useShowMessage();
 
 const history = ref([]);
+const loading = ref(true);
+const search = ref("");
+
 const headers = ref([
     { title: "Nome", key: "nome", align: 'start' },
     { title: "Descrição", key: "descricao", align: 'end' },
@@ -46,15 +59,24 @@ onMounted(async () => {
 
 const loadSupplies = async () => {
     try {
+        loading.value = true;
         const agriculturalSupplies = await getItens("insumos");
         history.value = agriculturalSupplies.map(supply => ({
             ...supply,
-            valor: `R$${supply.valor}`
+            valor: supply.valor
         }));
     } catch (error) {
         console.error("Erro ao carregar insumos:", error);
+    } finally {
+        loading.value = false;
     }
 };
+
+const filteredSupplies = computed(() => {
+    return history.value.filter((item) =>
+        item.nome.toLowerCase().includes(search.value.toLowerCase())
+    );
+});
 
 const openUpdate = (item) => {
     selectedSupply.value = item;
