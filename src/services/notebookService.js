@@ -67,10 +67,6 @@ export const farmerBalance = async (id) => {
     let agriculturalSuppliesTotal = agriculturalSupplies.reduce((sum, item) => sum + item.valorTotal, 0)
     let paymentsTotal = payments.reduce((sum, item) => sum + item.valor, 0)
 
-
-    console.log("soma: ", agriculturalSuppliesTotal + paymentsTotal)
-
-
     let total = harvestsTotal - (agriculturalSuppliesTotal + paymentsTotal);
     return total.toFixed(2)
 }

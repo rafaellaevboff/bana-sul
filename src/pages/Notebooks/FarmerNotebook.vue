@@ -9,7 +9,7 @@
         <h1>{{ nameNotebook }}</h1>
       </v-col>
       <v-col cols="auto">
-        <v-btn link :to="`/app/comprasInsumo/${farmerNotebook}`" title="Compras de insumos do agricultor"
+        <v-btn link :to="`/app/comprasInsumo/${farmerNotebookId}`" title="Compras de insumos do agricultor"
                class="d-flex align-center p-6" rounded>
           <v-icon class="mr-2">mdi-basket</v-icon>
           Compras de insumos
@@ -82,7 +82,7 @@ const route = useRoute();
 const uuid = computed(() => route.params.id);
 
 const nameNotebook = ref('');
-const farmerNotebook = route.params.id
+const farmerNotebookId = route.params.id
 
 onMounted(async () => {
     try {
@@ -90,7 +90,7 @@ onMounted(async () => {
         await calcularTotal();
         const item = await getItemById('cadernos', uuid.value);
         nameNotebook.value = item.nome;
-        transactions.value = await getNotebookItems(farmerNotebook);
+        transactions.value = await getNotebookItems(farmerNotebookId);
     } catch (err) {
         console.log("Erro ao carregar caderno do agricultor: ", err)
         throw new Error("Erro ao carregar caderno do agricultor!")
@@ -100,7 +100,7 @@ onMounted(async () => {
 });
 
 async function calcularTotal() {
-    currentTotal.value = await farmerBalance(farmerNotebook);
+    currentTotal.value = await farmerBalance(farmerNotebookId);
 }
 
 function toggleExpand(index) {
