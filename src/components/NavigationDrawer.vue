@@ -1,5 +1,6 @@
 <template>
-  <v-navigation-drawer app v-model="drawer" permanent>
+  <v-navigation-drawer app v-model="drawer" :temporary="isMobile"
+                       :permanent="!isMobile">
     <v-list density="comfortable">
       <div v-if="isAdmin">
         <v-list-item link to="/app/home" class="text-start">
@@ -130,44 +131,72 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from 'vue';
-import {logout} from '@/services/loginService';
-import {useRouter} from "vue-router";
+import { ref, computed, onMounted } from "vue";
+import { logout } from "@/services/loginService";
+import { useRouter } from "vue-router";
 import store from "@/store";
 
 const props = defineProps({
     modelValue: {
         type: Boolean,
-        required: true
-    }
+        required: true,
+    },
 });
 
 const farmerNotebook = ref(null);
-
 onMounted(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-        farmerNotebook.value = localStorage.getItem('farmerNotebook');
+    if (typeof window !== "undefined" && window.localStorage) {
+        farmerNotebook.value = localStorage.getItem("farmerNotebook");
     }
 });
 
+const isAdmin = computed(() => store.getters["auth/isAdmin"]);
 
-const isAdmin = computed(() => store.getters['auth/isAdmin']);
-
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
 const router = useRouter();
-
 const drawer = computed({
     get() {
         return props.modelValue;
     },
     set(value) {
-        emit('update:modelValue', value);
-    }
+        emit("update:modelValue", value);
+    },
 });
 
+// Responsividade para dispositivos móveis
+const isMobile = ref(false);
+onMounted(() => {
+    const updateMobile = () => {
+        isMobile.value = window.innerWidth <= 960;
+    };
+    updateMobile();
+    window.addEventListener("resize", updateMobile);
+});
+
+// Logout
 const logoutApp = () => {
     logout(router);
 };
-
 </script>
+
+<style scoped>
+.v-navigation-drawer ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.v-navigation-drawer ::-webkit-scrollbar-thumb {
+    background: #a5a5a5;
+    border-radius: 4px;
+}
+
+.v-navigation-drawer ::-webkit-scrollbar-thumb:hover {
+    background: #505050;
+}
+
+.v-navigation-drawer ::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+</style>
