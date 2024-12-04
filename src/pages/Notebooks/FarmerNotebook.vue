@@ -24,7 +24,7 @@
             <span class="headline">Valor Total</span>
           </v-card-title>
           <v-card-text :class="{'text-green-darken-1': currentTotal >= 0,'text-red-darken-1': currentTotal < 0}" class="text-h5">
-            {{ currentTotal }}
+            R${{ currentTotal }}
           </v-card-text>
         </v-card>
       </v-col>

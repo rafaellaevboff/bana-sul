@@ -1,15 +1,14 @@
 <template>
-  <v-navigation-drawer app v-model="drawer" :temporary="isMobile"
-                       :permanent="!isMobile">
-    <v-list density="comfortable">
-      <div v-if="isAdmin">
+  <div v-if="isAdmin">
+    <v-navigation-drawer app v-model="drawer" :temporary="isMobile"
+                         :permanent="!isMobile">
+      <v-list density="comfortable">
         <v-list-item link to="/app/home" class="text-start">
           <template v-slot:prepend>
             <v-icon :icon="'mdi-home'"/>
           </template>
           <v-list-item-content v-text="'Página Inicial'"/>
         </v-list-item>
-
 
         <v-list-subheader>CADERNOS</v-list-subheader>
         <v-list-item link to="/app/cadernos" class="text-start">
@@ -25,18 +24,7 @@
           </template>
           <v-list-item-content v-text="'Novo caderno'"/>
         </v-list-item>
-      </div>
-      <div v-else>
-        <v-list-subheader>CADERNO</v-list-subheader>
-        <v-list-item link :to="`/app/cadernoAgricultor/${farmerNotebook}`" class="text-start">
-          <template v-slot:prepend>
-            <v-icon :icon="'mdi-notebook'"/>
-          </template>
-          <v-list-item-content v-text="'Meu caderno'"/>
-        </v-list-item>
-      </div>
 
-      <div v-if="isAdmin">
         <v-list-subheader>VALORES BANANAS</v-list-subheader>
         <v-list-item link to="/app/novoValorBanana" class="text-start">
           <template v-slot:prepend>
@@ -51,9 +39,7 @@
           </template>
           <v-list-item-content v-text="'Histórico de preços de Banana'"/>
         </v-list-item>
-      </div>
 
-      <div v-if="isAdmin">
         <v-list-subheader>COLHEITAS</v-list-subheader>
         <v-list-item link to="/app/novaColheita" class="text-start">
           <template v-slot:prepend>
@@ -67,9 +53,7 @@
           </template>
           <v-list-item-content v-text="'Colheitas'"/>
         </v-list-item>
-      </div>
 
-      <div v-if="isAdmin">
         <v-list-subheader>PAGAMENTOS</v-list-subheader>
         <v-list-item link to="/app/novoPagamento" class="text-start">
           <template v-slot:prepend>
@@ -83,10 +67,8 @@
           </template>
           <v-list-item-content v-text="'Lista de pagamentos'"/>
         </v-list-item>
-      </div>
 
-      <v-list-subheader>INSUMOS</v-list-subheader>
-      <div v-if="isAdmin">
+        <v-list-subheader>INSUMOS</v-list-subheader>
         <v-list-item link to="/app/novoInsumo" class="text-start">
           <template v-slot:prepend>
             <v-icon :icon="'mdi-tools'"/>
@@ -107,33 +89,32 @@
           </template>
           <v-list-item-content v-text="'Nova compra de insumo'"/>
         </v-list-item>
-      </div>
-      <div v-if="!isAdmin">
+
         <v-list-item link :to="`/app/comprasInsumo/${farmerNotebook}`" class="text-start">
           <template v-slot:prepend>
             <v-icon :icon="'mdi-basket'"/>
           </template>
           <v-list-item-content v-text="'Minhas compras'"/>
         </v-list-item>
-      </div>
 
-      <v-list-subheader>AÇÕES</v-list-subheader>
-      <v-list-item @click="logoutApp" class="text-start">
-        <template v-slot:prepend>
-          <v-icon :icon="'mdi-logout'"/>
-        </template>
-        <v-list-item-content v-text="'Sair'"/>
-      </v-list-item>
+        <v-list-subheader>AÇÕES</v-list-subheader>
+        <v-list-item @click="logoutApp" class="text-start">
+          <template v-slot:prepend>
+            <v-icon :icon="'mdi-logout'"/>
+          </template>
+          <v-list-item-content v-text="'Sair'"/>
+        </v-list-item>
 
-    </v-list>
+      </v-list>
 
-  </v-navigation-drawer>
+    </v-navigation-drawer>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { logout } from "@/services/loginService";
-import { useRouter } from "vue-router";
+import {ref, computed, onMounted} from "vue";
+import {logout} from "@/services/loginService";
+import {useRouter} from "vue-router";
 import store from "@/store";
 
 const props = defineProps({

@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar app class="bg-primary" dark>
 
-      <v-app-bar-nav-icon class="custom-hover" @click="drawer = !drawer"/>
+      <v-app-bar-nav-icon v-if="isAdmin" class="custom-hover" @click="drawer = !drawer"/>
       <v-spacer/>
 
       <v-btn class="custom-hover" icon @click="toggleLista">
@@ -29,14 +29,17 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
 import {logout} from '@/services/loginService';
 import NavigationDrawer from "@/components/NavigationDrawer.vue";
 import {useRouter} from "vue-router";
+import store from "@/store";
 
 const drawer = ref(false)
 const router = useRouter()
 const visibleList = ref(false)
+
+const isAdmin = computed(() => store.getters["auth/isAdmin"]);
 
 const logoutApp = () => {
     logout(router);
