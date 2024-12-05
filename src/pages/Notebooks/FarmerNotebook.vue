@@ -1,5 +1,14 @@
 <template>
   <v-container>
+    <v-row>
+      <v-col cols="12" class="d-flex align-start justify-start mb-1">
+        <v-btn icon @click="goBack" class="mr-2 custom-hover">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+        <span class="text-grey-darken-1 text-body-1 ml-3 mt-4">Caderno</span>
+      </v-col>
+    </v-row>
+
     <v-row v-if="loading" class="d-flex justify-center align-center" style="height: 80vh;">
       <v-progress-circular indeterminate color="primary" size="64" class="ma-auto"/>
     </v-row>
@@ -99,16 +108,20 @@ onMounted(async () => {
     }
 });
 
-async function calcularTotal() {
+const calcularTotal = async () => {
     currentTotal.value = await farmerBalance(farmerNotebookId);
 }
 
-function toggleExpand(index) {
+const toggleExpand = (index) => {
     if (expandedCards.value.has(index)) {
         expandedCards.value.delete(index);
     } else {
         expandedCards.value.add(index);
     }
+}
+
+const goBack = () => {
+    window.history.back();
 }
 </script>
 
@@ -139,6 +152,10 @@ function toggleExpand(index) {
 
 .v-btn:hover {
     background-color: rgba(247, 208, 0, 0.06) !important;
+}
+
+.custom-hover:hover {
+    background-color: rgb(223, 190, 0) !important;
 }
 
 @media (max-width: 600px) {

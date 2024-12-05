@@ -90,13 +90,6 @@
           <v-list-item-content v-text="'Nova compra de insumo'"/>
         </v-list-item>
 
-        <v-list-item link :to="`/app/comprasInsumo/${farmerNotebook}`" class="text-start">
-          <template v-slot:prepend>
-            <v-icon :icon="'mdi-basket'"/>
-          </template>
-          <v-list-item-content v-text="'Minhas compras'"/>
-        </v-list-item>
-
         <v-list-subheader>AÇÕES</v-list-subheader>
         <v-list-item @click="logoutApp" class="text-start">
           <template v-slot:prepend>
@@ -145,7 +138,6 @@ const drawer = computed({
     },
 });
 
-// Responsividade para dispositivos móveis
 const isMobile = ref(false);
 onMounted(() => {
     const updateMobile = () => {
