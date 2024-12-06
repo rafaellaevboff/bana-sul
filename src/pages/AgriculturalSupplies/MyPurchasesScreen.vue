@@ -45,7 +45,7 @@
 import {computed, onMounted, ref} from 'vue';
 import {
     getPurchaseAgriculturalSuppliesByNotebook,
-    updateAgriculturalSupply,
+    updatePurchaseAgriculturalSupply,
 } from "@/services/agriculturalSuppliesService";
 import {useRoute} from "vue-router";
 import {getNameNotebook} from "@/services/notebookService";
@@ -116,8 +116,8 @@ const openUpdate = (item) => {
 
 const handleUpdatePurchase = async (updatedItem) => {
     try {
-        await updateAgriculturalSupply(updatedItem);
-        showMessage('Compra editads', 'green');
+        await updatePurchaseAgriculturalSupply(updatedItem);
+        showMessage('Compra editada', 'green');
     } catch (error) {
         showMessage('Erro ao editar a compra.', 'red');
         console.error("Erro ao editar a compra:", error);

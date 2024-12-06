@@ -37,6 +37,7 @@ export const updateAgriculturalSupply = async (agriculturalSupply) => {
     });
 };
 
+
 export const newPurchaseAgriculturalSupply = async (notebook, agriculturalSupply, purchaseDate, quantity, total, deductedNotebook, paid) => {
     try {
         await setDoc(doc(db, "compraInsumos", crypto.randomUUID()), {
@@ -55,6 +56,14 @@ export const newPurchaseAgriculturalSupply = async (notebook, agriculturalSupply
     }
 };
 
+export const updatePurchaseAgriculturalSupply = async (purchase) => {
+    const docRef = doc(db, 'compraInsumos', purchase.id);
+    await updateDoc(docRef, {
+        descontadoCaderno: purchase.descontadoCaderno,
+        pago: purchase.pago
+    });
+    console.log("item: ", purchase)
+};
 export const getPurchaseAgriculturalSuppliesByNotebook = async (notebookId) => {
     try {
         const q = query(collection(db, 'compraInsumos'), where("caderno", "==", notebookId));
