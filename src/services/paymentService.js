@@ -17,7 +17,6 @@ export const newPayment = async (notebook, money, paymentDate) => {
 }
 
 export const updatePayment = async (payment) => {
-    console.log("payment valor: ", payment)
     try{
         const docRef = doc(db, 'pagamentos', payment.id);
         await updateDoc(docRef, {

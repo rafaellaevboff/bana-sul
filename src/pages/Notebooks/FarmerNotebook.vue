@@ -41,16 +41,18 @@
 
     <v-row v-if="!loading">
       <v-col cols="12" v-for="(transaction, index) in transactions" :key="index">
-        <v-card class="pa-4 d-flex flex-wrap justify-space-between">
+        <v-card :class="{
+          'harvest-card': transaction.tipo === 'harvest',
+          'other-card': transaction.tipo !== 'harvest',
+         }" class="pa-4 d-flex flex-wrap justify-space-between">
           <v-card-title class="text-start text-wrap">
-            {{ t(transaction.tipo) }} |
-            Data: {{ transaction.dataEfetuacao }}
+            {{ t(transaction.tipo) }} | {{ transaction.dataEfetuacao }}
           </v-card-title>
 
           <v-card-subtitle v-if="expandedCards.has(index)" class="text-wrap">
             <div v-if="transaction.tipo === 'harvest'" class="left-section">
               <div v-for="(quantidade, idx) in transaction.quantidade" :key="idx">
-                <span>{{ quantidade.label }}:</span>
+                <span>{{ quantidade.label }}: </span>
                 <span>{{ quantidade.value }} x </span>
                 <span>{{ transaction.precosBanana[quantidade.key] }} = </span>
                 <span>{{ quantidade.value * transaction.precosBanana[quantidade.key] }}</span>
@@ -63,7 +65,7 @@
               <v-icon>{{ expandedCards.has(index) ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
             </v-btn>
             <v-chip :color="transaction.tipo === 'harvest' ? 'green' : 'red'">
-              {{ transaction.valor }}
+              R$ {{ transaction.valor.toFixed(2) }}
             </v-chip>
           </div>
         </v-card>
@@ -75,7 +77,7 @@
 
 <script setup>
 import {computed, onMounted, ref} from 'vue';
-import {getNotebookItems, farmerBalance} from "@/services/notebookService";
+import {farmerBalance, getNotebookItems} from "@/services/notebookService";
 import {useI18n} from 'vue-i18n';
 import {useRoute} from "vue-router";
 import {getItemById} from "@/services/essentialFunctions";
@@ -157,6 +159,15 @@ const goBack = () => {
 .custom-hover:hover {
     background-color: rgb(223, 190, 0) !important;
 }
+
+.harvest-card {
+    background-color: #eaffeb;
+}
+
+.other-card {
+    background-color: #ffe9eb;
+}
+
 
 @media (max-width: 600px) {
     .v-card {

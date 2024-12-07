@@ -101,7 +101,6 @@ const loadPayments = async () => {
             payments.map(async payment => {
                 const notebook = await getItemById("cadernos", payment.caderno);
                 const formattedDate = ref(format(new Date(payment.dataCadastro.seconds * 1000 + payment.dataCadastro.nanoseconds / 1e6), 'dd/MM/yyyy'));
-                console.log("payment: ", payment.valor)
                 return {
                     id: payment.id,
                     agricultor: notebook.nome,

@@ -93,14 +93,14 @@ const openDelete = (item) => {
     openDialogDelete.value = true;
 };
 
-const handleDeleteNotebook = () => {
+const handleDeleteNotebook = async () => {
     try {
-        deleteItem("precosBanana", selectedPrice.value.id);
+        await deleteItem("precosBanana", selectedPrice.value.id);
         showMessage('Dado excluído com sucesso.', 'green');
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');
     } finally {
-        loadPrices();
+        await loadPrices();
     }
 };
 

@@ -22,17 +22,17 @@
               <v-col cols="12" md="12" class="font-weight-bold"><p>Quantidade de caixas</p></v-col>
 
               <v-col v-for="(quantity, index) in quantities" :key="index" cols="12" md="6">
-                <v-text-field :label="quantity.label" type="number"
-                              :min="1" v-model="quantity.value" :disabled="!hasCurrentPrices"
+                <v-text-field :label="quantity.label" type="number" @keydown="restrictToInteger()"
+                              :min="1" v-model.number="quantity.value" :disabled="!hasCurrentPrices"
                               @input="calculateTotal" required rounded variant="outlined" density="compact"/>
               </v-col>
 
-              <v-col v-for="(total, key) in calculatedPrices" :key="key" cols="12" md="6">
-                <p v-if="total !== null">Total {{ key }}: {{ total }}</p>
+              <v-col v-for="(item, index) in calculatedPrices" :key="index" cols="12" md="6">
+                <p v-if="item.total !== null">Total {{ item.key }}: R$ {{ item.total.toFixed(2) }}</p>
               </v-col>
 
               <v-col cols="12" v-if="grandTotal !== null">
-                <v-alert type="info">Total Geral: {{ grandTotal }}</v-alert>
+                <v-alert type="info">Total Geral: R$ {{ grandTotal.toFixed(2) }}</v-alert>
               </v-col>
 
               <v-col cols="12">
@@ -58,6 +58,7 @@ import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import store from "@/store";
 import {getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
+import {restrictToInteger} from "@/services/formatService";
 
 const {snackbar, color, message, showMessage} = useShowMessage();
 
@@ -88,6 +89,10 @@ const isAdmin = computed(() => store.getters['auth/isAdmin']);
 
 onMounted(async () => {
     await getNotebooksDb();
+});
+
+const calculatedPrices = computed(() => {
+    return calculatedPricesHarvest(quantities, totalPriceBananas);
 });
 
 watch(harvestDate, async (newVal) => {
@@ -123,11 +128,6 @@ const addBoxes = async () => {
         loading.value = false
     }
 };
-
-const calculatedPrices = computed(() => {
-    return calculatedPricesHarvest(quantities, totalPriceBananas)
-});
-
 
 const getpricesDb = async () => {
     try {

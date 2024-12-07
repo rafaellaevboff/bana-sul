@@ -87,21 +87,25 @@ export const getNotebookItems = async (id) => {
             valor: total,
             dataEfetuacao: format(harvest.dataEfetuacao, 'dd/MM/yyyy'),
             precosBanana: harvest.precosBanana,
-            quantidade: harvest.quantidade
+            quantidade: harvest.quantidade,
+            data: harvest.dataEfetuacao
         };
     });
 
     let agriculturalSuppliesMapped = agriculturalSupplies.map(supply => ({
         tipo: 'agriculturalInput',
         valor: supply.valorTotal,
-        dataEfetuacao: format(supply.dataEfetuacao, 'dd/MM/yyyy')
+        dataEfetuacao: format(supply.dataEfetuacao, 'dd/MM/yyyy'),
+        data: supply.dataEfetuacao
     }));
 
     let paymentsMapped = payments.map(payment => ({
         tipo: 'payment',
         valor: payment.valor,
-        dataEfetuacao: format(payment.dataEfetuacao, 'dd/MM/yyyy')
+        dataEfetuacao: format(payment.dataEfetuacao, 'dd/MM/yyyy'),
+        data: payment.dataEfetuacao
     }));
 
-    return [...harvestsMapped, ...agriculturalSuppliesMapped, ...paymentsMapped];
+    return [...harvestsMapped, ...agriculturalSuppliesMapped, ...paymentsMapped]
+        .sort((a, b) => new Date(b.data) - new Date(a.data));
 };

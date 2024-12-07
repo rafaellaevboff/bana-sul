@@ -4,11 +4,14 @@ const db = getFirestore();
 
 export const newHarvest = async (notebook, quantity, unitPrices, total, harvestDate) => {
     try {
+        quantity.forEach(qtd => {
+            qtd.value = qtd.value ? parseInt(qtd.value) : 0;
+        });
         await setDoc(doc(db, "colheita", crypto.randomUUID()), {
             caderno: notebook,
             quantidade: quantity,
             precosBanana: unitPrices,
-            total: total,
+            total: total.toFixed(2),
             dataEfetuacao: harvestDate,
             dataCadastro: new Date()
         });
@@ -18,14 +21,15 @@ export const newHarvest = async (notebook, quantity, unitPrices, total, harvestD
     }
 };
 
-export const calculatedPricesHarvest = async (quantities, totalPriceBananas) => {
-    const calculations = {};
-    quantities.value.forEach(quantity => {
+export const calculatedPricesHarvest = (quantities, totalPriceBananas) => {
+    return quantities.value.map(quantity => {
         const total = totalPriceBananas.value[quantity.key] || 0;
-        calculations[quantity.key] = total > 0 ? total : null;
+        return {
+            key: quantity.label,
+            total: total > 0 ? total : null,
+        };
     });
-    return calculations;
-}
+};
 
 export const calculateTotalHarvest = async (quantities, unitPrices) => {
     let total = 0;

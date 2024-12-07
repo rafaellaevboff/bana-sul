@@ -20,7 +20,7 @@
               </v-col>
 
               <v-col cols="12">
-                <field-value v-model="money" label="Valor Pago"/>
+                <field-value v-model="money" label="Valor Pago (R$)"/>
               </v-col>
 
               <v-col cols="12">
