@@ -46,6 +46,17 @@ export const getItemByNotebook = async (nameCollection , notebookId) => {
             ...docSnap.data(),
         }));
     } catch (error) {
-        console.error("Erro ao buscar os dados:", error.message);
+        console.error("Erro ao buscar o dado:", error.message);
     }
 };
+
+export const deleteItemByNotebook = async (nameCollection , notebookId) => {
+    try {
+        const q = query(collection(db, nameCollection), where("caderno", "==", notebookId));
+        const querySnapshot = await getDocs(q);
+
+        await deleteDoc(doc(db, nameCollection, querySnapshot.docs[0].id))
+    } catch (error) {
+        console.error("Erro ao deletar dado:", error.message);
+    }
+}

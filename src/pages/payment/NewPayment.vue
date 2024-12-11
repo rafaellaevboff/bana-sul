@@ -11,7 +11,7 @@
             <v-row>
               <v-col cols="12">
                 <v-select label="Selecione o Caderno" :items="notebooks" v-model="notebookSelected"
-                          item-title="nome" item-value="id" required rounded variant="outlined"/>
+                          item-title="nome" required rounded variant="outlined" :return-object="true"/>
               </v-col>
 
               <v-col cols="12">
@@ -83,7 +83,7 @@ const addPayment = async () => {
             showMessage('Todos os campos devem estar preenchidos.', 'red');
             return;
         }
-        await newPayment(notebookSelected.value, parseFloat(money.value), paymentDate.value);
+        await newPayment(notebookSelected.value.id, notebookSelected.value.nome, parseFloat(money.value), paymentDate.value);
         showMessage('Pagamento cadastrado com sucesso!', 'green');
         await resetVariables();
     } catch (error) {

@@ -1,11 +1,11 @@
 import {doc, setDoc, updateDoc} from "firebase/firestore";
 import {db} from "@/plugins/firebase";
 
-export const newPayment = async (notebook, money, paymentDate) => {
-    console.log()
+export const newPayment = async (notebook, nomeNotebook, money, paymentDate) => {
     try {
         await setDoc(doc(db, "pagamentos", crypto.randomUUID()), {
             caderno: notebook,
+            agricultor: nomeNotebook,
             valor: money,
             dataEfetuacao: paymentDate,
             dataCadastro: new Date()

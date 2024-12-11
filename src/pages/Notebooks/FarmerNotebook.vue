@@ -55,7 +55,7 @@
                 <span>{{ quantidade.label }}: </span>
                 <span>{{ quantidade.value }} x </span>
                 <span>{{ transaction.precosBanana[quantidade.key] }} = </span>
-                <span>{{ quantidade.value * transaction.precosBanana[quantidade.key] }}</span>
+                <span>{{ (quantidade.value * transaction.precosBanana[quantidade.key]).toFixed(2) }}</span>
               </div>
             </div>
           </v-card-subtitle>

@@ -38,8 +38,8 @@ import {computed, onMounted, ref} from "vue";
 import DialogDelete from "@/components/DialogDelete.vue";
 import DialogUpdateNotebook from "@/components/DialogsUpdate/DialogUpdateNotebook.vue";
 import router from "@/router";
-import {deleteItem, getItens} from "@/services/essentialFunctions";
-import {updateNotebook} from "@/services/notebookService";
+import {getItens} from "@/services/essentialFunctions";
+import {deleteNotebook, updateNotebook} from "@/services/notebookService";
 import {useShowMessage} from "@/composables/useShowMessage";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 
@@ -102,7 +102,7 @@ const openDelete = (async (item) => {
 
 const handleDeleteNotebook = ( async () => {
     try {
-        await deleteItem("cadernos", selectedNotebook.value.id);
+        await deleteNotebook(selectedNotebook.value.id)
         showMessage('Caderno selecionado foi excluído com sucesso.','green');
     } catch (error) {
         showMessage(`Erro ao excluir o caderno: ${error}`,'green');

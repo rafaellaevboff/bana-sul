@@ -36,7 +36,7 @@
 import {computed, onMounted, ref} from "vue";
 import DialogDelete from "@/components/DialogDelete.vue";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
-import {deleteItem, getItemById, getItens} from "@/services/essentialFunctions";
+import {deleteItem, getItens} from "@/services/essentialFunctions";
 import {format} from "date-fns";
 import {useShowMessage} from "@/composables/useShowMessage";
 import DialogUpdatePayment from "@/components/DialogsUpdate/DialogUpdatePayment.vue";
@@ -99,11 +99,10 @@ const loadPayments = async () => {
         const payments = await getItens("pagamentos");
         history.value = await Promise.all(
             payments.map(async payment => {
-                const notebook = await getItemById("cadernos", payment.caderno);
                 const formattedDate = ref(format(new Date(payment.dataCadastro.seconds * 1000 + payment.dataCadastro.nanoseconds / 1e6), 'dd/MM/yyyy'));
                 return {
                     id: payment.id,
-                    agricultor: notebook.nome,
+                    agricultor: payment.agricultor,
                     valor: payment.valor,
                     data: formattedDate,
                     actions: null

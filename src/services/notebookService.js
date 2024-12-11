@@ -1,7 +1,7 @@
 import {collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where} from "firebase/firestore";
 import {db} from '@/plugins/firebase';
 import {agriculturalSuppliesDiscountedInNotebook} from "@/services/agriculturalSuppliesService";
-import {getItemByNotebook} from "@/services/essentialFunctions";
+import {deleteItem, deleteItemByNotebook, getItemByNotebook} from "@/services/essentialFunctions";
 import {format} from "date-fns";
 
 export const newNotebook = async (name, usuarioUid) => {
@@ -40,6 +40,12 @@ export const getNameNotebook = async (id) => {
         return null;
     }
 };
+
+export const deleteNotebook = async (notebookId) =>{
+    await deleteItemByNotebook("colheita", notebookId)
+    await deleteItemByNotebook("compraInsumos", notebookId)
+    await deleteItem("cadernos", notebookId);
+}
 
 export const getNotebookByUser = async (id, userRole) => {
     const cadernosRef = collection(db, 'cadernos');
