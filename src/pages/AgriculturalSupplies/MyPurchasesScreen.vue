@@ -43,10 +43,6 @@
 
 <script setup>
 import {computed, onMounted, ref} from 'vue';
-import {
-    getPurchaseAgriculturalSuppliesByNotebook,
-    updatePurchaseAgriculturalSupply,
-} from "@/services/agriculturalSuppliesService";
 import {useRoute} from "vue-router";
 import {getNameNotebook} from "@/services/notebookService";
 import {deleteItem} from "@/services/essentialFunctions";
@@ -54,6 +50,7 @@ import DialogDelete from "@/components/DialogDelete.vue";
 import DialogUpdatePurchase from "@/components/DialogsUpdate/DialogUpdatePurchase.vue";
 import store from "@/store";
 import {useShowMessage} from "@/composables/useShowMessage";
+import {getPurchaseAgriculturalSuppliesByNotebook, updatePurchaseAgriculturalSupply} from "@/services/purchaseSupply";
 
 const {showMessage} = useShowMessage();
 

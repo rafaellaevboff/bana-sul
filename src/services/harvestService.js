@@ -1,12 +1,14 @@
 import {doc, getFirestore, setDoc, updateDoc} from "firebase/firestore";
+import {getItemById} from "@/services/essentialFunctions";
 
 const db = getFirestore();
 
 export const newHarvest = async (notebook, quantity, unitPrices, total, harvestDate) => {
     try {
-        quantity.forEach(qtd => {
+        await quantity.forEach(qtd => {
             qtd.value = qtd.value ? parseInt(qtd.value) : 0;
         });
+        console.log("quantity: ", quantity)
         await setDoc(doc(db, "colheita", crypto.randomUUID()), {
             caderno: notebook,
             quantidade: quantity,
@@ -34,21 +36,29 @@ export const calculatedPricesHarvest = (quantities, totalPriceBananas) => {
 export const calculateTotalHarvest = async (quantities, unitPrices) => {
     let total = 0;
     console.log("unitPrices: ", unitPrices)
+    console.log("quantities: ", quantities)
 
-    quantities.value.forEach((quantity) => {
+    quantities.forEach( quantity => {
         const quantityValue = parseFloat(quantity.value) || 0;
-        const price = unitPrices.value[quantity.key];
+        const price = unitPrices[quantity.key];
         total += quantityValue * price || 0;
     });
 
-    return total;
+    return parseFloat(total).toFixed(2);
 }
 
 export const updateHarvest = async (harvest) => {
-    console.log("harvest: ", harvest)
     const docRef = doc(db, 'colheita', harvest.id);
+    const harvestBefore = await getItemById('colheita', harvest.id)
+
+    harvestBefore.quantidade.forEach( item => {
+        item.value = parseInt(harvest[item.key])
+    })
+
+    const totalHarvest = await calculateTotalHarvest(harvestBefore.quantidade, harvestBefore.precosBanana)
+
     await updateDoc(docRef, {
-        quantidade: harvest.quantidade,
-        total: calculateTotalHarvest(harvest.quantidade, harvest.precosBanana)
+        quantidade: harvestBefore.quantidade,
+        total: totalHarvest
     });
 }

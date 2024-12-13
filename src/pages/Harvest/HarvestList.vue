@@ -108,7 +108,6 @@ const loadHarvests = async () => {
 const openUpdate = (item) => {
     selectedHarvest.value = item;
     openDialogUpdate.value = true;
-    console.log("selected: ", selectedHarvest)
 };
 
 const openDelete = (item) => {

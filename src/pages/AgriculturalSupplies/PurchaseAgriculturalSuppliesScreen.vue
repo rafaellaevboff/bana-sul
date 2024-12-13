@@ -58,10 +58,11 @@
 
 <script setup>
 import {onMounted, ref} from 'vue';
-import {getAgriculturalSupplies, newPurchaseAgriculturalSupply} from "@/services/agriculturalSuppliesService";
+import {getAgriculturalSupplies} from "@/services/agriculturalSuppliesService";
 import FeedbackMessage from "@/components/FeedbackMessage.vue";
 import {getItemById, getItens} from "@/services/essentialFunctions";
 import {useShowMessage} from "@/composables/useShowMessage";
+import {newPurchaseAgriculturalSupply} from "@/services/purchaseSupply";
 
 const { snackbar, color, message, showMessage } = useShowMessage();
 
