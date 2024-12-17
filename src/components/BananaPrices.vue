@@ -5,7 +5,7 @@
     </template>
     <template v-else-if="Object.keys(prices).length > 0">
       <v-card-title
-              v-text="`Valores semanais das Bananas - ${formatDate(prices.dataInicio)} à ${formatDate(prices.dataFim)}`"/>
+              v-text="`Valores de caixas de Bananas - ${formatDate(prices.dataInicio)} à ${formatDate(prices.dataFim)}`"/>
       <v-card-text>
         <v-row>
           <v-col cols="12" md="6">
