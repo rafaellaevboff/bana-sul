@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" class="d-flex align-start justify-start mb-1">
+      <v-col cols="12" class="d-flex align-start justify-start mb-1" v-if="isAdmin">
         <v-btn icon @click="goBack" class="mr-2 custom-hover">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
@@ -81,6 +81,7 @@ import {farmerBalance, getNotebookItems} from "@/services/notebookService";
 import {useI18n} from 'vue-i18n';
 import {useRoute} from "vue-router";
 import {getItemById} from "@/services/essentialFunctions";
+import store from "@/store";
 
 const {t} = useI18n();
 
@@ -121,6 +122,10 @@ const toggleExpand = (index) => {
         expandedCards.value.add(index);
     }
 }
+
+const isAdmin = computed(() => {
+    return store.getters['auth/isAdmin'];
+});
 
 const goBack = () => {
     window.history.back();

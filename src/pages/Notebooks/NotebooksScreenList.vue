@@ -25,7 +25,7 @@
       </v-col>
     </v-row>
 
-    <dialog-delete v-model="openDialogDelete" :item="selectedNotebook?.nome" @deleteConfirmed="handleDeleteNotebook"/>
+    <dialog-delete v-model="openDialogDelete" @deleteConfirmed="handleDeleteNotebook" :message="`O usuário e senha devem ser excluídos pelo suporte!\nVocê tem certeza que deseja excluir o item ${selectedNotebook?.nome}?`"/>
 
     <dialog-update-notebook v-model="openDialogUpdate" :item="selectedNotebook" @editConfirmed="handleUpdateNotebook"/>
 

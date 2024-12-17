@@ -1,18 +1,21 @@
 <template>
-  <base-dialog-update v-model="isOpen" title="Editar Preços"
-                      :confirmText="'Salvar'" :cancelText="'Cancelar'"
-                      @confirmed="confirmEdit" @cancelled="cancelEdit">
-    <template #content>
+    <base-dialog-update v-model="isOpen" title="Editar Preços"
+                        :confirmText="'Salvar'" :cancelText="'Cancelar'"
+                        @confirmed="confirmEdit" @cancelled="cancelEdit">
+
+      <template #content>
         <v-text-field v-model="editedItem.prataPrimeira" label="Prata 1ª (R$)" required type="number"/>
         <v-text-field v-model="editedItem.prataSegunda" label="Prata 2ª (R$)" required type="number"/>
         <v-text-field v-model="editedItem.caturraPrimeira" label="Caturra 1ª (R$)" required type="number"/>
         <v-text-field v-model="editedItem.caturraSegunda" label="Caturra 2ª (R$)" required type="number"/>
-    </template>
-  </base-dialog-update>
+        <h5>ATENÇÃO</h5>
+        <span style="font-size: 15px">Ao editar os preços das caixas de banana, os valores das colheitas já cadastradas com esses preços não serão alterados.</span>
+      </template>
+    </base-dialog-update>
 </template>
 
 <script setup>
-import {ref, defineProps, defineEmits, watch, onMounted} from "vue";
+import {defineEmits, defineProps, onMounted, ref, watch} from "vue";
 import BaseDialogUpdate from "@/components/DialogsUpdate/BaseDialogUpdate.vue";
 
 const props = defineProps({

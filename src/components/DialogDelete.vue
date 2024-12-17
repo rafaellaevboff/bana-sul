@@ -1,9 +1,9 @@
 <template>
-  <v-dialog v-model="isOpen" max-width="400px">
+  <v-dialog v-model="isOpen" max-width="500px">
     <v-card>
       <v-card-title class="headline">Confirmação de Exclusão</v-card-title>
       <v-card-text>
-        <p>{{ dialogMessage }}</p>
+        <p class="message">{{ dialogMessage }}</p>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -24,7 +24,7 @@ const props = defineProps({
     },
     item: {
         type: String,
-        required: true,
+        required: false,
         default: "selecionado",
     },
     message: {
@@ -66,5 +66,9 @@ watch(() => props.modelValue, (newValue) => {
 <style scoped>
 .v-btn:hover {
     background-color: rgba(247, 208, 0, 0.06) !important;
+}
+
+.message {
+    white-space: pre-wrap;
 }
 </style>
