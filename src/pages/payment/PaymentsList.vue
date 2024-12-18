@@ -77,6 +77,7 @@ const openUpdate = ((item) => {
 
 const handleUpdateNotebook = (async (updatedItem) => {
     try {
+        loading.value = true;
         await updatePayment(updatedItem);
         showMessage('Pagamento editado', 'green');
 
@@ -85,6 +86,7 @@ const handleUpdateNotebook = (async (updatedItem) => {
         console.error("Erro ao editar o pagamento:", error);
     } finally {
         await loadPayments();
+        loading.value = false;
     }
 });
 
@@ -122,12 +124,14 @@ const openDelete = (item) => {
 
 const handleDeleteSupply = async () => {
     try {
+        loading.value = true;
         await deleteItem("pagamentos", selectedPayment.value.id);
         showMessage('Dado excluído com sucesso.', 'green');
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');
     } finally {
         await loadPayments();
+        loading.value = false;
     }
 };
 </script>

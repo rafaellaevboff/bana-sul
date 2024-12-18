@@ -26,7 +26,7 @@
     </template>
     </v-data-table>
 
-    <dialog-delete v-model="openDialogDelete" :item="`${selectedPrice?.dataInicio} - ${selectedPrice?.dataFim}`" @deleteConfirmed="handleDeleteNotebook"/>
+    <dialog-delete v-model="openDialogDelete" :item="`${selectedPrice?.dataInicio} - ${selectedPrice?.dataFim}`" @deleteConfirmed="handleDeletePrice"/>
 
     <dialog-update-prices v-model="openDialogUpdate" :item="selectedPrice" @editConfirmed="handleUpdatePrices"/>
 
@@ -93,14 +93,16 @@ const openDelete = (item) => {
     openDialogDelete.value = true;
 };
 
-const handleDeleteNotebook = async () => {
+const handleDeletePrice = async () => {
     try {
+        loading.value = true;
         await deleteItem("precosBanana", selectedPrice.value.id);
         showMessage('Dado excluído com sucesso.', 'green');
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');
     } finally {
         await loadPrices();
+        loading.value = false;
     }
 };
 
@@ -111,6 +113,7 @@ const openUpdate =  (item) => {
 
 const handleUpdatePrices = async (updatedItem) => {
     try {
+        loading.value = true;
         await updatePrice(updatedItem)
         showMessage('Valor editado', 'green');
     } catch (error) {
@@ -118,6 +121,7 @@ const handleUpdatePrices = async (updatedItem) => {
         console.error("Erro ao editar o preço:", error);
     } finally {
         await loadPrices()
+        loading.value = false;
     }
 }
 </script>

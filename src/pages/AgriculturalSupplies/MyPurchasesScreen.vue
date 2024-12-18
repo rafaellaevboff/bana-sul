@@ -113,6 +113,7 @@ const openUpdate = (item) => {
 
 const handleUpdatePurchase = async (updatedItem) => {
     try {
+        loading.value = true;
         await updatePurchaseAgriculturalSupply(updatedItem);
         showMessage('Compra editada', 'green');
     } catch (error) {
@@ -120,6 +121,7 @@ const handleUpdatePurchase = async (updatedItem) => {
         console.error("Erro ao editar a compra:", error);
     } finally {
         await loadItens();
+        loading.value = false;
     }
 };
 
@@ -130,12 +132,14 @@ const openDelete = (item) => {
 
 const handleDeletePurchase = () => {
     try {
+        loading.value = true;
         deleteItem("compraInsumos", selectedItem.value.id);
         showMessage('Dado excluído com sucesso.', 'green');
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');
     } finally {
         loadItens();
+        loading.value = false;
     }
 };
 

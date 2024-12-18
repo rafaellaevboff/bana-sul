@@ -13,7 +13,7 @@ export const newHarvest = async (notebook, quantity, unitPrices, total, harvestD
             caderno: notebook,
             quantidade: quantity,
             precosBanana: unitPrices,
-            total: total.toFixed(2),
+            total: parseFloat(total.toFixed(2)),
             dataEfetuacao: harvestDate,
             dataCadastro: new Date()
         });
@@ -35,8 +35,6 @@ export const calculatedPricesHarvest = (quantities, totalPriceBananas) => {
 
 export const calculateTotalHarvest = async (quantities, unitPrices) => {
     let total = 0;
-    console.log("unitPrices: ", unitPrices)
-    console.log("quantities: ", quantities)
 
     quantities.forEach( quantity => {
         const quantityValue = parseFloat(quantity.value) || 0;

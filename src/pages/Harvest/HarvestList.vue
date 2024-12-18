@@ -118,17 +118,21 @@ const openDelete = (item) => {
 
 const handleDeleteHarvest = async () => {
     try {
+        loading.value = true;
         await deleteItem("colheita", selectedHarvest.value.id);
         showMessage('Dado excluído com sucesso.', 'green');
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');
     } finally {
         await loadHarvests();
+        loading.value = false;
+
     }
 };
 
 const handleUpdateNotebook = (async (updatedItem) => {
     try {
+        loading.value = true;
         await updateHarvest(updatedItem);
         showMessage('Colheita editada', 'green');
 
@@ -137,6 +141,7 @@ const handleUpdateNotebook = (async (updatedItem) => {
         console.error("Erro ao editar a colheita:", error);
     } finally {
         await loadHarvests();
+        loading.value = false;
     }
 });
 </script>

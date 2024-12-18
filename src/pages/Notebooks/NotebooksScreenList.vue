@@ -84,6 +84,7 @@ const openUpdate = ( (item) => {
 
 const handleUpdateNotebook = (async (updatedItem) => {
     try {
+        loading.value = true;
         await updateNotebook(updatedItem);
         showMessage('Notebook editado', 'green');
 
@@ -92,6 +93,7 @@ const handleUpdateNotebook = (async (updatedItem) => {
         console.error("Erro ao editar o caderno:", error);
     } finally {
         await loadNotebooks();
+        loading.value = false;
     }
 });
 
@@ -102,6 +104,7 @@ const openDelete = (async (item) => {
 
 const handleDeleteNotebook = ( async () => {
     try {
+        loading.value = true;
         await deleteNotebook(selectedNotebook.value.id)
         showMessage('Caderno selecionado foi excluído com sucesso.','green');
     } catch (error) {
@@ -109,6 +112,7 @@ const handleDeleteNotebook = ( async () => {
         console.error("Erro ao excluir o caderno:", error);
     } finally {
         await loadNotebooks();
+        loading.value = false;
     }
 });
 </script>

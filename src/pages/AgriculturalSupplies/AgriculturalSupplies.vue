@@ -85,6 +85,7 @@ const openUpdate = (item) => {
 
 const handleUpdateSupply = async (updatedItem) => {
     try {
+        loading.value = true;
         await updateAgriculturalSupply(updatedItem);
         showMessage('Insumo editado', 'green');
     } catch (error) {
@@ -92,6 +93,7 @@ const handleUpdateSupply = async (updatedItem) => {
         console.error("Erro ao editar o insumo:", error);
     } finally {
         await loadSupplies();
+        loading.value = false;
     }
 };
 
@@ -102,12 +104,14 @@ const openDelete = (item) => {
 
 const handleDeleteSupply = () => {
     try {
+        loading.value = true;
         deleteItem("insumos", selectedSupply.value.id);
         showMessage('Dado excluído com sucesso.', 'green');
     } catch (error) {
         showMessage(`Erro ao excluir dado. ${error}.`, 'green');
     } finally {
         loadSupplies();
+        loading.value = false;
     }
 };
 </script>
